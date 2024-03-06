@@ -18,7 +18,7 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/dev-goraebap",
-            "index": "src/index.html",
+            "index": "src/app/index.html",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -26,11 +26,11 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "src/app/favicon.ico",
+              "src/app/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/app/styles.scss"
             ],
             "scripts": []
           },
@@ -86,11 +86,11 @@
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "src/app/favicon.ico",
+              "src/app/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/app/styles.scss"
             ],
             "scripts": []
           }
