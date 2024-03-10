@@ -1,0 +1,11 @@
+<button 
+class="w-[70px] desktop:w-[80px]" 
+(mousedown)="isClicked = true" 
+(mouseup)="isClicked = false"
+(mouseleave)="isClicked = false">
+    @if (!isClicked) {
+        <img [src]="spriteButtonMap.get(key)?.[0]" class="w-full h-full" />
+    } @else {
+        <img [src]="spriteButtonMap.get(key)?.[1]" class="w-full h-full" />
+    }
+</button>

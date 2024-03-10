@@ -6,7 +6,7 @@ module.exports = {
   theme: {
     screens: {
       tablet: '960px',
-      desktop: '1248px'
+      desktop: '1400px'
     },
     fontSize: {
       xs: ['14px', { lineHeight: '24px', letterSpacing: '-0.03em' }],
@@ -26,7 +26,11 @@ module.exports = {
       pretendard: 'Pretendard Variable, sans-serif',
       origa: 'origa, sans-serif',
     },
-    extend: {},
+    extend: {
+      backgroundImage: {
+        'phaser-frame': "url('/app/assets/images/frame.svg')",
+      }
+    },
   },
   plugins: [],
 }

@@ -1,0 +1,57 @@
+<div class="flex-col items-start justify-center block w-full h-full gap-10 tablet:flex desktop:flex-row">
+    <!-- Desktop -->
+    <div class="hidden desktop:flex items-end w-[250px] h-[500px] justify-end">
+        <div class="flex flex-col justify-end pb-10 w-[150px] ">
+            <div class="w-full">
+                <div class="flex justify-end w-full">
+                    <app-sprite-button key="a" />
+                </div>
+                <div class="">
+                    <app-sprite-button key="b" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="relative w-full h-[80%] tablet:w-[800px] desktop:h-[500px]">
+        <!-- <img src="app/assets/images/packman.svg" class="absolute top-[-0px] left-[-150px] w-[300px] rotate-[-45deg]"/> -->
+        <img src="app/assets/images/frame.svg" class="relative w-full h-full" />
+        <div class="absolute left-[4%] top-[6.5%] w-[92%] h-[79%] bg-gray-700">
+            <img src="app/assets/images/cover.png" class="w-full h-full"/>
+        </div>
+    </div>
+
+    <!-- Desktop -->
+    <div class="hidden desktop:flex flex-col w-[250px] h-full pt-10">
+        <div class="flex justify-center w-full">
+            <app-sprite-button key="up" />
+        </div>
+        <div class="flex justify-between w-full mt-[-20px]">
+            <app-sprite-button key="left" />
+            <app-sprite-button key="right" />
+        </div>
+        <div class="flex justify-center w-full mt-[-20px]">
+            <app-sprite-button key="down" />
+        </div>
+    </div>
+
+    <!-- tablet -->
+    <div class="absolute bottom-0 left-0 flex justify-between w-full px-10 tablet:static desktop:hidden">
+        <div class="flex justify-between w-[150px]">
+            <app-sprite-button key="a" />
+            <app-sprite-button key="b" />
+        </div>
+        <div class="flex flex-col w-[200px]">
+            <div class="flex justify-center w-full">
+                <app-sprite-button key="up" />
+            </div>
+            <div class="flex justify-between w-full mt-[-20px]">
+                <app-sprite-button key="left" />
+                <app-sprite-button key="right" />
+            </div>
+            <div class="flex justify-center w-full mt-[-20px]">
+                <app-sprite-button key="down" />
+            </div>
+        </div>
+    </div>
+</div>
