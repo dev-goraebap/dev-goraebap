@@ -1,5 +1,6 @@
 import { CommonModule } from "@angular/common";
-import { Component } from "@angular/core";
+import { Component, ElementRef, ViewChild, afterNextRender } from "@angular/core";
+import { startGame } from "src/shared";
 
 import { SpriteButtonWidget } from "src/widgets";
 
@@ -13,7 +14,14 @@ import { SpriteButtonWidget } from "src/widgets";
     ]
 })
 export class MainPage {
-    aButtonClicked = false;
-    bButtonClicked = false;
-    upButtonClicked = false;
+
+    @ViewChild('canvas') canvas?: ElementRef<HTMLCanvasElement>; 
+
+    constructor() { 
+        afterNextRender(() => {
+            const canvas = this.canvas?.nativeElement;
+            if (!canvas) return;
+            startGame(canvas);
+        });
+    }
 }

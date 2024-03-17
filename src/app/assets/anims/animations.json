@@ -1,0 +1,60 @@
+{
+    "anims": [
+        {
+            "key": "computer-idle",
+            "frames": [
+                { "key": "computer", "frame": 0 }
+            ],
+            "repeat": 0
+        },
+        {
+            "key": "computer-hover",
+            "frames": [
+                { "key": "computer", "frame": 1 }
+            ],
+            "repeat": 0
+        },
+        {
+            "key": "book-table-idle",
+            "frames": [
+                { "key": "bookTable", "frame": 0 }
+            ],
+            "repeat": 0
+        },
+        {
+            "key": "book-table-hover",
+            "frames": [
+                { "key": "bookTable", "frame": 1 }
+            ],
+            "repeat": 0
+        },
+        {
+            "key": "game-machine-idle",
+            "frames": [
+                { "key": "gameMachine", "frame": 0 }
+            ],
+            "repeat": 0
+        },
+        {
+            "key": "game-machine-hover",
+            "frames": [
+                { "key": "gameMachine", "frame": 1 }
+            ],
+            "repeat": 0
+        },
+        {
+            "key": "piano-idle",
+            "frames": [
+                { "key": "piano", "frame": 0 }
+            ],
+            "repeat": 0
+        },
+        {
+            "key": "piano-hover",
+            "frames": [
+                { "key": "piano", "frame": 1 }
+            ],
+            "repeat": 0
+        }
+    ]
+}
