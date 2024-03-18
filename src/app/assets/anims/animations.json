@@ -55,6 +55,22 @@
                 { "key": "piano", "frame": 1 }
             ],
             "repeat": 0
+        },
+        {
+            "key": "bird-idle",
+            "frames": [
+                { "key": "bird", "frame": 1 }
+            ],
+            "repeat": 0
+        },
+        {
+            "key": "bird-move",
+            "frames": [
+                { "key": "bird", "frame": 0 },
+                { "key": "bird", "frame": 1 }
+            ],
+            "frameRate": 10,
+            "repeat": -1
         }
     ]
 }

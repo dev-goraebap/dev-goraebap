@@ -92,6 +92,95 @@
                  "width":31,
                  "x":176.125,
                  "y":128
+                }, 
+                {
+                 "height":0,
+                 "id":6,
+                 "name":"spawn",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":127.666666666667,
+                 "y":96.3333333333333
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":18,
+         "name":"CollideObjects",
+         "objects":[
+                {
+                 "height":22,
+                 "id":7,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":192,
+                 "x":32,
+                 "y":16
+                }, 
+                {
+                 "height":25,
+                 "id":9,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":191.25,
+                 "x":32,
+                 "y":16.25
+                }, 
+                {
+                 "height":133,
+                 "id":10,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":6.25,
+                 "x":32,
+                 "y":16.5
+                }, 
+                {
+                 "height":5.5,
+                 "id":11,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":79.25,
+                 "x":32.5,
+                 "y":144.25
+                }, 
+                {
+                 "height":5.5,
+                 "id":14,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":79.25,
+                 "x":144.375,
+                 "y":144.5
+                }, 
+                {
+                 "height":133.75,
+                 "id":15,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":6,
+                 "x":217.5,
+                 "y":16.25
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -330,8 +419,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":18,
- "nextobjectid":6,
+ "nextlayerid":19,
+ "nextobjectid":16,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

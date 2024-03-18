@@ -1,8 +1,14 @@
 import { Scene } from 'phaser';
 
 export class MainScene extends Scene {
+    
+    private player!: Phaser.Physics.Arcade.Sprite;
+    private playerSpeed = 80;
 
-    cursors: any;
+    private leftKey!: Phaser.Input.Keyboard.Key;
+	private rightKey!: Phaser.Input.Keyboard.Key;
+	private upKey!: Phaser.Input.Keyboard.Key;
+	private downKey!: Phaser.Input.Keyboard.Key;
 
     constructor() {
         super({
@@ -15,20 +21,24 @@ export class MainScene extends Scene {
         this.load.image('tiles', 'app/assets/tilemaps/map01.png');
 
         this.load.spritesheet('computer', 'app/assets/sprites/computer.png', {
-            frameWidth: 32, // 프레임의 너비
-            frameHeight: 33 // 프레임의 높이
+            frameWidth: 32,
+            frameHeight: 33
         });
         this.load.spritesheet('bookTable', 'app/assets/sprites/book-table.png', {
-            frameWidth: 27, // 프레임의 너비
-            frameHeight: 42 // 프레임의 높이
+            frameWidth: 27,
+            frameHeight: 42
         });
         this.load.spritesheet('gameMachine', 'app/assets/sprites/game-machine.png', {
-            frameWidth: 19, // 프레임의 너비
-            frameHeight: 37 // 프레임의 높이
+            frameWidth: 19,
+            frameHeight: 37
         });
         this.load.spritesheet('piano', 'app/assets/sprites/piano.png', {
-            frameWidth: 33, // 프레임의 너비
-            frameHeight: 16 // 프레임의 높이
+            frameWidth: 33,
+            frameHeight: 16
+        });
+        this.load.spritesheet('bird', 'app/assets/sprites/bird.png', {
+            frameWidth: 32,
+            frameHeight: 34
         });
         this.load.animation('animations', 'app/assets/anims/animations.json');
     }
@@ -50,12 +60,14 @@ export class MainScene extends Scene {
         let bookTableObj: any;
         let gameMachineObj: any;
         let pianoObj: any;
+        let spawnObj: any;
 
         objectsLayer.forEach(obj => {
             if (obj.name === "computer") computerObj = obj;
             if (obj.name === "book-table") bookTableObj = obj;
             if (obj.name === "game-machine") gameMachineObj = obj;
             if (obj.name === "piano") pianoObj = obj;
+            if (obj.name === "spawn") spawnObj = obj;
         });
 
         const computer = this.physics.add.sprite(computerObj.x, computerObj.y, 'computer');
@@ -69,7 +81,6 @@ export class MainScene extends Scene {
             computer.anims.play('computer-idle');
             this.input.setDefaultCursor('default');
         });
-
 
         const bookTable = this.physics.add.sprite(bookTableObj.x, bookTableObj.y, 'bookTable');
         bookTable.setOrigin(0, 0);
@@ -107,26 +118,68 @@ export class MainScene extends Scene {
             this.input.setDefaultCursor('default');
         });
 
+        this.player = this.physics.add.sprite(spawnObj.x, spawnObj.y, 'bird');
+        this.player.setDisplaySize(16, 16);
+        this.player.anims.play('bird-idle');
+
+        const collideObjectsLayer = tilemap.createFromObjects('CollideObjects', { classType: Phaser.Physics.Arcade.Image });
+		this.physics.world.enable(collideObjectsLayer);
+        collideObjectsLayer.forEach(obj => {
+			const arcadeObj = obj as Phaser.Physics.Arcade.Image;
+			arcadeObj.setSize(arcadeObj.width, arcadeObj.height); // 오브젝트의 넓이 높이값 적용
+			arcadeObj.setImmovable(true); // 오브젝트를 정적으로 설정 -> 안해주면 충돌시 가속도, 무게에 비례해서 튕겨나감
+			arcadeObj.setVisible(false); // 충돌 오브젝트들은 타일맵이 아니라 도형을 이용해서 만듬 -> 보여줄 필요 없음
+        });
+
+        this.physics.add.collider(this.player, collideObjectsLayer);
 
         this.cameras.main.setZoom(3);
         this.cameras.main.setBounds(0, 0, tilemap.widthInPixels, tilemap.heightInPixels);
 
-        this.cursors = this.input.keyboard!.createCursorKeys();
+		this.leftKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+		this.rightKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+		this.upKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+		this.downKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
     }
 
     override update() {
-        if (this.cursors.left.isDown) {
-            this.cameras.main.x -= 4;
-        }
-        else if (this.cursors.right.isDown) {
-            this.cameras.main.x += 4;
+        if (!this.player) {
+            return;
         }
 
-        if (this.cursors.up.isDown) {
-            this.cameras.main.y -= 4;
-        }
-        else if (this.cursors.down.isDown) {
-            this.cameras.main.y += 4;
-        }
+        this.player.setVelocity(0);
+        
+        if (this.leftKey.isUp && this.rightKey.isUp && this.upKey.isUp && this.downKey.isUp) {
+            this.player.anims.play('bird-idle', true);
+		}
+        
+        this.player.anims.play('bird-move', true);
+
+			
+		if (this.rightKey.isDown && this.upKey.isDown) {
+            this.player.setFlipX(false);
+            this.player.setVelocity(this.playerSpeed / 2, -this.playerSpeed / 2);
+		} else if (this.leftKey.isDown && this.downKey.isDown) {
+            this.player.setFlipX(true);
+            this.player.setVelocity(-this.playerSpeed / 2, this.playerSpeed / 2);
+		} else if (this.rightKey.isDown && this.downKey.isDown) {
+            this.player.setFlipX(false);
+            this.player.setVelocity(this.playerSpeed / 2, this.playerSpeed / 2);
+		} else if (this.leftKey.isDown && this.upKey.isDown) {
+            this.player.setFlipX(true);
+            this.player.setVelocity(-this.playerSpeed / 2, -this.playerSpeed / 2);
+		} 
+        
+		if (this.leftKey.isDown) {
+            this.player.setFlipX(true);
+            this.player.setVelocityX(-this.playerSpeed);
+		} else if (this.rightKey.isDown) {
+            this.player.setFlipX(false);
+            this.player.setVelocityX(this.playerSpeed);
+		} else if (this.upKey.isDown) {
+            this.player.setVelocityY(-this.playerSpeed);
+		} else if (this.downKey.isDown) {
+            this.player.setVelocityY(this.playerSpeed);
+		} 
     }
 }
