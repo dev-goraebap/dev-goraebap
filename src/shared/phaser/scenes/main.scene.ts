@@ -133,8 +133,18 @@ export class MainScene extends Scene {
 
         this.physics.add.collider(this.player, collideObjectsLayer);
 
-        this.cameras.main.setZoom(3);
-        this.cameras.main.setBounds(0, 0, tilemap.widthInPixels, tilemap.heightInPixels);
+        // 맵의 크기
+        const mapWidth = tilemap.widthInPixels;
+        const mapHeight = tilemap.heightInPixels;
+
+        // 화면 크기
+        const screenWidth = this.cameras.main.width;
+        const screenHeight = this.cameras.main.height;
+
+        // 맵을 화면 정중앙에 배치하기 위한 카메라 위치 조정
+        this.cameras.main.scrollX = (mapWidth - screenWidth) / 2;
+        this.cameras.main.scrollY = (mapHeight - screenHeight) / 2;
+        this.cameras.main.setZoom(2);
 
 		this.leftKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 		this.rightKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
