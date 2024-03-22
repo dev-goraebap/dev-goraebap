@@ -8,6 +8,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, texture);
 
         scene.physics.add.existing(this, false);
+
+        this.setBodySize(15, 30);
+        this.setOffset(10, 2);
+        this.setScale(0.6);
+        this.setDepth(2);
     }
 
     get speed() {

@@ -1,58 +1,58 @@
 {
     "anims": [
         {
-            "key": "computer-idle",
+            "key": "computerIdle",
             "frames": [
-                { "key": "computer", "frame": 0 }
+                { "key": "computerSprite", "frame": 0 }
             ],
             "repeat": 0
         },
         {
-            "key": "computer-hover",
+            "key": "computerSelect",
             "frames": [
-                { "key": "computer", "frame": 1 }
+                { "key": "computerSprite", "frame": 1 }
             ],
             "repeat": 0
         },
         {
-            "key": "book-table-idle",
+            "key": "bookTableIdle",
             "frames": [
-                { "key": "bookTable", "frame": 0 }
+                { "key": "bookTableSprite", "frame": 0 }
             ],
             "repeat": 0
         },
         {
-            "key": "book-table-hover",
+            "key": "bookTableSelect",
             "frames": [
-                { "key": "bookTable", "frame": 1 }
+                { "key": "bookTableSprite", "frame": 1 }
             ],
             "repeat": 0
         },
         {
-            "key": "game-machine-idle",
+            "key": "gameMachineIdle",
             "frames": [
-                { "key": "gameMachine", "frame": 0 }
+                { "key": "gameMachineSprite", "frame": 0 }
             ],
             "repeat": 0
         },
         {
-            "key": "game-machine-hover",
+            "key": "gameMachineSelect",
             "frames": [
-                { "key": "gameMachine", "frame": 1 }
+                { "key": "gameMachineSprite", "frame": 1 }
             ],
             "repeat": 0
         },
         {
-            "key": "piano-idle",
+            "key": "pianoIdle",
             "frames": [
-                { "key": "piano", "frame": 0 }
+                { "key": "pianoSprite", "frame": 0 }
             ],
             "repeat": 0
         },
         {
-            "key": "piano-hover",
+            "key": "pianoSelect",
             "frames": [
-                { "key": "piano", "frame": 1 }
+                { "key": "pianoSprite", "frame": 1 }
             ],
             "repeat": 0
         },
@@ -70,6 +70,18 @@
                 { "key": "birdSprite", "frame": 1 }
             ],
             "frameRate": 10,
+            "repeat": -1
+        },
+        {
+            "key": "fireplaceIdle",
+            "frames": [
+                { "key": "fireplaceSprite", "frame": 0 },
+                { "key": "fireplaceSprite", "frame": 1 },
+                { "key": "fireplaceSprite", "frame": 2 },
+                { "key": "fireplaceSprite", "frame": 3 },
+                { "key": "fireplaceSprite", "frame": 4 }
+            ],
+            "frameRate": 5,
             "repeat": -1
         }
     ]

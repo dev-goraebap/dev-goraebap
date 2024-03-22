@@ -80,6 +80,19 @@
                     "spacing": 0,
                     "margin": 0
                 }
+            },
+            {
+                "url": "app/assets/phaser/fireplace.png",
+                "type": "spritesheet",
+                "key": "fireplaceSprite",
+                "frameConfig": {
+                    "frameWidth": 32,
+                    "frameHeight": 43,
+                    "startFrame": 0,
+                    "endFrame": 4,
+                    "spacing": 0,
+                    "margin": 0
+                }
             }
         ]
     }
