@@ -1,0 +1,86 @@
+{
+    "section1": {
+        "files": [
+            {
+                "url": "app/assets/phaser/animations.json",
+                "type": "animation",
+                "key": "animation"
+            },
+            {
+                "url": "app/assets/phaser/tilemap-main.png",
+                "type": "image",
+                "key": "tilemapAssets"
+            },
+            {
+                "url": "app/assets/phaser/tilemap-main.json",
+                "type": "tilemapTiledJSON",
+                "key": "tilemap"
+            },
+            {
+                "url": "app/assets/phaser/bird.png",
+                "type": "spritesheet",
+                "key": "birdSprite",
+                "frameConfig": {
+                    "frameWidth": 32,
+                    "frameHeight": 34,
+                    "startFrame": 0,
+                    "endFrame": 1,
+                    "spacing": 0,
+                    "margin": 0
+                }
+            },
+            {
+                "url": "app/assets/phaser/book-table.png",
+                "type": "spritesheet",
+                "key": "bookTableSprite",
+                "frameConfig": {
+                    "frameWidth": 27,
+                    "frameHeight": 42,
+                    "startFrame": 0,
+                    "endFrame": 1,
+                    "spacing": 0,
+                    "margin": 0
+                }
+            },
+            {
+                "url": "app/assets/phaser/computer.png",
+                "type": "spritesheet",
+                "key": "computerSprite",
+                "frameConfig": {
+                    "frameWidth": 32,
+                    "frameHeight": 33,
+                    "startFrame": 0,
+                    "endFrame": 1,
+                    "spacing": 0,
+                    "margin": 0
+                }
+            },
+            {
+                "url": "app/assets/phaser/game-machine.png",
+                "type": "spritesheet",
+                "key": "gameMachineSprite",
+                "frameConfig": {
+                    "frameWidth": 19,
+                    "frameHeight": 37,
+                    "startFrame": 0,
+                    "endFrame": 1,
+                    "spacing": 0,
+                    "margin": 0
+                }
+            },
+            {
+                "url": "app/assets/phaser/piano.png",
+                "type": "spritesheet",
+                "key": "pianoSprite",
+                "frameConfig": {
+                    "frameWidth": 33,
+                    "frameHeight": 16,
+                    "startFrame": 0,
+                    "endFrame": 1,
+                    "spacing": 0,
+                    "margin": 0
+                }
+            }
+        ]
+    }
+}

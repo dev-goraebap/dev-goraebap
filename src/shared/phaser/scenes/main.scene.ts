@@ -1,19 +1,13 @@
 import { Scene } from 'phaser';
+import { DuckControl, PlayerPrefab } from '../prefabs/player.prefab';
 
 export class MainScene extends Scene {
     
-    private player!: Phaser.Physics.Arcade.Sprite;
+    private player!: PlayerPrefab;
     private playerSpeed = 80;
 
-    private leftKey!: Phaser.Input.Keyboard.Key;
-	private rightKey!: Phaser.Input.Keyboard.Key;
-	private upKey!: Phaser.Input.Keyboard.Key;
-	private downKey!: Phaser.Input.Keyboard.Key;
-
     constructor() {
-        super({
-            key: "MainScene"
-        });
+        super('Main');
     }
 
     preload() {
@@ -118,9 +112,14 @@ export class MainScene extends Scene {
             this.input.setDefaultCursor('default');
         });
 
-        this.player = this.physics.add.sprite(spawnObj.x, spawnObj.y, 'bird');
-        this.player.setDisplaySize(16, 16);
+        const player = new PlayerPrefab(this, spawnObj.x, spawnObj.y, 'bird');
+        this.add.existing(player);
+        player.setCollideWorldBounds(true);
+
+        this.player = player;
         this.player.anims.play('bird-idle');
+        this.player.setControl(new DuckControl(this.player));
+        
 
         const collideObjectsLayer = tilemap.createFromObjects('CollideObjects', { classType: Phaser.Physics.Arcade.Image });
 		this.physics.world.enable(collideObjectsLayer);
@@ -145,51 +144,9 @@ export class MainScene extends Scene {
         this.cameras.main.scrollX = (mapWidth - screenWidth) / 2;
         this.cameras.main.scrollY = (mapHeight - screenHeight) / 2;
         this.cameras.main.setZoom(2);
-
-		this.leftKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
-		this.rightKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-		this.upKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-		this.downKey = this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
     }
 
     override update() {
-        if (!this.player) {
-            return;
-        }
-
-        this.player.setVelocity(0);
-        
-        if (this.leftKey.isUp && this.rightKey.isUp && this.upKey.isUp && this.downKey.isUp) {
-            this.player.anims.play('bird-idle', true);
-		}
-        
-        this.player.anims.play('bird-move', true);
-
-			
-		if (this.rightKey.isDown && this.upKey.isDown) {
-            this.player.setFlipX(false);
-            this.player.setVelocity(this.playerSpeed / 2, -this.playerSpeed / 2);
-		} else if (this.leftKey.isDown && this.downKey.isDown) {
-            this.player.setFlipX(true);
-            this.player.setVelocity(-this.playerSpeed / 2, this.playerSpeed / 2);
-		} else if (this.rightKey.isDown && this.downKey.isDown) {
-            this.player.setFlipX(false);
-            this.player.setVelocity(this.playerSpeed / 2, this.playerSpeed / 2);
-		} else if (this.leftKey.isDown && this.upKey.isDown) {
-            this.player.setFlipX(true);
-            this.player.setVelocity(-this.playerSpeed / 2, -this.playerSpeed / 2);
-		} 
-        
-		if (this.leftKey.isDown) {
-            this.player.setFlipX(true);
-            this.player.setVelocityX(-this.playerSpeed);
-		} else if (this.rightKey.isDown) {
-            this.player.setFlipX(false);
-            this.player.setVelocityX(this.playerSpeed);
-		} else if (this.upKey.isDown) {
-            this.player.setVelocityY(-this.playerSpeed);
-		} else if (this.downKey.isDown) {
-            this.player.setVelocityY(this.playerSpeed);
-		} 
+        this.player.onControl();
     }
 }

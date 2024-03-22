@@ -57,17 +57,17 @@
             "repeat": 0
         },
         {
-            "key": "bird-idle",
+            "key": "birdIdle",
             "frames": [
-                { "key": "bird", "frame": 1 }
+                { "key": "birdSprite", "frame": 1 }
             ],
             "repeat": 0
         },
         {
-            "key": "bird-move",
+            "key": "birdMove",
             "frames": [
-                { "key": "bird", "frame": 0 },
-                { "key": "bird", "frame": 1 }
+                { "key": "birdSprite", "frame": 0 },
+                { "key": "birdSprite", "frame": 1 }
             ],
             "frameRate": 10,
             "repeat": -1
