@@ -27,11 +27,11 @@ export class TestScene extends Phaser.Scene {
 
         // 타일맵 오브젝트 설정
 
-        let computer!: Phaser.Types.Physics.Arcade.SpriteWithStaticBody;
-        let bookTable!: Phaser.Types.Physics.Arcade.SpriteWithStaticBody;
-        let gameMachine!: Phaser.Types.Physics.Arcade.SpriteWithStaticBody;
-        let piano!: Phaser.Types.Physics.Arcade.SpriteWithStaticBody;
-        let fireplace!: Phaser.Types.Physics.Arcade.SpriteWithStaticBody;
+        let computer!: Phaser.Physics.Arcade.Sprite;
+        let bookTable!: Phaser.Physics.Arcade.Sprite;
+        let gameMachine!: Phaser.Physics.Arcade.Sprite;
+        let piano!: Phaser.Physics.Arcade.Sprite;
+        let fireplace!: Phaser.GameObjects.Sprite;
 
         const objectsLayer = tilemap.getObjectLayer("objects")!.objects as any[];
         objectsLayer.forEach(obj => {
@@ -42,15 +42,6 @@ export class TestScene extends Phaser.Scene {
                     computer.setBodySize(computer.width-6, 13);
                     computer.setOffset(18, 30);
                     computer.setDepth(1);
-                    computer.setInteractive();
-                    computer.on('pointerover', () => {
-                        computer.anims.play('computerSelect');
-                        this.input.setDefaultCursor('pointer');
-                    });
-                    computer.on('pointerout', () => {
-                        computer.anims.play('computerIdle');
-                        this.input.setDefaultCursor('default');
-                    });
                     break;
                 case "bookTable":
                     bookTable = this.physics.add.staticSprite(obj.x, obj.y, 'bookTableSprite');
@@ -63,15 +54,19 @@ export class TestScene extends Phaser.Scene {
                 case "gameMachine":
                     gameMachine = this.physics.add.staticSprite(obj.x, obj.y, 'gameMachineSprite');
                     gameMachine.setOrigin(0, 0);
+                    gameMachine.setBodySize(gameMachine.width-2, gameMachine.height-15);
+                    gameMachine.setOffset(gameMachine.width-8, gameMachine.height-5);
                     gameMachine.setDepth(3);
                     break;
                 case "piano":
                     piano = this.physics.add.staticSprite(obj.x, obj.y, 'pianoSprite');
                     piano.setOrigin(0, 0);
+                    piano.setBodySize(piano.width-4, piano.height/2);
+                    piano.setOffset(piano.width/2+2, piano.height);
                     piano.setDepth(1);
                     break;
                 case "fireplace":
-                    fireplace = this.physics.add.staticSprite(obj.x, obj.y, 'fireplaceSprite');
+                    fireplace = this.add.sprite(obj.x, obj.y, 'fireplaceSprite');
                     fireplace.setOrigin(0, 0);
                     fireplace.anims.play('fireplaceIdle', true);
                     fireplace.setDepth(1);
@@ -95,6 +90,8 @@ export class TestScene extends Phaser.Scene {
 
         this.physics.add.collider(this.player, computer);
         this.physics.add.collider(this.player, bookTable);
+        this.physics.add.collider(this.player, gameMachine);
+        this.physics.add.collider(this.player, piano);
         this.physics.add.collider(this.player, collideObjectsLayer);
 
         // 키보드 입력 처리
