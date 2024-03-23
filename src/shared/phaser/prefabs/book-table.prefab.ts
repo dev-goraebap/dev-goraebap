@@ -1,7 +1,8 @@
 import * as Phaser from 'phaser';
-import { BookTableSprite } from '../constants';
+import { BookTableAnims, BookTableSprite } from '../constants';
+import { InteractiveObjectPrefab } from './interactive-object.prefab';
 
-export class BookTablePrefab extends Phaser.Physics.Arcade.Sprite {
+export class BookTablePrefab extends InteractiveObjectPrefab {
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, BookTableSprite);
@@ -14,5 +15,13 @@ export class BookTablePrefab extends Phaser.Physics.Arcade.Sprite {
         this.setOffset(16, 32);
         this.setOrigin(0, 0);
         this.setDepth(1);
+    }
+
+    onSelected(): void {
+        this.anims.play(BookTableAnims.Select);
+    }
+
+    onDeselected(): void {
+        this.anims.play(BookTableAnims.Idle);
     }
 }

@@ -1,7 +1,8 @@
 import * as Phaser from 'phaser';
-import { GameMachineSprite } from '../constants';
+import { GameMachineAnims, GameMachineSprite } from '../constants';
+import { InteractiveObjectPrefab } from './interactive-object.prefab';
 
-export class GameMachinePrefab extends Phaser.Physics.Arcade.Sprite {
+export class GameMachinePrefab extends InteractiveObjectPrefab {
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, GameMachineSprite);
@@ -13,5 +14,13 @@ export class GameMachinePrefab extends Phaser.Physics.Arcade.Sprite {
         this.setBodySize(this.width-2, this.height-15);
         this.setOffset(this.width-8, this.height-5);
         this.setDepth(3);
+    }
+
+    onSelected(): void {
+        this.anims.play(GameMachineAnims.Select);
+    }
+
+    onDeselected(): void {
+        this.anims.play(GameMachineAnims.Idle);
     }
 }
