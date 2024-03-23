@@ -1,11 +1,13 @@
 import * as Phaser from 'phaser';
-import { InputHandler } from '../prefabs/input-handler';
-import { Player } from '../prefabs/player';
+
+import { BirdController } from '../controllers';
+import { BirdPrefab, BookTablePrefab, ComputerPrefab, FireplacePrefab, GameMachinePrefab, PianoPrefab } from '../prefabs';
+import { ComputerAnims } from '../constants';
 
 export class TestScene extends Phaser.Scene {
 
-    private player!: Player;
-    private inputHandler!: InputHandler;
+    private player!: BirdPrefab;
+    private inputHandler!: BirdController;
 
     constructor() {
         super('Test');
@@ -25,8 +27,16 @@ export class TestScene extends Phaser.Scene {
         tilemap.createLayer('staticLayer4', tiles);
         tilemap.createLayer('staticLayer5', tiles);
 
-        // 타일맵 오브젝트 설정
+        // 타일맵 정 중앙에 배치
+        const mapWidth = tilemap.widthInPixels;
+        const mapHeight = tilemap.heightInPixels;
+        const screenWidth = this.cameras.main.width;
+        const screenHeight = this.cameras.main.height;
+        this.cameras.main.scrollX = (mapWidth - screenWidth) / 2;
+        this.cameras.main.scrollY = (mapHeight - screenHeight) / 2;
+        this.cameras.main.setZoom(3);
 
+        // 타일맵 오브젝트 설정
         let computer!: Phaser.Physics.Arcade.Sprite;
         let bookTable!: Phaser.Physics.Arcade.Sprite;
         let gameMachine!: Phaser.Physics.Arcade.Sprite;
@@ -37,80 +47,47 @@ export class TestScene extends Phaser.Scene {
         objectsLayer.forEach(obj => {
             switch (obj.name) {
                 case "computer":
-                    computer = this.physics.add.staticSprite(obj.x, obj.y, 'computerSprite');
-                    computer.setOrigin(0, 0);
-                    computer.setBodySize(computer.width-6, 13);
-                    computer.setOffset(18, 30);
-                    computer.setDepth(1);
+                    computer = new ComputerPrefab(this, obj.x, obj.y);
                     break;
                 case "bookTable":
-                    bookTable = this.physics.add.staticSprite(obj.x, obj.y, 'bookTableSprite');
-                    bookTable.setOrigin(0, 0);
-                    bookTable.setBodySize(bookTable.width-3, 20);
-                    bookTable.setOffset(16, 32);
-                    bookTable.setOrigin(0, 0);
-                    bookTable.setDepth(1);
+                    bookTable = new BookTablePrefab(this, obj.x, obj.y);
                     break;
                 case "gameMachine":
-                    gameMachine = this.physics.add.staticSprite(obj.x, obj.y, 'gameMachineSprite');
-                    gameMachine.setOrigin(0, 0);
-                    gameMachine.setBodySize(gameMachine.width-2, gameMachine.height-15);
-                    gameMachine.setOffset(gameMachine.width-8, gameMachine.height-5);
-                    gameMachine.setDepth(3);
+                    gameMachine = new GameMachinePrefab(this, obj.x, obj.y);
                     break;
                 case "piano":
-                    piano = this.physics.add.staticSprite(obj.x, obj.y, 'pianoSprite');
-                    piano.setOrigin(0, 0);
-                    piano.setBodySize(piano.width-4, piano.height/2);
-                    piano.setOffset(piano.width/2+2, piano.height);
-                    piano.setDepth(1);
+                    piano = new PianoPrefab(this, obj.x, obj.y);
                     break;
                 case "fireplace":
-                    fireplace = this.add.sprite(obj.x, obj.y, 'fireplaceSprite');
-                    fireplace.setOrigin(0, 0);
-                    fireplace.anims.play('fireplaceIdle', true);
-                    fireplace.setDepth(1);
+                    fireplace = new FireplacePrefab(this, obj.x, obj.y);
                     break;
                 case "spawn":
-                    this.player = new Player(this, obj.x, obj.y, 'birdSprite');
-                    this.add.existing(this.player);
+                    this.player = new BirdPrefab(this, obj.x, obj.y);
+                    const cursorKeys = this.input.keyboard!.createCursorKeys();
+                    this.inputHandler = new BirdController(cursorKeys, this.player);
                     break;
                 default:
             }
         });
 
-        const collideObjectsLayer = tilemap.createFromObjects('collideObjects', { classType: Phaser.Physics.Arcade.Image });
-		this.physics.world.enable(collideObjectsLayer);
-        collideObjectsLayer.forEach(obj => {
-			const arcadeObj = obj as Phaser.Physics.Arcade.Image;
-			arcadeObj.setSize(arcadeObj.width, arcadeObj.height); // 오브젝트의 넓이 높이값 적용
-			arcadeObj.setImmovable(true); // 오브젝트를 정적으로 설정 -> 안해주면 충돌시 가속도, 무게에 비례해서 튕겨나감
-			arcadeObj.setVisible(false); // 충돌 오브젝트들은 타일맵이 아니라 도형을 이용해서 만듬 -> 보여줄 필요 없음
+        const collideObjects = tilemap.createFromObjects('collideObjects', { classType: Phaser.Physics.Arcade.Image });
+        this.physics.world.enable(collideObjects);
+        collideObjects.forEach(obj => {
+            const arcadeObj = obj as Phaser.Physics.Arcade.Image;
+            arcadeObj.setSize(arcadeObj.width, arcadeObj.height); // 오브젝트의 넓이 높이값 적용
+            arcadeObj.setImmovable(true); // 오브젝트를 정적으로 설정 -> 안해주면 충돌시 가속도, 무게에 비례해서 튕겨나감
+            arcadeObj.setVisible(false); // 충돌 오브젝트들은 타일맵이 아니라 도형을 이용해서 만듬 -> 보여줄 필요 없음
         });
 
-        this.physics.add.collider(this.player, computer);
+        this.physics.add.collider(this.player, computer, (a: any, b: any) => {
+            console.log(a);
+            console.log(b);
+            b.anims.play(ComputerAnims.Select);
+        });
         this.physics.add.collider(this.player, bookTable);
         this.physics.add.collider(this.player, gameMachine);
         this.physics.add.collider(this.player, piano);
-        this.physics.add.collider(this.player, collideObjectsLayer);
-
-        // 키보드 입력 처리
-        const cursorKeys = this.input.keyboard!.createCursorKeys();
-        this.inputHandler = new InputHandler(cursorKeys, this.player);
-
-        // 맵의 크기
-        const mapWidth = tilemap.widthInPixels;
-        const mapHeight = tilemap.heightInPixels;
-
-        // 화면 크기
-        const screenWidth = this.cameras.main.width;
-        const screenHeight = this.cameras.main.height;
-
-        // 맵을 화면 정중앙에 배치하기 위한 카메라 위치 조정
-        this.cameras.main.scrollX = (mapWidth - screenWidth) / 2;
-        this.cameras.main.scrollY = (mapHeight - screenHeight) / 2;
-
-        this.cameras.main.setZoom(3);
+        this.physics.add.collider(this.player, collideObjects);
     }
 
     override update(time: number, delta: number): void {

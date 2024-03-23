@@ -1,12 +1,14 @@
 import * as Phaser from 'phaser';
+import { BirdSprite } from '../constants';
 
-export class Player extends Phaser.Physics.Arcade.Sprite {
+export class BirdPrefab extends Phaser.Physics.Arcade.Sprite {
 
     private readonly _speed = 80;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
-        super(scene, x, y, texture);
+    constructor(scene: Phaser.Scene, x: number, y: number) {
+        super(scene, x, y, BirdSprite);
 
+        scene.add.existing(this);
         scene.physics.add.existing(this, false);
 
         this.setBodySize(15, 30);
