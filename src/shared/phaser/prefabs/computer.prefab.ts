@@ -1,8 +1,10 @@
 import * as Phaser from 'phaser';
 import { ComputerAnims, ComputerSprite } from '../constants';
-import { InteractiveObjectPrefab } from './interactive-object.prefab';
+import { InteractiveObjectPrefab, InteractiveType } from './interactive-object.prefab';
 
 export class ComputerPrefab extends InteractiveObjectPrefab {
+
+    protected override _eventType: InteractiveType = 'portfolio';
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, ComputerSprite);

@@ -1,3 +1,5 @@
+import { EventType } from "@angular/router";
+import { InteractiveEventHandler } from "../events";
 import { InteractiveObjectPrefab } from "../prefabs";
 
 export class InteractiveObjectController {
@@ -12,8 +14,16 @@ export class InteractiveObjectController {
     ) {
         this.scene.input.keyboard!.on('keydown-SPACE', () => {
             if (!this.currentOverlapObject) return;
-            console.log(this.currentOverlapObject);
-        }, this)
+            const eventHandler = InteractiveEventHandler.getInstance();
+            eventHandler.publish(this.currentOverlapObject.eventType);
+
+            // 이 때 모든 키보드 이벤트를 안되게 멈추게 해줘
+
+            eventHandler.finished$.subscribe((eventType) => {
+                // 이 때 원상복구
+
+            });
+        }, this);
     }
 
     update() {

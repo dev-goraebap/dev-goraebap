@@ -1,8 +1,10 @@
 import * as Phaser from 'phaser';
 import { BookTableAnims, BookTableSprite } from '../constants';
-import { InteractiveObjectPrefab } from './interactive-object.prefab';
+import { InteractiveObjectPrefab, InteractiveType } from './interactive-object.prefab';
 
 export class BookTablePrefab extends InteractiveObjectPrefab {
+
+    protected override _eventType: InteractiveType = 'post';
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, BookTableSprite);

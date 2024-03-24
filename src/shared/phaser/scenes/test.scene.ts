@@ -72,10 +72,16 @@ export class TestScene extends Phaser.Scene {
             arcadeObj.setVisible(false); // 충돌 오브젝트들은 타일맵이 아니라 도형을 이용해서 만듬 -> 보여줄 필요 없음
         });
 
-        const cursorKeys = this.input.keyboard!.createCursorKeys();
-        this.playerController = new BirdController(cursorKeys, this.player);
+        this.playerController = new BirdController(
+            this.input.keyboard!.createCursorKeys(), 
+            this.player
+        );
 
-        this.interactiveObjectController = new InteractiveObjectController(this, this.player, this.interactiveObjects);
+        this.interactiveObjectController = new InteractiveObjectController(
+            this, 
+            this.player, 
+            this.interactiveObjects
+        );
 
         this.physics.add.collider(this.player, this.interactiveObjects);
         this.physics.add.collider(this.player, collideObjects);

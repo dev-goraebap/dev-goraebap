@@ -1,8 +1,10 @@
 import * as Phaser from 'phaser';
 import { GameMachineAnims, GameMachineSprite } from '../constants';
-import { InteractiveObjectPrefab } from './interactive-object.prefab';
+import { InteractiveObjectPrefab, InteractiveType } from './interactive-object.prefab';
 
 export class GameMachinePrefab extends InteractiveObjectPrefab {
+
+    protected override _eventType: InteractiveType = 'game';
 
     constructor(scene: Phaser.Scene, x: number, y: number) {
         super(scene, x, y, GameMachineSprite);

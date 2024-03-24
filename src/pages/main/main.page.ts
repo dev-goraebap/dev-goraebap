@@ -1,6 +1,7 @@
 import { CommonModule } from "@angular/common";
 import { Component, ElementRef, ViewChild, afterNextRender } from "@angular/core";
-import { startGame } from "src/shared";
+
+import { InteractiveEventHandler, startGame } from "src/shared";
 
 import { SpriteButtonWidget } from "src/widgets";
 
@@ -23,5 +24,14 @@ export class MainPage {
             if (!canvas) return;
             startGame(canvas);
         });
+
+        const eventHandler = InteractiveEventHandler.getInstance();
+        eventHandler.events$.subscribe((eventType) => {
+            console.log(eventType);
+        });
+
+        setTimeout(() => {
+            eventHandler.clear();
+        }, 10000);
     }
 }
