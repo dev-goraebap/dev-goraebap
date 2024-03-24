@@ -13,7 +13,7 @@ export class BirdPrefab extends Phaser.Physics.Arcade.Sprite {
 
         this.setBodySize(15, 30);
         this.setOffset(10, 2);
-        this.setScale(0.6);
+        this.setScale(0.5);
         this.setDepth(2);
     }
 

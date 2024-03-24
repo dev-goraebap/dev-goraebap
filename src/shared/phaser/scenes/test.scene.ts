@@ -26,13 +26,13 @@ export class TestScene extends Phaser.Scene {
         tilemap.createLayer('staticLayer5', tiles);
 
         // 타일맵 정 중앙에 배치
-        const mapWidth = tilemap.widthInPixels;
-        const mapHeight = tilemap.heightInPixels;
         const screenWidth = this.cameras.main.width;
         const screenHeight = this.cameras.main.height;
+        const mapWidth = tilemap.widthInPixels;
+        const mapHeight = tilemap.heightInPixels;
         this.cameras.main.scrollX = (mapWidth - screenWidth) / 2;
         this.cameras.main.scrollY = (mapHeight - screenHeight) / 2;
-        this.cameras.main.setZoom(3);
+        this.cameras.main.setZoom(5);
 
         const objectsLayer = tilemap.getObjectLayer("objects")!.objects as any[];
         objectsLayer.forEach(obj => {

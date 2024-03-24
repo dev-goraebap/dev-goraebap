@@ -16,4 +16,11 @@
         font-family: 'origa';
         src: url('./assets/font/origa.ttf');
     }
+
+    @font-face {
+        font-family: 'ARCADECLASSIC';
+        font-weight: 900;
+        font-display: swap;
+        src: url('./assets/font/ARCADECLASSIC.TTF') format('woff2');
+    }
 }

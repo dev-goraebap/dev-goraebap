@@ -25,6 +25,7 @@ module.exports = {
     fontFamily: {
       pretendard: 'Pretendard Variable, sans-serif',
       origa: 'origa, sans-serif',
+      arcade: 'ARCADECLASSIC, -apple-system, BlinkMacSystemFont, system-ui',
     },
     extend: {
       backgroundImage: {
@@ -32,5 +33,5 @@ module.exports = {
       }
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
 }

@@ -15,7 +15,6 @@ export const startGame = (canvas: HTMLCanvasElement) => {
         physics: {
             default: "arcade",
             arcade: {
-                // gravity: { y: 0 },
                 // debug: true
             }
         }
