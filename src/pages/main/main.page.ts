@@ -1,9 +1,9 @@
 import { CommonModule } from "@angular/common";
 import { Component, ElementRef, ViewChild, afterNextRender } from "@angular/core";
 
+import { ModalWidget } from "src/widgets";
 import { InteractiveEventHandler, startGame } from "src/shared";
 
-import { SpriteButtonWidget } from "src/widgets";
 
 @Component({
     selector: 'app-main',
@@ -11,7 +11,7 @@ import { SpriteButtonWidget } from "src/widgets";
     standalone: true,
     imports: [
         CommonModule,
-        SpriteButtonWidget
+        ModalWidget
     ]
 })
 export class MainPage {

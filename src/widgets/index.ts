@@ -1,1 +1,1 @@
-export * from './sprite-button/sprite-button.widget';
+export * from './modal/modal.widget';
