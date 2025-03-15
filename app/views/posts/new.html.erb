@@ -1,6 +1,11 @@
-<%= form_with model: @post do |form| %>
-  <div class="field">
-    <%= form.label :content %>
-    <%= form.rich_textarea :content %>
-  </div>
-<% end %>
+<div class="w-full">
+  <%= form_with model: @post, class: "[&_input]:w-full" do |form| %>
+    <div class="w-full">
+      <%= form.text_field :title, placeholder: "제목을 입력해 주세요.", class: "text-[3rem]" %>
+    </div>
+
+    <div>
+      <%= form.rich_textarea :content, placeholder: "내용을 입력해 주세요." %>
+    </div>
+  <% end %>
+</div>

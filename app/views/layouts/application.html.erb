@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html data-theme="lemonade">
   <head>
     <title><%= content_for(:title) || "Favolog" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -23,8 +23,27 @@
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex">
-      <%= yield %>
-    </main>
+
+    <div class="relative w-full lg:w-[1024px] mx-auto text-slate-700!">
+      <header class="flex justify-between absolute w-full left-0 p-2">
+        <figure>
+          Favolog
+        </figure>
+        <nav class="">
+          <ul class="flex justify-center space-x-4">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">Projects</a></li>
+            <li><a href="/about">Blogs</a></li>
+          </ul>
+        </nav>
+        <div class="flex">
+          <a href="/login">Login</a>
+          <a href="/signup">Signup</a>
+        </div>
+      </header>
+      <main>
+        <%= yield %>
+      </main>
+    </div>
   </body>
 </html>
