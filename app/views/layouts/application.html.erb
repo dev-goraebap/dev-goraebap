@@ -23,27 +23,21 @@
   </head>
 
   <body>
-
-    <div class="relative w-full lg:w-[1024px] mx-auto text-slate-700!">
-      <header class="flex justify-between absolute w-full left-0 p-2">
+    <!--
+          <header class="flex p-4 justify-between items-center">
         <figure>
-          Favolog
+          <a class="text-3xl font-bold" href="/">Favolog</a>
         </figure>
-        <nav class="">
-          <ul class="flex justify-center space-x-4">
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">Projects</a></li>
-            <li><a href="/about">Blogs</a></li>
-          </ul>
-        </nav>
-        <div class="flex">
-          <a href="/login">Login</a>
-          <a href="/signup">Signup</a>
+        <div>
+          <a href="https://github.com/dev-goraebap" target="_blank">
+            <img src="<%= asset_url 'github.gif' %>" class="h-10"/>
+          </a>
         </div>
       </header>
-      <main>
-        <%= yield %>
-      </main>
-    </div>
+    
+    -->
+    <main class="text-slate-700">
+      <%= yield %>
+    </main>
   </body>
 </html>
