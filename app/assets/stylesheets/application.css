@@ -8,7 +8,7 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
- @font-face {
+@font-face {
   font-family: "OpenSans";
   src: url("OpenSans-Light.ttf");
   font-weight: 300;
@@ -56,6 +56,52 @@
   font-weight: 900;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 html {
   font-family: "OpenSans", "GothicA1", sans-serif !important;
+}
+
+/* 브라우저의 자동완성 스타일 제거 */
+input:-webkit-autofill {
+  background-color: transparent !important;
+  color: inherit !important;
+  box-shadow: 0 0 0px 1000px transparent inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+input:focus {
+  outline: none;
+}
+
+
+.sketch {
+
+  border-top-left-radius: 255px 15px;
+  border-top-right-radius: 15px 225px;
+  border-bottom-right-radius: 225px 15px;
+  border-bottom-left-radius:15px 255px;
+}
+
+.sketch.sha{
+box-shadow:2px 8px 4px -6px hsla(0,0%,0%,.3);
+}
+.sketch.lined.thick{
+border:solid 3px #41403E;
+}
+.sketch.dotted.thick{
+border:dotted 3px #41403E;
+}
+.sketch.dashed.thick{
+border:dashed 3px #41403E;
+}
+.sketch.lined.thin{
+border:solid 2px #41403E;
+}
+.sketch.dotted.thin{
+border:dotted 2px #41403E;
+}
+.sketch.dashed.thin{
+border:dashed 2px #41403E;
 }
