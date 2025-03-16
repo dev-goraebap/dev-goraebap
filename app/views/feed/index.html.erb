@@ -1,3 +1,41 @@
+<div class="w-full flex justify-center sm:absolute z-50">
+  <header class="w-full max-w-5xl flex p-4 justify-center sm:justify-between items-center z-50">
+    <figure >
+      <a href="/" class="flex items-center gap-2">
+        <img src="<%= asset_url 'dev-goraebap.png' %>" class="h-16 "/>
+        <span class="font-bold flex flex-col">
+          <span class="-mb-2">데브고래밥</span>
+          <span>블로그</span>
+        </span>
+      </a>
+    </figure>
+
+    <nav class="hidden sm:block">
+      <ul class="flex items-center gap-6 font-medium">
+        <li>
+          <a href="/projects" class="text-gray-700 hover:text-primary transition-colors relative group">
+            프로젝트
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+          </a>
+        </li>
+        <li>
+          <a href="/posts" class="text-gray-700 hover:text-primary transition-colors relative group">
+            기술블로그
+            <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+          </a>
+        </li>
+        <li>
+          <button class="flex items-center justify-center h-9 w-9 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </nav>
+  </header>
+</div>
+
 <!-- 프로젝트 -->
 <div class="relative w-full lg:w-[1024px] mx-auto">
   <div class="h-auto sm:h-screen flex flex-col justify-center items-center relative px-4 py-10">
@@ -41,10 +79,9 @@
         <div class="absolute -top-10 right-0 w-10 sm:w-14 h-10 sm:h-14 sketch dotted thin bg-lime-100/30 transform -rotate-12 z-0"></div>
         
         <div class="relative z-10 max-w-md sm:max-w-full px-4 sm:px-0">
-          <h2 class="text-xl font-semibold relative z-10 text-center sm:text-left">포토게더</h2>
+          <h2 class="text-xl font-semibold relative z-10 text-center sm:text-left">계란 간장 볶음밥</h2>
           <p class="mt-2 relative z-10 text-center sm:text-left">
-            포토게더는 사진첩에 캡처해둔 정보형 사진들의 정보를 OCR로 추출하여 텍스트로 저장하고, 
-            이를 통해 검색이 가능하게 해주는 서비스입니다.
+기름 한큰술 넣고 어느정도 달군 오목한 후라이팬을 약불로 한뒤 계란을 두개 풀어주세요. 따로 달걀을 풀어서 부워주면 더 좋지만 그릇 츄가사용안하고 그냥 약불에 넣은후 휘휘 저어서 풀어주어도 괜찮아요.
           </p> 
           <div class="flex justify-center sm:justify-end mt-4 relative z-10">
             <button class="btn btn-accent relative z-10">
@@ -67,8 +104,8 @@
             <a href="/projects/1" class="flex items-center gap-2 relative z-10">
               <img class="w-10 h-10 rounded-xl" src="<%= asset_path 'fdb8eb6c65fa9ddf7d4b4ba82a500fd2.jpg' %>"/>
               <div class="flex flex-col">
-                <span class="text-lg font-bold">포토게더</span>
-                <span class="text-sm">2025-10-10</span>
+                <span class="text-lg font-bold">계란간장볶음밥</span>
+                <span class="text-sm">2024-10-10</span>
               </div>
             </a>
           </li>
@@ -76,8 +113,8 @@
             <a href="/projects/1" class="flex items-center gap-2 relative z-10">
               <img class="w-10 h-10 rounded-xl" src="<%= asset_path 'f212e61f1e3baa18d35a2959fcdd9a92.jpg' %>"/>
               <div class="flex flex-col">
-                <span class="text-lg font-bold">방송대 QA</span>
-                <span class="text-sm">2022-06-21</span>
+                <span class="text-lg font-bold">오므라이스</span>
+                <span class="text-sm">2023-06-21</span>
               </div>
             </a>
           </li>
@@ -85,7 +122,7 @@
             <a href="/projects/1" class="flex items-center gap-2 relative z-10">
               <img class="w-10 h-10 rounded-xl" src="<%= asset_path 'avatar.jpg' %>"/>
               <div class="flex flex-col">
-                <span class="text-lg font-bold">아마존 쇼핑몰 크롤링</span>
+                <span class="text-lg font-bold">비엔나소시지</span>
                 <span class="text-sm">2021-10-10</span>
               </div>
             </a>

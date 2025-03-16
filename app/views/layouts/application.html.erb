@@ -10,20 +10,15 @@
 
     <%= yield :head %>
 
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <%= favicon_link_tag 'favicon.ico' %>
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body class="flex flex-col min-h-full">
-    <!--
-      <header>...</header>
-    -->
-    
-    <main class="text-slate-700 flex-grow">
+  <body class="flex flex-col min-h-full text-slate-700">    
+    <main class="flex-grow">
       <%= yield %>
     </main>
     
