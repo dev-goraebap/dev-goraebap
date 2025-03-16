@@ -28,9 +28,17 @@ ENV RAILS_ENV="production" \
 # Throw-away build stage to reduce size of final image
 FROM base AS build
 
-# Install packages needed to build gems
+# Install Node.js and build dependencies
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git pkg-config && \
+    apt-get install --no-install-recommends -y build-essential git pkg-config \
+    curl gnupg lsb-release ca-certificates && \
+    # Add NodeSource repository
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    # Install Node.js
+    apt-get install -y nodejs && \
+    # Install Yarn
+    npm install -g yarn && \
+    # Clean up
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Install application gems
@@ -42,17 +50,29 @@ RUN bundle install && \
 # Copy application code
 COPY . .
 
+# Install JavaScript dependencies
+RUN if [ -f yarn.lock ]; then \
+      yarn install; \
+    elif [ -f package-lock.json ]; then \
+      npm ci; \
+    fi
+
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
-
-
-
+RUN SECRET_KEY_BASE=dummykeythatis32byteslongatleast bin/rails assets:precompile
 
 # Final stage for app image
 FROM base
+
+# Install packages needed for deployment
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl && \
+    # Add NodeSource repository the simplified way
+    curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"

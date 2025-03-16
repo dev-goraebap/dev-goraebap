@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  web:
+    image: favolog:latest
+    ports:
+      - "8002:80"
+    volumes:
+      - ./config/master.key:/rails/config/master.key
+      - ./storage:/rails/storage
+      - ./log:/rails/log
+    networks:
+      - my-network
+    container_name: favolog
+
+networks:
+  my-network:
+    name: my-network
