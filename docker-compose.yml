@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   web:
-    image: favolog:latest
+    image: dev_goraebap:latest
     ports:
       - "8002:80"
     volumes:
@@ -10,7 +10,7 @@ services:
       - ./log:/rails/log
     networks:
       - my-network
-    container_name: favolog
+    container_name: dev_goraebap
 
 networks:
   my-network:
