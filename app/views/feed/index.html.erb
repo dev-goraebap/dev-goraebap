@@ -1,51 +1,4 @@
 <% content_for :head do %>
-  <script>
-    window.projectsData = [
-      {
-        id: 1,
-        mainImage: "<%= asset_path 'fdb8eb6c65fa9ddf7d4b4ba82a500fd2.jpg' %>",
-        leftImage: "<%= asset_path 'avatar.jpg' %>",
-        rightImage: "<%= asset_path 'f212e61f1e3baa18d35a2959fcdd9a92.jpg' %>",
-        title: "계란 간장 볶음밥",
-        tags: [
-          { bg: "bg-purple-100", text: "text-purple-600", name: "Ruby on Rails" },
-          { bg: "bg-blue-100", text: "text-blue-600", name: "후라이팬 프레임웤" }
-        ],
-        description: "기름 한큰술 넣고 어느정도 달군 오목한 후라이팬을 약불로 한뒤 계란을 두개 풀어주세요. 따로 달걀을 풀어서 부워주면 더 좋지만 그릇 츄가사용안하고 그냥 약불에 넣은후 휘휘 저어서 풀어주어도 괜찮아요.",
-        features: ["맛있어보이는 사용자 UI", "적은 재료 리소스", "초보자도 쉽게 만들 수 있음"],
-        link: "/projects/1"
-      },
-      {
-        id: 2,
-        mainImage: "<%= asset_path 'avatar.jpg' %>",
-        leftImage: "<%= asset_path 'f212e61f1e3baa18d35a2959fcdd9a92.jpg' %>",
-        rightImage: "<%= asset_path 'fdb8eb6c65fa9ddf7d4b4ba82a500fd2.jpg' %>",
-        title: "크래프톤 클론 프로젝트",
-        tags: [
-          { bg: "bg-green-100", text: "text-green-600", name: "React" },
-          { bg: "bg-yellow-100", text: "text-yellow-600", name: "TypeScript" }
-        ],
-        description: "크래프톤은 글로벌 게임 개발사로서, 이 프로젝트는 PUBG, 배틀그라운드와 같은 성공적인 게임 타이틀을 모바일 환경에 최적화하여 개발한 클론 프로젝트입니다. React와 TypeScript를 활용한 고성능 웹 애플리케이션입니다.",
-        features: ["반응형 UI/UX", "실시간 데이터 처리", "고성능 모바일 최적화"],
-        link: "/projects/2"
-      },
-      {
-        id: 3,
-        mainImage: "<%= asset_path 'f212e61f1e3baa18d35a2959fcdd9a92.jpg' %>",
-        leftImage: "<%= asset_path 'fdb8eb6c65fa9ddf7d4b4ba82a500fd2.jpg' %>",
-        rightImage: "<%= asset_path 'avatar.jpg' %>",
-        title: "AI 기반 분석 대시보드",
-        tags: [
-          { bg: "bg-blue-100", text: "text-blue-600", name: "Python" },
-          { bg: "bg-indigo-100", text: "text-indigo-600", name: "TensorFlow" }
-        ],
-        description: "머신러닝 알고리즘을 활용한 데이터 분석 및 예측 모델을 시각화하는 대시보드 애플리케이션입니다. 사용자 데이터를 기반으로 실시간 분석 결과를 제공하며 직관적인 그래프로 복잡한 패턴을 쉽게 이해할 수 있습니다.",
-        features: ["실시간 데이터 시각화", "예측 모델링", "커스텀 레포트 생성"],
-        link: "/projects/3"
-      }
-    ]
-  </script>
-
   <style>
     .carousel-container {
       position: relative;
@@ -161,6 +114,9 @@
         </p>
       </div>
 
+      <!-- (예시) 첫 번째 프로젝트만 캐러셀에 연결 -->
+      <% project = @projects[0] %>
+
       <!-- 프로젝트 카드 섹션 -->
       <div class="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 relative z-10"
           data-controller="carousel" 
@@ -174,28 +130,50 @@
         <div class="w-full md:w-1/2 flex justify-center items-center relative mb-8 md:mb-0">
           <div class="relative flex justify-center items-center w-full max-w-[340px] sm:max-w-[420px]">
             <!-- 중앙 빛 효과 -->
-            <div class="absolute top-1/2 left-1/2 w-[220px] h-[220px] sm:w-[320px] sm:h-[320px] bg-gradient-to-br from-primary/30 to-base-100 rounded-full transform -translate-x-1/2 -translate-y-1/2 blur-xl z-0"></div>
+            <div class="absolute top-1/2 left-1/2 w-[220px] h-[220px] sm:w-[320px] sm:h-[320px] 
+                        bg-gradient-to-br from-primary/30 to-base-100 
+                        rounded-full transform -translate-x-1/2 -translate-y-1/2 
+                        blur-xl z-0">
+            </div>
             
             <!-- 캐러셀 카드 컨테이너 -->
             <div class="carousel-container relative w-full" style="height: 220px;">
               <!-- 왼쪽 카드 -->
-              <div class="carousel-card left w-[180px] h-[180px] sm:w-[280px] sm:h-[280px] absolute -left-4 md:-left-6 transform -rotate-6 -translate-x-2 md:-translate-x-6 scale-75 sm:scale-90 opacity-80 overflow-hidden sketch lined thick shadow-md hover:opacity-100 hover:scale-80 sm:hover:scale-95 transition-all duration-500 top-1/2 -translate-y-1/2"
-                  data-carousel-target="leftCard">
-                <img data-carousel-target="leftImage" src="<%= asset_path 'avatar.jpg' %>" class="w-full h-full object-cover"/>
+              <div class="carousel-card left w-[180px] h-[180px] sm:w-[280px] sm:h-[280px] 
+                          absolute -left-4 md:-left-6 transform -rotate-6 -translate-x-2 md:-translate-x-6 
+                          scale-75 sm:scale-90 opacity-80 overflow-hidden sketch lined thick shadow-md 
+                          hover:opacity-100 hover:scale-80 sm:hover:scale-95 transition-all duration-500 
+                          top-1/2 -translate-y-1/2"
+                    data-carousel-target="leftCard">
+                <img data-carousel-target="leftImage"
+                    src="<%= asset_path(project[:left_image]) %>"
+                    class="w-full h-full object-cover"/>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
               </div>
               
               <!-- 가운데 메인 카드 -->
-              <div class="carousel-card center w-[220px] h-[220px] sm:w-[340px] sm:h-[340px] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center overflow-hidden sketch lined thick relative z-10 hover:scale-105 transition-all duration-500 shadow-2xl"
-                  data-carousel-target="centerCard">
-                <img data-carousel-target="centerImage" src="<%= asset_path 'fdb8eb6c65fa9ddf7d4b4ba82a500fd2.jpg' %>" class="w-full h-full object-cover"/>
+              <div class="carousel-card center w-[220px] h-[220px] sm:w-[340px] sm:h-[340px]
+                          left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+                          flex justify-center items-center overflow-hidden 
+                          sketch lined thick relative z-10 hover:scale-105 
+                          transition-all duration-500 shadow-2xl"
+                    data-carousel-target="centerCard">
+                <img data-carousel-target="centerImage"
+                    src="<%= asset_path(project[:main_image]) %>"
+                    class="w-full h-full object-cover"/>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent"></div>
               </div>
               
               <!-- 오른쪽 카드 -->
-              <div class="carousel-card right w-[180px] h-[180px] sm:w-[280px] sm:h-[280px] absolute -right-4 md:-right-6 transform rotate-6 translate-x-2 md:translate-x-6 scale-75 sm:scale-90 opacity-80 overflow-hidden sketch lined thick shadow-md hover:opacity-100 hover:scale-80 sm:hover:scale-95 transition-all duration-500 top-1/2 -translate-y-1/2"
-                  data-carousel-target="rightCard">
-                <img data-carousel-target="rightImage" src="<%= asset_path 'f212e61f1e3baa18d35a2959fcdd9a92.jpg' %>" class="w-full h-full object-cover"/>
+              <div class="carousel-card right w-[180px] h-[180px] sm:w-[280px] sm:h-[280px]
+                          absolute -right-4 md:-right-6 transform rotate-6 translate-x-2 md:translate-x-6 
+                          scale-75 sm:scale-90 opacity-80 overflow-hidden sketch lined thick 
+                          shadow-md hover:opacity-100 hover:scale-80 sm:hover:scale-95 
+                          transition-all duration-500 top-1/2 -translate-y-1/2"
+                   data-carousel-target="rightCard">
+                <img data-carousel-target="rightImage"
+                     src="<%= asset_path(project[:right_image]) %>"
+                     class="w-full h-full object-cover"/>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
               </div>
 
@@ -217,7 +195,6 @@
                   </button>
                 </div>
               </div>
-
             </div>
             
             <!-- 캐러셀 인디케이터 -->
@@ -234,13 +211,17 @@
           <div class="project-info relative w-full" data-carousel-target="contentPanel">
             <!-- 프로젝트 태그 -->
             <div class="flex gap-2 mb-4 project-tags" data-carousel-target="tagContainer">
-              <span class="inline-block px-3 py-1 bg-purple-100 text-purple-600 text-xs font-semibold rounded-full">Ruby on Rails</span>
-              <span class="inline-block px-3 py-1 bg-blue-100 text-blue-600 text-xs font-semibold rounded-full">후라이팬 프레임웤</span>
+              <% project[:tags].each do |tag| %>
+                <span class="inline-block px-3 py-1 <%= tag[:bg] %> <%= tag[:text] %> text-xs font-semibold rounded-full">
+                  <%= tag[:name] %>
+                </span>
+              <% end %>
             </div>
             
             <!-- 프로젝트명 -->
-            <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 tracking-tight project-title" data-carousel-target="title">
-              계란 간장 볶음밥
+            <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 tracking-tight project-title"
+                data-carousel-target="title">
+              <%= project[:title] %>
               <span class="inline-block ml-2 text-primary">✨</span>
             </h3>
             
@@ -249,43 +230,40 @@
             
             <!-- 간단한 설명 -->
             <p class="text-base sm:text-lg text-gray-600 mb-6 project-description" data-carousel-target="description">
-              기름 한큰술 넣고 어느정도 달군 오목한 후라이팬을 약불로 한뒤 계란을 두개 풀어주세요. 따로 달걀을 풀어서 부워주면 더 좋지만 그릇 츄가사용안하고 그냥 약불에 넣은후 휘휘 저어서 풀어주어도 괜찮아요.
+              <%= project[:description] %>
             </p>
             
             <!-- 주요 기능 리스트 -->
             <div class="mb-8">
               <h4 class="text-lg font-semibold text-gray-800 mb-2">주요 기능</h4>
               <ul class="space-y-2 project-features" data-carousel-target="featuresList">
-                <li class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
-                  <span class="text-gray-600">맛있어보이는 사용자 UI</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
-                  <span class="text-gray-600">적은 재료 리소스</span>
-                </li>
-                <li class="flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                  </svg>
-                  <span class="text-gray-600">초보자도 쉽게 만들 수 있음</span>
-                </li>
+                <% project[:features].each do |feature| %>
+                  <li class="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 
+                         7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-gray-600"><%= feature %></span>
+                  </li>
+                <% end %>
               </ul>
             </div>
             
             <!-- 버튼 -->
             <div class="flex gap-3">
-              <a href="/projects/1" class="project-link inline-flex items-center justify-center bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg gap-2 transition shadow-md hover:shadow-lg" data-carousel-target="projectLink">
+              <a href="<%= project[:link] %>" 
+                 class="project-link inline-flex items-center justify-center bg-primary hover:bg-primary/90 
+                        text-white px-5 py-2.5 rounded-lg gap-2 transition shadow-md hover:shadow-lg"
+                 data-carousel-target="projectLink">
                 <span>자세히 보기</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </a>
-              <a href="/projects" class="inline-flex items-center justify-center border border-gray-200 text-gray-800 hover:border-primary hover:text-primary px-5 py-2.5 rounded-lg gap-2 transition bg-white/50 hover:shadow-md">
+              <a href="/projects" class="inline-flex items-center justify-center border border-gray-200 text-gray-800 
+                                       hover:border-primary hover:text-primary px-5 py-2.5 rounded-lg gap-2 transition 
+                                       bg-white/50 hover:shadow-md">
                 <span>모든 프로젝트</span>
               </a>
             </div>
@@ -295,6 +273,7 @@
     </div>
   </div>
 </div>
+
 
 <!-- 프로젝트 섹션과 블로그 섹션 사이 그라데이션 전환 -->
 <div class="hidden sm:block w-full h-32 bg-gradient-to-b from-base-100 to-amber-50 -mb-12"></div>
