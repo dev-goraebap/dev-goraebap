@@ -1,4 +1,6 @@
 class FeedController < ApplicationController
+  include ActionView::Helpers::AssetUrlHelper  # 에셋 URL 헬퍼 포함
+
   def index
     @projects = [
       {

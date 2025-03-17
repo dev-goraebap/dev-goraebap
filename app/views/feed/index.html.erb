@@ -120,8 +120,9 @@
       <!-- 프로젝트 카드 섹션 -->
       <div class="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 relative z-10"
           data-controller="carousel" 
+          data-carousel-projects-value='<%= raw @projects.to_json %>'
           data-carousel-current-value="0"
-          data-carousel-total-value="3">
+          data-carousel-total-value="<%= @projects.size %>">
         <!-- 배경 빛 효과 -->
         <div class="absolute top-1/2 left-1/2 w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] bg-primary/10 rounded-full transform -translate-x-1/2 -translate-y-1/2 blur-3xl z-0"></div>
         <div class="absolute top-1/2 left-1/2 w-[200px] h-[200px] sm:w-[250px] sm:h-[250px] bg-primary/20 rounded-full transform -translate-x-1/2 -translate-y-1/2 blur-2xl z-0"></div>
