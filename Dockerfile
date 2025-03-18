@@ -1,12 +1,6 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# docker build -t dev_goraebap .
-# docker run -d -p 80:80 -e RAILS_MASTER_KEY=<value from config/master.key> --name dev_goraebap dev_goraebap
-
-# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
-
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=3.3.4
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
@@ -60,8 +54,12 @@ RUN if [ -f yarn.lock ]; then \
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
+# 수정된 부분: tailwindcss 네이티브 빌드 비활성화
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE=dummykeythatis32byteslongatleast bin/rails assets:precompile
+RUN SECRET_KEY_BASE=dummykeythatis32byteslongatleast \
+    TAILWINDCSS_NATIVE_BUILDING=0 \
+    NODE_OPTIONS=--openssl-legacy-provider \
+    bin/rails assets:precompile
 
 # Final stage for app image
 FROM base
