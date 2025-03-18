@@ -1,0 +1,266 @@
+:root {
+  --motion-duration: 1500ms;
+  --motion-timing: cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  --primary-color: #FF6B00;
+  --confetti-color-1: var(--primary-color);
+  --confetti-color-2: #A2DD60;
+  --confetti-color-3: #EE65A9;
+  --confetti-color-4: #6092DD;
+  --confetti-color-5: #F3C548;
+  --confetti-color-6: #46EC99;
+  --confetti-color-7: #7B4DF7;
+  --confetti-color-8: #3FF1BC;
+}
+
+/* 혼합 방식: 애니메이션 후 정적 상태 유지 */
+.motion-confetti-permanent {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  animation: CarouselConfettiPop var(--motion-duration) var(--motion-timing) forwards;
+}
+
+.motion-confetti-permanent:before {
+  position: absolute;
+  content: " ";
+  width: 140%;
+  height: 100%;
+  left: -20%;
+  z-index: -1;
+  top: -70%;
+  opacity: 0;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  animation: permanent-topfetti var(--motion-duration) var(--motion-timing) forwards;
+  background-image: 
+    radial-gradient(circle, var(--confetti-color-1) 30%, transparent 20%),
+    radial-gradient(circle, transparent 20%, var(--confetti-color-3) 30%, transparent 30%),
+    radial-gradient(circle, var(--confetti-color-4) 25%, transparent 20%),
+    radial-gradient(circle, var(--confetti-color-5) 30%, transparent 20%),
+    radial-gradient(circle, transparent 10%, var(--confetti-color-6) 15%, transparent 20%),
+    radial-gradient(circle, var(--primary-color) 25%, transparent 20%),
+    radial-gradient(circle, var(--confetti-color-7) 30%, transparent 30%),
+    radial-gradient(circle, var(--confetti-color-8) 25%, transparent 20%);
+  background-size: 12% 12%, 18% 18%, 15% 15%, 20% 20%, 18% 18%, 10% 10%, 15% 15%, 12% 12%;
+  filter: blur(0px); /* 시작 시 블러 없음 */
+  transform: scale(1); /* 시작 시 크기 */
+  transition: filter var(--motion-duration) var(--motion-timing); /* 블러 효과에 트랜지션 추가 */
+}
+
+.motion-confetti-permanent:after {
+  position: absolute;
+  content: " ";
+  z-index: -1;
+  width: 140%;
+  height: 100%;
+  left: -20%;
+  top: 70%;
+  opacity: 0;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  animation: permanent-bottomfetti var(--motion-duration) var(--motion-timing) forwards;
+  background-image: 
+    radial-gradient(circle, var(--confetti-color-2) 20%, transparent 20%),
+    radial-gradient(circle, transparent 20%, var(--primary-color) 25%, transparent 30%),
+    radial-gradient(circle, var(--confetti-color-4) 20%, transparent 20%),
+    radial-gradient(circle, var(--confetti-color-5) 22%, transparent 20%),
+    radial-gradient(circle, transparent 10%, var(--confetti-color-6) 15%, transparent 20%),
+    radial-gradient(circle, var(--confetti-color-3) 20%, transparent 20%),
+    radial-gradient(circle, var(--confetti-color-7) 22%, transparent 20%),
+    radial-gradient(circle, var(--confetti-color-8) 20%, transparent 20%);
+  background-size: 15% 15%, 20% 20%, 18% 18%, 20% 20%, 15% 15%, 10% 10%, 20% 20%, 15% 15%;
+  filter: blur(0px); /* 시작 시 블러 없음 */
+  transform: scale(1); /* 시작 시 크기 */
+  transition: filter var(--motion-duration) var(--motion-timing); /* 블러 효과에 트랜지션 추가 */
+}
+
+@keyframes permanent-topfetti {
+  0% {
+    background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%, 40% 90%, 55% 90%;
+    opacity: 0;
+    filter: blur(0px);
+    transform: scale(1);
+  }
+  10% {
+    opacity: 1;
+    filter: blur(0px);
+  }
+  50% {
+    background-position: 0% 60%, 5% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 60%, 50% 40%, 65% 20%;
+    filter: blur(1px);
+    transform: scale(1.02);
+  }
+  80% {
+    filter: blur(2px);
+    transform: scale(1.05);
+  }
+  100% {
+    background-position: 0% 60%, 5% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 60%, 50% 40%, 65% 20%;
+    opacity: 0.6;
+    filter: blur(3px); /* 마지막에 더 많은 블러 적용 */
+    transform: scale(1.08); /* 약간 더 확장 */
+  }
+}
+
+@keyframes permanent-bottomfetti {
+  0% {
+    background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%, 70% -10%, 70% 0%, 85% -5%;
+    opacity: 0;
+    filter: blur(0px);
+    transform: scale(1);
+  }
+  10% {
+    opacity: 1;
+    filter: blur(0px);
+  }
+  50% {
+    background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 70%, 115% 80%;
+    filter: blur(1px);
+    transform: scale(1.02);
+  }
+  80% {
+    filter: blur(2px);
+    transform: scale(1.05);
+  }
+  100% {
+    background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 70%, 115% 80%;
+    opacity: 0.6;
+    filter: blur(3px); /* 마지막에 더 많은 블러 적용 */
+    transform: scale(1.08); /* 약간 더 확장 */
+  }
+}
+
+/* 팝 애니메이션 - 캐러셀 자체 애니메이션 */
+@keyframes CarouselConfettiPop {
+  0% {
+    opacity: 0.8;
+    transform: scale(0.9);
+  }
+  33% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  65% {
+    transform: scale(1.02);
+  }
+  80% {
+    transform: scale(0.99);
+  }
+  87% {
+    transform: scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  /* 모바일 디바이스에서 컨페티 위치 및 크기 조정 */
+  .motion-confetti-permanent:before {
+    width: 120%; /* 더 작은 너비 */
+    left: -10%; /* 중앙으로 더 이동 */
+    top: -40%; /* 더 아래로 이동 */
+    height: 80%; /* 더 작은 높이 */
+  }
+  
+  .motion-confetti-permanent:after {
+    width: 120%;
+    left: -10%;
+    top: 60%; /* 더 위로 이동 */
+    height: 80%;
+  }
+  
+  /* 모바일에서의 애니메이션 조정 */
+  @keyframes permanent-topfetti {
+    0% {
+      background-position: 5% 90%, 10% 90%, 10% 90%, 15% 90%, 25% 90%, 25% 90%, 40% 90%, 55% 90%;
+      opacity: 0;
+      filter: blur(0px);
+      transform: scale(1);
+    }
+    10% {
+      opacity: 1;
+      filter: blur(0px);
+    }
+    50% {
+      background-position: 0% 60%, 5% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 60%, 50% 40%, 65% 20%;
+      filter: blur(0.5px);
+      transform: scale(1.01);
+    }
+    100% {
+      background-position: 0% 60%, 5% 20%, 10% 40%, 20% 0%, 30% 30%, 22% 60%, 50% 40%, 65% 20%;
+      opacity: 0.7; /* 모바일에서 더 불투명하게 */
+      filter: blur(1px); /* 블러 효과 감소 */
+      transform: scale(1.03); /* 확대 효과 감소 */
+    }
+  }
+  
+  @keyframes permanent-bottomfetti {
+    0% {
+      background-position: 10% -10%, 30% 10%, 55% -10%, 70% -10%, 85% -10%, 70% -10%, 70% 0%, 85% -5%;
+      opacity: 0;
+      filter: blur(0px);
+      transform: scale(1);
+    }
+    10% {
+      opacity: 1;
+      filter: blur(0px);
+    }
+    50% {
+      background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 70%, 115% 80%;
+      filter: blur(0.5px);
+      transform: scale(1.01);
+    }
+    100% {
+      background-position: 0% 80%, 20% 80%, 45% 60%, 60% 100%, 75% 70%, 95% 60%, 105% 70%, 115% 80%;
+      opacity: 0.7;
+      filter: blur(1px);
+      transform: scale(1.03);
+    }
+  }
+  
+  /* 컨페티 요소의 z-index 증가 */
+  .motion-confetti-permanent {
+    z-index: 2;
+  }
+  
+  /* 컨페티 배경 크기 조정 */
+  .motion-confetti-permanent:before,
+  .motion-confetti-permanent:after {
+    background-size: 18% 18%, 22% 22%, 20% 20%, 24% 24%, 20% 20%, 15% 15%, 25% 25%, 18% 18%;
+  }
+}
+
+/* 매우 작은 화면을 위한 추가 미디어 쿼리 - 입자 크기 축소 */
+@media (max-width: 480px) {
+  .motion-confetti-permanent:before {
+    width: 110%; /* 더 작은 너비 */
+    left: -5%; /* 중앙으로 더 이동 */
+    top: -30%; /* 더 아래로 이동 */
+  }
+  
+  .motion-confetti-permanent:after {
+    width: 110%;
+    left: -5%;
+    top: 50%; /* 더 위로 이동 */
+  }
+  
+  /* 더 작은 화면에서는 컨페티 입자의 크기를 더 작게 수정 */
+  .motion-confetti-permanent:before,
+  .motion-confetti-permanent:after {
+    background-size: 14% 14%, 16% 16%, 14% 14%, 18% 18%, 16% 16%, 12% 12%, 18% 18%, 14% 14%;
+  }
+}
+
+/* 매우 작은 화면에 대한 추가 미세 조정 */
+@media (max-width: 360px) {
+  /* 더 작은 화면에서는 컨페티 입자의 크기를 더욱 작게 */
+  .motion-confetti-permanent:before,
+  .motion-confetti-permanent:after {
+    background-size: 12% 12%, 14% 14%, 12% 12%, 16% 16%, 14% 14%, 10% 10%, 15% 15%, 12% 12%;
+  }
+}

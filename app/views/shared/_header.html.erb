@@ -1,8 +1,12 @@
-<div id="headerContainer" class="<%= local_assigns[:class] || '' %> w-full flex justify-center z-50">
-  <header class="w-full max-w-5xl flex p-4 justify-center sm:justify-between items-center z-50">
+<div class="<%= local_assigns[:class] || '' %> w-full flex flex-col items-center z-50">
+  <div class="w-full alert alert-warning rounded-none motion-preset-bounce">
+    지금은 사이트의 뼈대만 보고 계십니다. 살과 영혼은 곧 추가될 예정입니다 💀✨
+  </div>
+
+  <header class="w-full max-w-5xl flex p-4 justify-between items-center z-50">
     <figure class="motion-custom-focus-in">
       <a href="/" class="flex items-center gap-2">
-        <img src="<%= asset_url 'dev-goraebap.png' %>" class="h-16"/>
+        <img src="<%= asset_url 'dev-goraebap.png' %>" class="h-12 sm:h-16"/>
         <span class="font-bold flex flex-col">
           <span class="-mb-2">데브고래밥</span>
           <span>블로그</span>

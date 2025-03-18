@@ -1,29 +1,13 @@
 <%= render 'shared/header', class: 'bg-amber-50' %>
 
 <!-- 게시물 상세 페이지 -->
-<div class="flex flex-col items-center relative px-4 py-10 bg-amber-50 min-h-screen">
+<div class="flex flex-col items-center relative px-4 sm:py-10 bg-amber-50 min-h-screen">
   <div class="w-full max-w-4xl mx-auto">
     <!-- 페이지 헤더 -->
-    <div class="relative z-10 mb-8">
-      <div class="breadcrumbs text-sm mb-6">
-        <ul>
-          <li>
-            <a href="/posts">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                class="h-4 w-4 stroke-current">
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
-              </svg>
-              기술 블로그
-            </a>
-          </li>
-          <li>
+    <div class="breadcrumbs text-sm">
+      <ul>
+        <li>
+          <a href="/posts">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -33,12 +17,26 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
             </svg>
-            Rails 7로 현대적인 웹 애플리케이션 구축하기
-          </li>
-        </ul>
-      </div>
+            기술 블로그
+          </a>
+        </li>
+        <li>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            class="h-4 w-4 stroke-current">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          Rails 7로 현대적인 웹 애플리케이션 구축하기
+        </li>
+      </ul>
     </div>
     
     <!-- 배경 장식 요소들 - 낮은 z-index 적용 -->

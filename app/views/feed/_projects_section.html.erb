@@ -2,7 +2,7 @@
 
 <!-- 프로젝트 -->
 <div class="relative w-full lg:w-5xl mx-auto motion-custom-fade-in-slide-up">
-  <div class="flex flex-col justify-center items-center relative px-4 py-10">
+  <div class="flex flex-col justify-center items-center relative px-4 sm:py-10">
     <!-- Flex 컨테이너를 추가하여 모바일/데스크톱 순서 관리 -->
     <div class="flex flex-col items-center w-full">
       <!-- 메인 콘텐츠 - 높은 z-index 적용 -->
@@ -12,7 +12,7 @@
           <span class="absolute -top-3 -right-3 sm:-right-6 text-yellow-400 text-base sm:text-xl">✨</span>
         </p>
         <p class="text-lg sm:text-xl text-gray-600 max-w-lg">
-          진심 프로젝트부터 컨텐츠 채우기용 급조 프로젝트까지..<br/>계속해서 업데이트 중-
+          진심 프로젝트부터 컨텐츠 채우기용 프로젝트까지.. 계속해서 업데이트 중-
         </p>
       </div>
 
@@ -27,7 +27,7 @@
         
         <!-- 왼쪽: 프로젝트 이미지 캐러셀 -->
         <div class="w-full md:w-1/2 flex justify-center items-center relative mb-8 md:mb-0">
-          <div class="relative flex justify-center items-center w-full max-w-[340px] sm:max-w-[420px]">
+          <div class="motion-confetti-permanent relative flex justify-center items-center w-full max-w-[340px] sm:max-w-[420px]">
             <!-- 캐러셀 파셜 -->
             <%= render "feed/projects_section/carousel", projects: projects %>
           </div>
