@@ -47,7 +47,8 @@ gem "image_processing", "~> 1.2"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  # 여기서 :windows 대신, 윈도우 계열 플랫폼들을 명시적으로 지정
+  gem "debug", platforms: %i[mri mingw mswin x64_mingw], require: "debug/prelude"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
@@ -68,5 +69,4 @@ group :test do
 end
 
 gem "tailwindcss-ruby", "~> 4.0"
-
 gem "tailwindcss-rails", "~> 4.2"
