@@ -7,3 +7,4 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark, lemonade;
 }
+@plugin "tailwindcss-motion";

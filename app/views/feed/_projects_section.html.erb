@@ -1,0 +1,53 @@
+<% projects = @projects %>
+
+<!-- 프로젝트 -->
+<div class="relative w-full lg:w-5xl mx-auto">
+  <div class="flex flex-col justify-center items-center relative px-4 py-10">
+    <!-- Flex 컨테이너를 추가하여 모바일/데스크톱 순서 관리 -->
+    <div class="flex flex-col items-center w-full">
+      <!-- 메인 콘텐츠 - 높은 z-index 적용 -->
+      <div class="flex flex-col items-center relative z-20 text-center mb-8 sm:mb-12">
+        <p class="font-bold text-2xl sm:text-4xl mb-2 sm:mb-4 relative">
+          프로젝트를 둘러보세요.
+          <span class="absolute -top-3 -right-3 sm:-right-6 text-yellow-400 text-base sm:text-xl">✨</span>
+        </p>
+        <p class="text-lg sm:text-xl text-gray-600 max-w-lg">
+          진심 프로젝트부터 컨텐츠 채우기용 급조 프로젝트까지.. 계속해서 업데이트 중-
+        </p>
+      </div>
+
+      <!-- 프로젝트 카드 섹션 -->
+      <div
+        data-controller="carousel"
+        data-carousel-projects-value='<%= projects.to_json %>'
+        class="w-full flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 relative z-10 sm:min-h-[400px]
+              motion-opacity-in-[0] motion-translate-y-in-[5%] motion-duration-[0.7s] motion-ease-in-out">
+        <!-- 배경 빛 효과 -->
+        <div class="absolute top-1/2 left-1/2 w-[300px] h-[300px] sm:w-[400px] sm:h-[400px] bg-primary/10 rounded-full transform -translate-x-1/2 -translate-y-1/2 blur-3xl z-0"></div>
+        <div class="absolute top-1/2 left-1/2 w-[200px] h-[200px] sm:w-[250px] sm:h-[250px] bg-primary/20 rounded-full transform -translate-x-1/2 -translate-y-1/2 blur-2xl z-0"></div>
+        
+        <!-- 왼쪽: 프로젝트 이미지 캐러셀 -->
+        <div class="w-full md:w-1/2 flex justify-center items-center relative mb-8 md:mb-0">
+          <div class="relative flex justify-center items-center w-full max-w-[340px] sm:max-w-[420px]">
+            <!-- 중앙 빛 효과 -->
+            <div class="absolute top-1/2 left-1/2 w-[220px] h-[220px] sm:w-[320px] sm:h-[320px] 
+                        bg-gradient-to-br from-primary/30 to-base-100 
+                        rounded-full transform -translate-x-1/2 -translate-y-1/2 
+                        blur-xl z-0">
+            </div>
+            <!-- 캐러셀 파셜 -->
+            <%= render "feed/projects_section/carousel", projects: projects %>
+          </div>
+        </div>
+
+        <!-- 오른쪽: 프로젝트 설명 컨텐츠 -->
+        <div class="w-full md:w-1/2 max-w-md flex flex-col items-start text-left relative z-10 h-full">
+          <%= render "feed/projects_section/project_info", projects: projects %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 프로젝트 섹션과 블로그 섹션 사이 그라데이션 전환 -->
+<div class="hidden sm:block w-full h-32 bg-gradient-to-b from-base-100 to-amber-50 -mb-12"></div>

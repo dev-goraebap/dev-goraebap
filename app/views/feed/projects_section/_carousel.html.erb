@@ -1,0 +1,64 @@
+<!-- 캐러셀 카드 컨테이너 -->
+<div
+  data-carousel-target="carouselEl"
+  class="relative w-full h-[220px]">
+  <!-- 왼쪽 카드 -->
+  <div class="carousel-card left w-[180px] h-[180px] sm:w-[280px] sm:h-[280px] 
+              absolute -left-4 md:-left-6 transform -rotate-6 -translate-x-2 md:-translate-x-6 
+              scale-75 sm:scale-90 opacity-80 overflow-hidden sketch lined thick shadow-md 
+              hover:opacity-100 hover:scale-80 sm:hover:scale-95 transition-all duration-500 
+              top-1/2 -translate-y-1/2">
+    <img 
+      src="<%= projects[1][:thumbnail] %>"
+      data-carousel-target="secondaryThumbnail"
+      class="w-full h-full object-cover"/>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+  </div>
+  
+  <!-- 가운데 메인 카드 -->
+  <div class="carousel-card center w-[220px] h-[220px] sm:w-[340px] sm:h-[340px]
+              relative left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 
+              flex justify-center items-center overflow-hidden 
+              sketch lined thick z-10 hover:scale-105 
+              transition-all duration-500 shadow-2xl">
+    <img 
+      src="<%= projects[0][:thumbnail] %>"
+      data-carousel-target="primaryThumbnail"
+      class="w-full h-full object-cover"/>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent"></div>
+  </div>
+  
+  <!-- 오른쪽 카드 -->
+  <div class="carousel-card right w-[180px] h-[180px] sm:w-[280px] sm:h-[280px]
+              absolute -right-4 md:-right-6 transform rotate-6 translate-x-2 md:translate-x-6 
+              scale-75 sm:scale-90 opacity-80 overflow-hidden sketch lined thick 
+              shadow-md hover:opacity-100 hover:scale-80 sm:hover:scale-95 
+              transition-all duration-500 top-1/2 -translate-y-1/2">
+    <img 
+      src="<%= projects[2][:thumbnail] %>"
+      data-carousel-target="tertiaryThumbnail"
+      class="w-full h-full object-cover"/>
+    <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+  </div>
+
+  <!-- 캐러셀 내비게이션: 가운데 하단 -->
+  <div class="absolute -bottom-10 left-1/2 transform -translate-x-1/2 z-20">
+    <!-- 둥근 배경 박스 -->
+    <div class="min-w-36 flex justify-between items-center gap-4 px-4 py-2 bg-white/60 rounded-full shadow-md backdrop-blur-sm">
+      <!-- 왼쪽 버튼 -->
+      <button 
+        data-action="click->carousel#prev"
+        type="button"
+        class="text-gray-700 hover:text-primary transition-colors cursor-pointer flex-1">
+        <span class="text-xl font-bold">&lt;</span>
+      </button>
+      <!-- 오른쪽 버튼 -->
+      <button
+        data-action="click->carousel#next"
+        type="button"
+        class="text-gray-700 hover:text-primary transition-colors cursor-pointer flex-1">
+        <span class="text-xl font-bold">&gt;</span>
+      </button>
+    </div>
+  </div>
+</div>

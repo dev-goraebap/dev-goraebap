@@ -1,13 +1,9 @@
 class FeedController < ApplicationController
-  include ActionView::Helpers::AssetUrlHelper  # 에셋 URL 헬퍼 포함
-
   def index
     @projects = [
       {
         id: 1,
-        main_image: "fdb8eb6c65fa9ddf7d4b4ba82a500fd2.jpg",
-        left_image: "avatar.jpg",
-        right_image: "f212e61f1e3baa18d35a2959fcdd9a92.jpg",
+        thumbnail: helpers.asset_path("fdb8eb6c65fa9ddf7d4b4ba82a500fd2.jpg"),
         title: "계란 간장 볶음밥",
         tags: [
           { bg: "bg-purple-100", text: "text-purple-600", name: "Ruby on Rails" },
@@ -19,9 +15,7 @@ class FeedController < ApplicationController
       },
       {
         id: 2,
-        main_image: "avatar.jpg",
-        left_image: "f212e61f1e3baa18d35a2959fcdd9a92.jpg",
-        right_image: "fdb8eb6c65fa9ddf7d4b4ba82a500fd2.jpg",
+        thumbnail: helpers.asset_path("avatar.jpg"),
         title: "크래프톤 클론 프로젝트",
         tags: [
           { bg: "bg-green-100", text: "text-green-600", name: "React" },
@@ -33,9 +27,7 @@ class FeedController < ApplicationController
       },
       {
         id: 3,
-        main_image: "f212e61f1e3baa18d35a2959fcdd9a92.jpg",
-        left_image: "fdb8eb6c65fa9ddf7d4b4ba82a500fd2.jpg",
-        right_image: "avatar.jpg",
+        thumbnail: helpers.asset_path("f212e61f1e3baa18d35a2959fcdd9a92.jpg"),
         title: "AI 기반 분석 대시보드",
         tags: [
           { bg: "bg-blue-100", text: "text-blue-600", name: "Python" },

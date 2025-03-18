@@ -71,37 +71,36 @@ input:-webkit-autofill {
   box-shadow: 0 0 0px 1000px transparent inset !important;
   transition: background-color 5000s ease-in-out 0s !important;
 }
-input,textarea:focus {
+input,
+textarea:focus {
   outline: none;
 }
 
-
+/* 태두리 스캐치 효과 */
 .sketch {
-
   border-top-left-radius: 255px 15px;
   border-top-right-radius: 15px 225px;
   border-bottom-right-radius: 225px 15px;
-  border-bottom-left-radius:15px 255px;
+  border-bottom-left-radius: 15px 255px;
 }
-
-.sketch.sha{
-box-shadow:2px 8px 4px -6px hsla(0,0%,0%,.3);
+.sketch.sha {
+  box-shadow: 2px 8px 4px -6px hsla(0, 0%, 0%, 0.3);
 }
-.sketch.lined.thick{
-border:solid 3px #41403E;
+.sketch.lined.thick {
+  border: solid 3px #41403e;
 }
-.sketch.dotted.thick{
-border:dotted 3px #41403E;
+.sketch.dotted.thick {
+  border: dotted 3px #41403e;
 }
-.sketch.dashed.thick{
-border:dashed 3px #41403E;
+.sketch.dashed.thick {
+  border: dashed 3px #41403e;
 }
-.sketch.lined.thin{
-border:solid 2px #41403E;
+.sketch.lined.thin {
+  border: solid 2px #41403e;
 }
-.sketch.dotted.thin{
-border:dotted 2px #41403E;
+.sketch.dotted.thin {
+  border: dotted 2px #41403e;
 }
-.sketch.dashed.thin{
-border:dashed 2px #41403E;
+.sketch.dashed.thin {
+  border: dashed 2px #41403e;
 }
