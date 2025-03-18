@@ -1,6 +1,6 @@
-<div class="w-full flex justify-center z-50">
+<div id="headerContainer" class="<%= local_assigns[:class] || '' %> w-full flex justify-center z-50">
   <header class="w-full max-w-5xl flex p-4 justify-center sm:justify-between items-center z-50">
-    <figure>
+    <figure class="motion-custom-focus-in">
       <a href="/" class="flex items-center gap-2">
         <img src="<%= asset_url 'dev-goraebap.png' %>" class="h-16"/>
         <span class="font-bold flex flex-col">
@@ -10,7 +10,7 @@
       </a>
     </figure>
 
-    <nav class="hidden sm:block">
+    <nav class="hidden sm:block motion-custom-fade-in-slide-up">
       <ul class="flex items-center gap-6 font-medium">
         <li>
           <a href="/projects" class="text-gray-700 hover:text-primary transition-colors relative group">

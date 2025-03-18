@@ -8,3 +8,13 @@
   themes: light --default, dark --prefersdark, lemonade;
 }
 @plugin "tailwindcss-motion";
+
+@layer {
+  .motion-custom-focus-in {
+    @apply motion-scale-in-[0.5] motion-translate-x-in-[-53%] motion-translate-y-in-[6%] motion-rotate-in-[-10deg] motion-blur-in-[10px] motion-duration-[1.13s]/translate motion-delay-[0.75s]/rotate motion-delay-[0.75s]/blur;
+  }
+
+  .motion-custom-fade-in-slide-up {
+    @apply motion-opacity-in-[0] motion-translate-y-in-[5%] motion-duration-[0.7s] motion-ease-in-out;
+  }
+}

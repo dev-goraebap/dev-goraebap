@@ -96,23 +96,13 @@ export default class extends Controller {
 
     targets.forEach((x) => {
       // 클래스 제거
-      x.classList.remove(
-        "motion-opacity-in-[0]",
-        "motion-translate-y-in-[5%]",
-        "motion-duration-[0.7s]",
-        "motion-ease-in-out"
-      );
+      x.classList.remove("motion-custom-fade-in-slide-up");
 
       // 강제 리플로우 발생
       void x.offsetWidth;
 
       // 클래스 다시 추가
-      x.classList.add(
-        "motion-opacity-in-[0]",
-        "motion-translate-y-in-[5%]",
-        "motion-duration-[0.7s]",
-        "motion-ease-in-out"
-      );
+      x.classList.add("motion-custom-fade-in-slide-up");
     });
   }
 }

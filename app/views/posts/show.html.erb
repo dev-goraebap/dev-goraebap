@@ -1,3 +1,5 @@
+<%= render 'shared/header', class: 'bg-amber-50' %>
+
 <!-- 게시물 상세 페이지 -->
 <div class="flex flex-col items-center relative px-4 py-10 bg-amber-50 min-h-screen">
   <div class="w-full max-w-4xl mx-auto">
@@ -5,11 +7,6 @@
     <div class="relative z-10 mb-8">
       <div class="breadcrumbs text-sm mb-6">
         <ul>
-          <li>
-            <a href="/">
-              <img src="<%= asset_url 'dev-goraebap.png' %>" class="h-10"/>
-            </a>
-          </li>
           <li>
             <a href="/posts">
               <svg
