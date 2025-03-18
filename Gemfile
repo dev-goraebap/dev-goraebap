@@ -21,7 +21,12 @@ gem "jbuilder"
 # gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: %i[ windows jruby ]
+# 윈도우 환경은 맥과 달리 기본 zoneinfo 파일이 없어서 tzinfo-data가 필요합니다.
+# 하지만 Bundler는 :windows 심볼을 지원하지 않고, 대신 윈도우 계열 플랫폼을
+# :mingw, :mswin, :x64_mingw 등으로 구분합니다.
+# 현재 맥(Mac)과 윈도우(Windows)에서 모두 개발하기 때문에,
+# tzinfo-data가 윈도우 계열에서만 설치되도록 아래처럼 지정합니다 (맥은 zoneinfo 파일이 이미 있음).
+gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
 gem "solid_cache"
