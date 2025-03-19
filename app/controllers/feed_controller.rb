@@ -10,8 +10,7 @@ class FeedController < ApplicationController
           { bg_color: "--color-blue-100", text_color: "--color-blue-600", name: "후라이팬 프레임웤" }
         ],
         description: "기름 한큰술 넣고 어느정도 달군 오목한 후라이팬을 ... (생략)",
-        features: [ "맛있어보이는 사용자 UI", "적은 재료 리소스", "초보자도 쉽게 만들 수 있음" ],
-        link: "/projects/1"
+        features: [ "맛있어보이는 사용자 UI", "적은 재료 리소스", "초보자도 쉽게 만들 수 있음" ]
       },
       {
         id: 2,
@@ -22,8 +21,7 @@ class FeedController < ApplicationController
           { bg_color: "--color-yellow-100", text_color: "--color-yellow-600", name: "TypeScript" }
         ],
         description: "크래프톤은 글로벌 게임 개발사로서 ... (생략)",
-        features: [ "반응형 UI/UX", "실시간 데이터 처리", "고성능 모바일 최적화" ],
-        link: "/projects/2"
+        features: [ "반응형 UI/UX", "실시간 데이터 처리", "고성능 모바일 최적화" ]
       },
       {
         id: 3,
@@ -34,8 +32,7 @@ class FeedController < ApplicationController
           { bg_color: "--color-indigo-100", text_color: "--color-indigo-600", name: "TensorFlow" }
         ],
         description: "머신러닝 알고리즘을 활용한 데이터 분석 및 예측 모델 ... (생략)",
-        features: [ "실시간 데이터 시각화", "예측 모델링", "커스텀 레포트 생성" ],
-        link: "/projects/3"
+        features: [ "실시간 데이터 시각화", "예측 모델링", "커스텀 레포트 생성" ]
       }
     ]
     @posts = [

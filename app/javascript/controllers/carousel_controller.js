@@ -65,7 +65,8 @@ export default class extends Controller {
     this.tagsElTarget.innerHTML = project.tags
       .map(
         (x) => `
-        <span class="inline-block px-3 py-1 ${x.bg} ${x.text} text-xs font-semibold rounded-full fade-in">
+        <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+          style="background-color: var(${x.bg_color}); color: var(${x.text_color});">
           ${x.name}
         </span>
         `

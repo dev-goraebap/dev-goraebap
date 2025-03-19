@@ -1,31 +1,10 @@
-<div class="flex flex-col pb-20 min-h-screen justify-center items-center">
-  <!-- 메인 콘텐츠 - 높은 z-index 적용 -->
-  <div class="flex flex-col items-center sm:gap-2 relative z-20 text-center">
-    <p class="font-bold text-2xl sm:text-4xl">
-      프로젝트를 둘러보세요.
-    </p>
-    <p class="text-xl">
-      진심 프로젝트부터 컨텐츠 채우기용 급조 프로젝트까지.. 계속해서 업데이트 중-
-    </p>
-    <!-- 작은 장식 요소 - 콘텐츠보다 낮은 z-index -->
-    <div class="absolute -top-6 -left-4 sm:-top-8 sm:-left-8 w-8 sm:w-12 h-8 sm:h-12 sketch dotted thin bg-orange-100/40 transform rotate-12 z-10"></div>
+<div class="flex flex-col gap-4 sm:w-5xl sm:mx-auto border p-2">
+  <div>
+    <h1 class="text-2xl font-bold">프로젝트 겔러리</h1>
   </div>
-
-  <div class="flex justify-center items-center py-12 relative">
-    <!-- 왼쪽 카드 (기울기 및 뒤로 보냄) -->
-    <div class="w-52 h-52 rounded-xl overflow-hidden border shadow-md absolute transform -translate-x-20 -rotate-6 scale-90 opacity-80 hover:opacity-100 hover:scale-95 transition-all duration-300" style="z-index: 1;">
-      <img src="<%= asset_path 'f212e61f1e3baa18d35a2959fcdd9a92.jpg' %>" alt="" class="w-full h-full object-cover">
-    </div>
-    
-    <!-- 가운데 메인 카드 -->
-    <div class="w-52 h-52 rounded-xl overflow-hidden border shadow-lg relative z-10 hover:scale-105 transition-all duration-300">
-      <img src="<%= asset_path 'f212e61f1e3baa18d35a2959fcdd9a92.jpg' %>" alt="" class="w-full h-full object-cover">
-    </div>
-    
-    <!-- 오른쪽 카드 (기울기 및 뒤로 보냄) -->
-    <div class="w-52 h-52 rounded-xl overflow-hidden border shadow-md absolute transform translate-x-20 rotate-6 scale-90 opacity-80 hover:opacity-100 hover:scale-95 transition-all duration-300" style="z-index: 1;">
-      <img src="<%= asset_path 'f212e61f1e3baa18d35a2959fcdd9a92.jpg' %>" alt="" class="w-full h-full object-cover">
-    </div>
+  <div class="flex justify-between">
+    <div></div>
+    <div></div>
   </div>
+  <div></div>
 </div>
-

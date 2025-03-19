@@ -1,9 +1,9 @@
-<div class="<%= local_assigns[:class] || '' %> w-full flex flex-col items-center z-50">
+<header class="<%= local_assigns[:class] || '' %> w-full flex flex-col items-center z-50">
   <div class="w-full alert alert-warning rounded-none motion-preset-bounce">
     지금은 사이트의 뼈대만 보고 계십니다. 살과 영혼은 곧 추가될 예정입니다 💀✨
   </div>
 
-  <header class="w-full max-w-5xl flex p-4 justify-between items-center z-50">
+  <div class="w-full max-w-5xl flex p-4 justify-between items-center z-50">
     <figure class="motion-custom-focus-in">
       <a href="/" class="flex items-center gap-2">
         <img src="<%= asset_url 'dev-goraebap.png' %>" class="h-12 sm:h-16"/>
@@ -37,5 +37,5 @@
         </li>
       </ul>
     </nav>
-  </header>
-</div>
+  </div>
+</header>

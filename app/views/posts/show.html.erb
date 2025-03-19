@@ -1,4 +1,11 @@
-<%= render 'shared/header', class: 'bg-amber-50' %>
+<style>
+  header {
+    background-color: var(--color-amber-50);
+  }
+  footer {
+    background-color: var(--color-orange-50);
+  }
+</style>
 
 <!-- 게시물 상세 페이지 -->
 <div class="flex flex-col items-center relative px-4 sm:py-10 bg-amber-50 min-h-screen">
@@ -117,14 +124,14 @@
           <h3>Rails 7 프로젝트 시작하기</h3>
           
           <pre><code class="language-bash">
-# Rails 7 설치
-gem install rails -v 7.0.0
+              # Rails 7 설치
+              gem install rails -v 7.0.0
 
-# 새 프로젝트 생성 (esbuild 사용)
-rails new myapp -j esbuild
+              # 새 프로젝트 생성 (esbuild 사용)
+              rails new myapp -j esbuild
 
-# 또는 Hotwire 기본 설정으로 생성
-rails new myapp --skip-javascript
+              # 또는 Hotwire 기본 설정으로 생성
+              rails new myapp --skip-javascript
           </code></pre>
           
           <p>
@@ -176,10 +183,10 @@ rails new myapp --skip-javascript
 </div>
 
 <!-- 블로그 섹션과 댓글글 사이 그라데이션 전환 -->
-<div class="hidden sm:block w-full h-32 bg-gradient-to-b from-amber-50 to-amber-100/50"></div>
+<div class="hidden sm:block w-full h-32 bg-gradient-to-b from-amber-50 to-orange-50"></div>
 
 <!-- 댓글 섹션 -->
-<div class="flex flex-col items-center relative px-4 py-10 bg-amber-100/50">
+<div class="flex flex-col items-center relative px-4 py-10 bg-orange-50">
   <div class="w-full max-w-4xl mx-auto">
     <!-- 댓글 섹션 헤더 -->
     <div class="mb-8">
@@ -381,7 +388,3 @@ rails new myapp --skip-javascript
     </div>
   </div>
 </div>
-
-<!-- 블로그 섹션과 푸터 사이 그라데이션 전환 -->
-<div class="hidden sm:block w-full h-32 bg-gradient-to-b from-amber-100/50 to-red-50"></div>
-

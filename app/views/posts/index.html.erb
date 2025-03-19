@@ -1,4 +1,8 @@
-<%= render 'shared/header', class: 'bg-amber-50' %>
+<style>
+  header,footer {
+    background-color: var(--color-amber-50);
+  }
+</style>
 
 <!-- 게시물 목록 페이지 -->
 <div class="flex flex-col items-center relative px-4 sm:py-10 bg-amber-50 min-h-screen">
@@ -88,5 +92,4 @@
   </div>
 </div>
 
-<!-- 블로그 섹션과 푸터 사이 그라데이션 전환 -->
-<div class="hidden sm:block w-full h-32 bg-gradient-to-b from-amber-50 to-red-50"></div>
+

@@ -1,13 +1,19 @@
-<%= render 'shared/header', class: 'bg-amber-50' %>
+<style>
+  header,footer {
+    background-color: var(--color-amber-50);
+  }
+</style>
 
-<div class="w-full">
-  <%= form_with model: @post, class: "[&_input]:w-full" do |form| %>
-    <div class="w-full">
-      <%= form.text_field :title, placeholder: "제목을 입력해 주세요.", class: "text-[3rem]" %>
-    </div>
+<div class="w-full h-screen bg-amber-50">
+  <div class="h-full sm:max-w-5xl sm:mx-auto">
+    <%= form_with model: @post, class: "[&_input]:w-full" do |form| %>
+      <div class="w-full">
+        <%= form.text_field :title, placeholder: "제목을 입력해 주세요.", class: "text-[3rem]" %>
+      </div>
 
-    <div>
-      <%= form.rich_textarea :content, placeholder: "내용을 입력해 주세요." %>
-    </div>
-  <% end %>
+      <div>
+        <%= form.rich_textarea :content, placeholder: "내용을 입력해 주세요." %>
+      </div>
+    <% end %>
+  </div>
 </div>
