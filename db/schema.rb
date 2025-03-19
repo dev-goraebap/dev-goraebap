@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_03_14_043400) do
+ActiveRecord::Schema[8.0].define(version: 2025_03_19_113343) do
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
     t.text "body"
@@ -49,11 +49,66 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_14_043400) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "collaborators", force: :cascade do |t|
+    t.integer "member_id", null: false
+    t.integer "project_id", null: false
+    t.integer "rank"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id"], name: "index_collaborators_on_member_id"
+    t.index ["project_id"], name: "index_collaborators_on_project_id"
+  end
+
+  create_table "members", force: :cascade do |t|
+    t.string "nickname", null: false
+    t.string "role", null: false
+    t.string "link"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "posts", force: :cascade do |t|
+    t.integer "member_id", null: false
+    t.string "title", null: false
+    t.string "summary", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id"], name: "index_posts_on_member_id"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "description", null: false
+    t.string "features_text", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tag_mappings", force: :cascade do |t|
+    t.integer "tag_id", null: false
+    t.integer "project_id"
+    t.integer "post_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["post_id"], name: "index_tag_mappings_on_post_id"
+    t.index ["project_id"], name: "index_tag_mappings_on_project_id"
+    t.index ["tag_id"], name: "index_tag_mappings_on_tag_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "bg_color"
+    t.string "text_color", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "collaborators", "members"
+  add_foreign_key "collaborators", "projects"
+  add_foreign_key "posts", "members"
+  add_foreign_key "tag_mappings", "posts"
+  add_foreign_key "tag_mappings", "projects"
+  add_foreign_key "tag_mappings", "tags"
 end
