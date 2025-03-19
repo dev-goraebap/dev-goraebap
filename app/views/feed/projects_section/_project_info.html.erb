@@ -1,11 +1,16 @@
+<% project = local_assigns[:project] %>
+
 <div class="relative w-full h-full">
   <div data-carousel-target="projectInfoEl">
     <!-- 프로젝트 태그 -->
     <div 
       data-carousel-target="tagsEl"
       class="flex gap-2 mb-4 project-tags">
-      <% projects[0][:tags].each do |tag| %>
-        <span class="inline-block px-3 py-1 <%= tag[:bg] %> <%= tag[:text] %> text-xs font-semibold rounded-full">
+      <% project[:tags].each do |tag| %>
+        <span 
+          class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+          style="background-color: var(<%= tag[:bg_color] %>);
+                color: var(<%= tag[:text_color] %>);">
           <%= tag[:name] %>
         </span>
       <% end %>
@@ -13,14 +18,14 @@
     
     <!-- 프로젝트명 -->
     <h3 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 tracking-tight project-title">
-      <span data-carousel-target="title"><%= projects[0][:title] %></span>
+      <span data-carousel-target="title"><%= project[:title] %></span>
     </h3>
     
     <!-- 간단한 설명 -->
     <p
       data-carousel-target="description"
       class="text-base sm:text-lg text-gray-600 mb-6 project-description">
-      <%= projects[0][:description] %>
+      <%= project[:description] %>
     </p>
     
     <!-- 주요 기능 리스트 -->
@@ -29,7 +34,7 @@
       <ul
         data-carousel-target="featuresEl" 
         class="space-y-2 project-features">
-        <% projects[0][:features].each do |feature| %>
+        <% project[:features].each do |feature| %>
           <li class="flex items-center gap-2">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 
@@ -46,7 +51,7 @@
   <div class="flex gap-3">
     <a
       data-carousel-target="linkEl" 
-      href="<%= projects[0][:link] %>" 
+      href="<%= project[:link] %>" 
         class="project-link inline-flex items-center justify-center bg-primary hover:bg-primary/90 
               text-white px-5 py-2.5 rounded-lg gap-2 transition shadow-md hover:shadow-lg">
       <span>자세히 보기</span>
