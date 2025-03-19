@@ -1,0 +1,54 @@
+<% post = local_assigns[:post] %>
+
+<style>
+  .card-<%= post[:id] %>:hover .title-accent {
+    color: var(<%= post[:tags].first[:text_color] %>);
+  }
+</style>
+
+<% if post.present? %>
+  <div class="card-<%= post[:id] %> backdrop-blur-sm border-gray-200 overflow-hidden group transition-colors">
+    <a href="posts/<%= post[:id] %>" class="block">
+      <!-- 이미지 섹션 -->
+      <div class="h-40 overflow-hidden relative border-b border-gray-200 rounded-xl">
+        <img src="<%= post[:thumbnail] %>" alt="<%= post[:title] %>" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"/>
+      </div>
+      
+      <!-- 콘텐츠 섹션 -->
+      <div class="p-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <!-- 태그 정보 - 첫 번째 태그만 표시하고 나머지는 숫자로 표시 -->
+          <div class="flex items-center gap-2">
+            <% if post[:tags].any? %>
+              <!-- 첫 번째 태그 -->
+              <span class="text-xs font-medium" style="color: var(<%= post[:tags].first[:text_color] %>);">
+                • <%= post[:tags].first[:name] %>
+              </span>
+              
+              <!-- 추가 태그가 있는 경우 카운트 표시 -->
+              <% if post[:tags].length > 1 %>
+                <span class="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-full">
+                  +<%= post[:tags].length - 1 %>
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+          
+          <!-- 날짜 정보 -->
+          <div class="flex items-center shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span class="text-xs text-gray-500"><%= post[:created_at] %></span>
+          </div>
+        </div>
+        <h3 class="title-accent text-lg font-medium mb-2 transition-colors duration-300 line-clamp-2">
+          <%= post[:title] %>
+        </h3>
+        <p class="text-sm text-gray-600 line-clamp-3">
+          <%= post[:summary] %>
+        </p>
+      </div>
+    </a>
+  </div>
+<% end %>
