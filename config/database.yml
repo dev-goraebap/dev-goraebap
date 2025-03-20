@@ -9,7 +9,7 @@ default: &default
 
 development:
   <<: *default
-  database: dev_goraebap
+  database: dev_goraebap_local
 
 test:
   <<: *default
