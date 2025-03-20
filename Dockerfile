@@ -43,6 +43,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 RUN SECRET_KEY_BASE=dummykeythatis32byteslongatleast \
     TAILWINDCSS_NATIVE_BUILDING=0 \
+    TAILWINDCSS_INSTALLATION_STRATEGY=package_manager \
     NODE_OPTIONS=--openssl-legacy-provider \
     bin/rails assets:precompile
 
