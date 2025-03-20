@@ -1,90 +1,67 @@
 # syntax=docker/dockerfile:1
 # check=error=true
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=3.3.4
 FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 
-# Rails app lives here
 WORKDIR /rails
 
-# Install base packages
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Set production environment
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
 
-# Throw-away build stage to reduce size of final image
 FROM base AS build
 
-# Install Node.js and build dependencies
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential git pkg-config \
-    curl gnupg lsb-release ca-certificates && \
-    # Add NodeSource repository
+    curl gnupg lsb-release ca-certificates libpq-dev && \ 
     curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    # Install Node.js
     apt-get install -y nodejs && \
-    # Install Yarn
     npm install -g yarn && \
-    # Clean up
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Install application gems
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-# Copy application code
 COPY . .
 
-# Install JavaScript dependencies
 RUN if [ -f yarn.lock ]; then \
     yarn install; \
     elif [ -f package-lock.json ]; then \
     npm ci; \
     fi
 
-# Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
-# 수정된 부분: tailwindcss 네이티브 빌드 비활성화
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE=dummykeythatis32byteslongatleast \
     TAILWINDCSS_NATIVE_BUILDING=0 \
     NODE_OPTIONS=--openssl-legacy-provider \
     bin/rails assets:precompile
 
-# Final stage for app image
 FROM base
 
-# Install packages needed for deployment
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y curl && \
-    # Add NodeSource repository the simplified way
     curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
-# Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
-# Run and own only the runtime files as a non-root user for security
 RUN groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     chown -R rails:rails db log storage tmp
 USER 1000:1000
 
-# Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-# Start server via Thruster by default, this can be overwritten at runtime
 EXPOSE 80
 CMD ["./bin/thrust", "./bin/rails", "server"]
