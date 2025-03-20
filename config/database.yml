@@ -18,6 +18,7 @@ test:
 production:
   primary:
     <<: *default
+    host: host.docker.internal
     database: <%= Rails.application.credentials.dig(:database, :production_db_name) %>
 
   cache:
