@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index" # Admin 대시보드 (선택 사항)
-    resources :members, only: [ :index ]
+    resources :members
     resources :projects, only: [ :index ]
     resources :posts, only: [ :index ]
   end

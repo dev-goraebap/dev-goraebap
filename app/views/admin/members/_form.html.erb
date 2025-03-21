@@ -1,0 +1,92 @@
+<%= render "shared/modal", title: (@member.new_record? ? "멤버 추가" : "멤버 수정") do %>
+  <%= form_with(model: [:admin, member], class: "space-y-4", html: { multipart: true }) do |form| %>
+    <% if member.errors.any? %>
+      <div class="p-3 bg-red-50 text-red-700 rounded-md mb-4">
+        <h3 class="font-medium"><%= pluralize(member.errors.count, "error") %> 발생:</h3>
+        <ul class="mt-2 list-disc list-inside text-sm">
+          <% member.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    
+    <!-- 썸네일 업로드 필드 추가 -->
+    <div class="space-y-2" data-controller="image-preview">
+      <%= form.label :thumbnail, "프로필 이미지", class: "block text-sm font-medium text-gray-700" %>
+      
+      <!-- 미리보기 영역 -->
+      <div class="relative w-24 h-24 border-2 border-dashed border-gray-300 rounded-full overflow-hidden flex items-center justify-center mb-3" 
+            data-image-preview-target="container">
+        
+        <% if member.thumbnail.attached? %>
+          <%= image_tag member.thumbnail, class: "w-full h-full object-cover rounded-full", 
+            data: { image_preview_target: "preview" } %>
+        <% else %>
+          <div class="text-center text-gray-500" data-image-preview-target="placeholder">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <img src="" class="hidden w-full h-full object-cover rounded-full" data-image-preview-target="preview">
+        <% end %>
+      </div>
+      
+      <div class="flex items-center">
+        <!-- 숨겨진 파일 입력 필드 -->
+        <%= form.file_field :thumbnail, 
+          class: "hidden", 
+          accept: "image/jpeg,image/png,image/gif", 
+          data: { 
+            image_preview_target: "input",
+            action: "change->image-preview#preview"
+          } %>
+        
+        <!-- 커스텀 업로드 버튼 -->
+        <label for="member_thumbnail" class="px-3 py-1.5 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded cursor-pointer transition">
+          이미지 선택
+        </label>
+        
+        <span class="ml-3 text-xs text-gray-500">JPG, PNG, GIF 형식 (최대 5MB)</span>
+      </div>
+    </div>
+
+    <div>
+      <%= form.label :nickname, "닉네임", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.text_field :nickname, class: "w-full px-3 py-2 border #{member.errors[:nickname].any? ? 'border-red-300 ring-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+      <% if member.errors[:nickname].any? %>
+        <p class="mt-1 text-sm text-red-600"><%= member.errors[:nickname].first %></p>
+      <% end %>
+    </div>
+
+    <div>
+      <%= form.label :role, "역할", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.select :role, 
+          options_for_select([
+            ["개발자", "developer"],
+            ["디자이너", "designer"],
+            ["기획자", "planner"]
+          ], member.role), 
+          {}, 
+          class: "w-full px-3 py-2 border #{member.errors[:role].any? ? 'border-red-300 ring-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+      <% if member.errors[:role].any? %>
+        <p class="mt-1 text-sm text-red-600"><%= member.errors[:role].first %></p>
+      <% end %>
+    </div>
+
+    <div>
+      <%= form.label :link, "링크", class: "block text-sm font-medium text-gray-700 mb-1" %>
+      <%= form.url_field :link, placeholder: "https://github.com/username", class: "w-full px-3 py-2 border #{member.errors[:link].any? ? 'border-red-300 ring-red-500' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500" %>
+      <% if member.errors[:link].any? %>
+        <p class="mt-1 text-sm text-red-600"><%= member.errors[:link].first %></p>
+      <% end %>
+    </div>
+
+    <div class="pt-4 flex justify-end space-x-3 border-t mt-4">
+      <button type="button" data-action="modal#close" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md">
+        취소
+      </button>
+      <%= form.submit "저장", class: "px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md" %>
+    </div>
+  <% end %>
+<% end %>
