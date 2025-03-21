@@ -26,10 +26,21 @@
       <aside class="flex-shrink-0 w-64 p-4 bg-white border-r border-gray-300">
         <nav>
           <ul class="flex flex-col gap-2">
-            <li class="p-3 text-center bg-blue-500 text-white rounded-lg"><a href="/admin">대시보드</a></li>
-            <li class="p-3 text-center bg-gray-300 rounded-lg"><a href="/admin/members">맴버</a></li>
-            <li class="p-3 text-center bg-gray-300 rounded-lg"><a href="/admin">포스트</a></li>
-            <li class="p-3 text-center bg-gray-300 rounded-lg"><a href="/admin">프로젝트</a></li>
+            <li class="<%= current_page?(admin_root_path) ? 'bg-blue-500 text-white' : 'bg-gray-300' %> text-center rounded-lg transition-colors">
+              <%= link_to "대시보드", admin_root_path, class: "block w-full h-full p-3" %>
+            </li>
+            
+            <li class="<%= current_page?(admin_members_path) || controller_name == 'members' ? 'bg-blue-500 text-white' : 'bg-gray-300' %> text-center rounded-lg transition-colors">
+              <%= link_to "멤버", admin_members_path, class: "block w-full h-full p-3" %>
+            </li>
+            
+            <li class="<%= current_page?(admin_posts_path) || controller_name == 'posts' ? 'bg-blue-500 text-white' : 'bg-gray-300' %> text-center rounded-lg transition-colors">
+              <%= link_to "포스트", admin_posts_path, class: "block w-full h-full p-3" %>
+            </li>
+            
+            <li class="<%= current_page?(admin_projects_path) || controller_name == 'projects' ? 'bg-blue-500 text-white' : 'bg-gray-300' %> text-center rounded-lg transition-colors">
+              <%= link_to "프로젝트", admin_projects_path, class: "block w-full h-full p-3" %>
+            </li>
           </ul>
         </nav>
       </aside>
