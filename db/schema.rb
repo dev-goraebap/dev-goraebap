@@ -53,8 +53,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_19_113343) do
   end
 
   create_table "collaborators", force: :cascade do |t|
-    t.integer "member_id", null: false
-    t.integer "project_id", null: false
+    t.bigint "member_id", null: false
+    t.bigint "project_id", null: false
     t.integer "rank"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -71,7 +71,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_19_113343) do
   end
 
   create_table "posts", force: :cascade do |t|
-    t.integer "member_id", null: false
+    t.bigint "member_id", null: false
     t.string "title", null: false
     t.string "summary", null: false
     t.datetime "created_at", null: false
@@ -88,9 +88,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_03_19_113343) do
   end
 
   create_table "tag_mappings", force: :cascade do |t|
-    t.integer "tag_id", null: false
-    t.integer "project_id"
-    t.integer "post_id"
+    t.bigint "tag_id", null: false
+    t.bigint "project_id"
+    t.bigint "post_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["post_id"], name: "index_tag_mappings_on_post_id"

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html data-theme="lemonade" class="h-full">
+  <head>
+    <title><%= content_for(:title) || "dg admin" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%= favicon_link_tag 'favicon.ico' %>
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="flex flex-col min-h-full text-slate-700">
+    <header class="flex-shrink-0 p-4 bg-white border-b border-gray-300 flex justify-between items-center">
+      <a href="/admin" class="text-xl font-bold">고래밥 블로그 관리</a>
+      <a href="/">홈으로 이동</a>
+    </header>
+    <main class="flex-grow flex overflow-hidden">
+      <aside class="flex-shrink-0 w-64 p-4 bg-white border-r border-gray-300">
+        <nav>
+          <ul class="flex flex-col gap-2">
+            <li class="p-3 text-center bg-blue-500 text-white rounded-lg"><a href="/admin">대시보드</a></li>
+            <li class="p-3 text-center bg-gray-300 rounded-lg"><a href="/admin/members">맴버</a></li>
+            <li class="p-3 text-center bg-gray-300 rounded-lg"><a href="/admin">포스트</a></li>
+            <li class="p-3 text-center bg-gray-300 rounded-lg"><a href="/admin">프로젝트</a></li>
+          </ul>
+        </nav>
+      </aside>
+      <section>
+        <%= yield %>
+      </section>
+    </main>
+  </body>
+</html>
