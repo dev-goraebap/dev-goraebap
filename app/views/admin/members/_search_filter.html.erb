@@ -1,0 +1,52 @@
+<div class="bg-white shadow-sm rounded-lg overflow-hidden mb-4">
+  <div class="p-4 bg-gray-50 border-b">
+    <%= form_with url: admin_members_path, method: :get, data: { turbo_frame: "members_list" }, class: "flex flex-wrap gap-3 items-end" do |f| %>
+      <div>
+        <%= f.label :keyword, "검색어", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.text_field :keyword, value: filters[:keyword], placeholder: "닉네임 또는 역할", class: "mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+      </div>
+
+      <div>
+        <%= f.label :sort_by, "정렬 기준", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.select :sort_by, 
+            options_for_select([
+              ["생성일", "created_at"],
+              ["수정일", "updated_at"],
+              ["닉네임", "nickname"],
+              ["역할", "role"],
+              ["ID", "id"]
+            ], filters[:sort_by]), 
+            {}, 
+            class: "mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+      </div>
+
+      <div>
+        <%= f.label :sort_direction, "정렬 방향", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.select :sort_direction, 
+            options_for_select([
+              ["내림차순", "desc"],
+              ["오름차순", "asc"]
+            ], filters[:sort_direction]), 
+            {}, 
+            class: "mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+      </div>
+
+      <div>
+        <%= f.label :per_page, "표시 개수", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.select :per_page, 
+            options_for_select([5, 10], filters[:per_page]), 
+            {}, 
+            class: "mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" %>
+      </div>
+
+      <%= f.hidden_field :page, value: 1 %> <!-- 검색 시 첫 페이지로 이동 -->
+
+      <div>
+        <%= f.submit "적용", class: "px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition cursor-pointer" %>
+        <% if filters[:keyword].present? || filters[:sort_by] != "created_at" || filters[:sort_direction] != "desc" || filters[:per_page] != 10 %>
+          <%= link_to "초기화", admin_members_path, class: "ml-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition", data: { turbo_frame: "members_list" } %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>

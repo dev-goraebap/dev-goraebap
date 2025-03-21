@@ -16,6 +16,12 @@
     <% end %>
   </turbo-frame>
   
+  <!-- 멤버 검색 및 필터 -->
+  <%= render "search_filter", filters: @filters %>
+  
   <!-- 멤버 목록 테이블 -->
   <%= render "members_list", members: @members %>
+  
+  <!-- 페이지네이션 -->
+  <%= render "pagination", pagination: @pagination, filters: @filters %>
 </div>
