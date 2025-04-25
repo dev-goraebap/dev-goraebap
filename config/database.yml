@@ -18,7 +18,7 @@ test:
 production:
   primary:
     <<: *default
-    host: host.docker.internal
+    host: my-postgres
     database: <%= Rails.application.credentials.dig(:database, :production_db_name) %>
 
   cache:
