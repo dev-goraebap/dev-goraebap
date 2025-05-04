@@ -1,5 +1,5 @@
 # dev.goraebap
 
-![thumbnail](./tmp/image.png)
+![thumbnail](/tmp/image.png)
 
 https://goraebap.xyz
