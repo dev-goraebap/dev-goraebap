@@ -1,8 +1,8 @@
-@layout.error()
-  <div class="flex flex-col items-center justify-center h-full">
+@layout.app({ title: 'Nest MVC Error' })
+  <div class="container flex flex-col items-center justify-center mx-auto h-screen">
     <h1 class="text-5xl font-bold">{{status}}</h1>
-    <p>{{error}}</p>
-    <br/>
-    <a href="/" class="btn btn-soft">go to home</a>
+    <p class="message">{{error}}</p>
+    <br />
+    <a href="/" class="underline decoration-wavy">Back to Home</a>
   </div>
 @end
