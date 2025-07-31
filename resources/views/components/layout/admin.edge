@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="cupcake">
+<html lang="ko" data-theme="light">
 
 <head>
   @!partials.head({ title, description })
@@ -7,17 +7,39 @@
 
 <body>
   <div class="drawer lg:drawer-open">
-    <input id="my-drawer-2" type="checkbox" class="drawer-toggle" />
-    <div class="drawer-content flex flex-col items-center justify-center">
+    <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content flex flex-col min-w-3xl">
+      <!-- Navbar -->
+      <div class="navbar p-3 bg-base-300/90 w-full sticky top-0 z-10">
+        <div class="flex-none lg:hidden">
+          <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              class="inline-block h-6 w-6 stroke-current">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </label>
+        </div>
+        <div class="flex-1 flex items-center gap-4 mx-2 px-2">
+          <h2 class="text-2xl">
+            {{ adminTitle || '데브고래밥 블로그' }}
+          </h2>
+        </div>
+        <div class="hidden flex-none lg:block">
+          <ul class="menu menu-horizontal">
+            <!-- Navbar menu content here -->
+            <li><a href="/admin">AAA</a></li>
+            <li><a href="/admin/posts">BBB</a></li>
+          </ul>
+        </div>
+      </div>
       <!-- Page content here -->
-      <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">
-        Open drawer
-      </label>
-      {{{ await $slots.main() }}}
+      <div class="max-w-[1980px] grow p-6">
+        {{{ await $slots.main() }}}
+      </div>
     </div>
-    <div class="drawer-side">
-      <label for="my-drawer-2" aria-label="close sidebar" class="drawer-overlay"></label>
-      <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+    <div class="drawer-side z-20">
+      <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+      <ul class="menu bg-base-200 min-h-full w-80 p-4">
         <!-- Sidebar content here -->
         <li><a href="/admin">대시보드</a></li>
         <li><a href="/admin/posts">게시물 관리</a></li>
