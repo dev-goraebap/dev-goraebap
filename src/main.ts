@@ -21,7 +21,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useStaticAssets(join(process.cwd(), 'template-default', 'public'), {
+  app.useStaticAssets(join(process.cwd(), 'resources', 'public'), {
     prefix: '/public',
   });
 
