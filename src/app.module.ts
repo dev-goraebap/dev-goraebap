@@ -6,11 +6,19 @@ import { AdminModule } from './admin/admin.module';
 import { AppExceptionFilter } from './app-exception.filter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import {
+  currentThemeHelper,
+  isCurrentRouteHelper,
+} from './common/view.helpers';
 
 @Module({
   imports: [
-    NestMvcModule.forRoot({}),
-    AdminModule
+    NestMvcModule.forRoot({
+      view: {
+        helpers: [isCurrentRouteHelper, currentThemeHelper],
+      },
+    }),
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [
