@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="light">
+<html lang="ko" data-theme="{{currentTheme() || 'light'}}">
 
 <head>
   @!partials.head({ title, description })
+  @stack('themeDropboxController')
 </head>
 
 <body>
@@ -10,7 +11,7 @@
     <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col min-w-3xl">
       <!-- Navbar -->
-      <div class="navbar p-3 bg-base-300/90 w-full sticky top-0 z-10">
+      <div class="navbar p-3 w-full sticky top-0 z-10">
         <div class="flex-none lg:hidden">
           <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -25,11 +26,7 @@
           </h2>
         </div>
         <div class="hidden flex-none lg:block">
-          <ul class="menu menu-horizontal">
-            <!-- Navbar menu content here -->
-            <li><a href="/admin">AAA</a></li>
-            <li><a href="/admin/posts">BBB</a></li>
-          </ul>
+          @!partials.themeDropbox()
         </div>
       </div>
       <!-- Page content here -->
@@ -41,11 +38,63 @@
       <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
       <ul class="menu bg-base-200 min-h-full w-80 p-4">
         <!-- Sidebar content here -->
-        <li><a href="/admin">대시보드</a></li>
-        <li><a href="/admin/posts">게시물 관리</a></li>
-        <li><a href="/admin/series">시리즈 관리</a></li>
-        <li><a href="/admin/tags">태그 관리</a></li>
-        <li><a href="/admin/patch-notes">패치노트</a></li>
+        <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Menu</li>
+
+        <li>
+          <a href="/admin" class="{{ isCurrentRoute('/admin', true) && 'bg-neutral text-neutral-content' }} p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
+            </svg>
+            대시보드
+          </a>
+        </li>
+        <li>
+          <a href="/admin/posts" class="{{ isCurrentRoute('/admin/posts') && 'bg-neutral text-neutral-content' }} p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+            </svg>
+            게시물 관리
+          </a>
+        </li>
+        <li>
+          <a href="/admin/series"
+            class="{{ isCurrentRoute('/admin/series') && 'bg-neutral text-neutral-content' }} p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+            </svg>
+            시리즈 관리
+          </a>
+        </li>
+        <li>
+          <a href="/admin/tags" class="{{ isCurrentRoute('/admin/tags') && 'bg-neutral text-neutral-content' }} p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+            </svg>
+
+            태그 관리
+          </a>
+        </li>
+        <li>
+          <a href="/admin/patch-notes"
+            class="{{ isCurrentRoute('/admin/patch-notes') && 'bg-neutral text-neutral-content' }} p-3">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="size-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
+            </svg>
+
+            패치노트
+          </a>
+        </li>
       </ul>
     </div>
   </div>
