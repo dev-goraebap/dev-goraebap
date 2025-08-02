@@ -1,5 +1,5 @@
 <!-- 테마 드롭박스 HTML -->
-<div class="dropdown dropdown-end" x-data="themeSwitcher()">
+<div class="dropdown dropdown-end" data-controller="theme-switcher">
   <div tabindex="0" role="button" class="btn group btn-sm gap-1.5 px-1.5 btn-ghost" aria-label="Change Theme">
     <div
       class="bg-base-100 group-hover:border-base-content/20 border-base-content/10 grid shrink-0 grid-cols-2 gap-0.5 rounded-md border p-1 transition-colors">
@@ -17,7 +17,7 @@
     <ul class="menu w-56">
       <li class="menu-title text-xs">테마</li> <!--[-->
       <li>
-        <button class="gap-3 px-2 [&amp;_svg]:visible" data-set-theme="light" @click="changeTheme('light')">
+        <button class="gap-3 px-2 [&amp;_svg]:visible" data-set-theme="light" data-action="theme-switcher#changeTheme">
           <div data-theme="light" class="bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm">
             <div class="bg-base-content size-1 rounded-full"></div>
             <div class="bg-primary size-1 rounded-full"></div>
@@ -32,7 +32,7 @@
         </button>
       </li>
       <li>
-        <button class="gap-3 px-2" data-set-theme="dark" @click="changeTheme('dark')">
+        <button class="gap-3 px-2" data-set-theme="dark" data-action="theme-switcher#changeTheme">
           <div data-theme="dark" class="bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm">
             <div class="bg-base-content size-1 rounded-full"></div>
             <div class="bg-primary size-1 rounded-full"></div>
@@ -47,7 +47,7 @@
         </button>
       </li>
       <li>
-        <button class="gap-3 px-2" data-set-theme="cupcake" @click="changeTheme('cupcake')">
+        <button class="gap-3 px-2" data-set-theme="cupcake" data-action="theme-switcher#changeTheme">
           <div data-theme="cupcake" class="bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm">
             <div class="bg-base-content size-1 rounded-full"></div>
             <div class="bg-primary size-1 rounded-full"></div>
@@ -62,7 +62,7 @@
         </button>
       </li>
       <li>
-        <button class="gap-3 px-2" data-set-theme="retro" @click="changeTheme('retro')">
+        <button class="gap-3 px-2" data-set-theme="retro" data-action="theme-switcher#changeTheme">
           <div data-theme="retro" class="bg-base-100 grid shrink-0 grid-cols-2 gap-0.5 rounded-md p-1 shadow-sm">
             <div class="bg-base-content size-1 rounded-full"></div>
             <div class="bg-primary size-1 rounded-full"></div>
@@ -81,20 +81,22 @@
 </div>
 
 <!-- 테마 드롭박스 Js -->
-@pushOnceTo('themeDropboxController')
-<script>
-  function themeSwitcher() {
-    return {
-      changeTheme(themeType) {
-        // 전체 html 테마 변경
-        document.documentElement.setAttribute('data-theme', themeType);
+@pushOnceTo('themeDropboxJs')
+<script defer>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.Stimulus.register("theme-switcher", class extends window.StimulusController {
+      changeTheme(event) {
+        const theme = event.currentTarget.dataset.setTheme;
+
+        // 테마 변경
+        document.documentElement.setAttribute('data-theme', theme);
 
         // 쿠키 설정
-        this.setThemeCookie(themeType);
+        this.setThemeCookie(theme);
 
         // 페이지 새로고침
         Turbo.visit(window.location.href);
-      },
+      }
 
       setThemeCookie(theme) {
         const oneMonthInSeconds = 30 * 24 * 60 * 60;
@@ -109,7 +111,7 @@
           .filter(Boolean)
           .join('; ');
       }
-    }
-  }
+    });
+  });
 </script>
 @end
