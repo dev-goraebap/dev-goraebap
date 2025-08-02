@@ -1,0 +1,7 @@
+<turbo-frame id="modalContentFrame">
+  <h2 class="text-2xl">태그 등록</h2>
+  <br/>
+  @!component('pages/admin/tags/_form', {
+    tag: flash?.input?.tag ?? null
+  })
+</turbo-frame>

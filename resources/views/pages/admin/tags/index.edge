@@ -22,7 +22,7 @@
     </div>
   </form>
 
-  <button class="btn">
+  <button class="btn" data-action="modal#onOpen" data-content-url="/admin/tags/new">
     태그 추가
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
       class="size-4">
@@ -53,8 +53,8 @@
         <td>12/16/2020</td>
         <td>
           <div class="flex gap-4">
-            <button class="">수정</button>
-            <button class="">삭제</button>
+            <button data-action="modal#onOpen" data-content-url="/admin/tags/{{1}}/edit" class="cursor-pointer text-warning">수정</button>
+            <a href="/admin/tags/{{1}}" data-turbo-method="delete" data-turbo-confirm="정말 삭제하시겠어요?" class="text-error">삭제</a>
           </div>
         </td>
       </tr>
