@@ -3,10 +3,9 @@
 
 <head>
   @!partials.head({ title, description })
-  @stack('themeDropboxController')
 </head>
 
-<body>
+<body data-controller="modal">
   <div class="drawer lg:drawer-open">
     <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col min-w-3xl">
@@ -98,6 +97,10 @@
       </ul>
     </div>
   </div>
+  @!uikit.modal()
+  @uikit.toast()
+    @!uikit.flash() 
+  @end
 </body>
 
 </html>
