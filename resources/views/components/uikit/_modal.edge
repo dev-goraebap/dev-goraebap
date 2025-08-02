@@ -1,0 +1,41 @@
+<!-- turbo frame이 들어올 것을 기대하는 모달  -->
+<dialog class="modal modal-bottom sm:modal-middle" data-modal-target="modalOverlay">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" data-action="modal#onClose">✕</button>
+    </form>
+
+    <turbo-frame id="modalContentFrame" data-modal-target="modalContentFrame">
+      <div class="loading"></div>
+    </turbo-frame>
+  </div>
+</dialog>
+
+@pushOnceTo('modalJs')
+<script defer>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.Stimulus.register("modal", class extends window.StimulusController {
+      static targets = ['modalOverlay', 'modalContentFrame'];
+
+      // onOpen 액션을 가지는 dom에 data-content-url 을 가지게끔 설정
+      // ex) data-content-url="/admin/tags/new"
+      // 해당 url로 turbo-frame url을 변경시킴
+      onOpen(event) {
+        const contentUrl = event.currentTarget.dataset.contentUrl;
+        if (!contentUrl) {
+          throw new Error('not found data-content-url');
+        }
+
+        this.modalContentFrameTarget.src = contentUrl;
+        this.modalOverlayTarget.setAttribute('open', true);
+      }
+
+      onClose() {
+        this.modalOverlayTarget.removeAttribute('open');
+        this.modalContentFrameTarget.removeAttribute("src");
+        this.modalContentFrameTarget.innerHTML = '';
+      }
+    });
+  });
+</script>
+@end
