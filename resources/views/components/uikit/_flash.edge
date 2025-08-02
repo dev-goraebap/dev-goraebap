@@ -1,0 +1,23 @@
+@if(flash?.info)
+<div role="alert" class="alert alert-info alert-soft">
+  <span>{{flash.info}}</span>
+</div>
+@end
+
+@if(flash?.success)
+<div role="alert" class="alert alert-success alert-soft">
+  <span>{{flash.success}}</span>
+</div>
+@end
+
+@if(flash?.warning)
+<div role="alert" class="alert alert-warning alert-soft">
+  <span>{{flash.warning}}</span>
+</div>
+@end
+
+@if(flash?.error)
+<div role="alert" class="alert alert-error alert-soft">
+  <span>{{flash.error}}</span>
+</div>
+@end
