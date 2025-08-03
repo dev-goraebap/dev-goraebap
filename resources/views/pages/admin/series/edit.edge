@@ -1,0 +1,8 @@
+<turbo-frame id="modalContentFrame">
+  <h2 class="text-2xl">시리즈 변경</h2>
+  <br/>
+  @!component('pages/admin/series/_form', {  
+    editMode: true,
+    series: flash?.input?.series ?? series
+  })
+</turbo-frame>

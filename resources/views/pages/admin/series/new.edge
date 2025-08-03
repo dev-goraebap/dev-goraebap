@@ -1,0 +1,7 @@
+<turbo-frame id="modalContentFrame">
+  <h2 class="text-2xl">시리즈 등록</h2>
+  <br/>
+  @!component('pages/admin/series/_form', {  
+    series: flash?.input?.series ?? null
+  })
+</turbo-frame>
