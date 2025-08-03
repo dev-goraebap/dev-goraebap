@@ -42,3 +42,20 @@ export const currentThemeHelper: ViewHelperFactory = (req: Request) => {
     },
   };
 };
+
+export const queryHelper: ViewHelperFactory = (req: Request) => {
+  return {
+    key: 'query',
+    fn: (name: string, value?: any): any => {
+      if (req.query[name]) {
+        return req.query[name];
+      }
+
+      if (value !== undefined) {
+        return value;
+      }
+
+      return '';
+    },
+  };
+};

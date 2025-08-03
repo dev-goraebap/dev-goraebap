@@ -9,13 +9,14 @@ import { AppService } from './app.service';
 import {
   currentThemeHelper,
   isCurrentRouteHelper,
-} from './common/view.helpers';
+  queryHelper,
+} from './common';
 
 @Module({
   imports: [
     NestMvcModule.forRoot({
       view: {
-        helpers: [isCurrentRouteHelper, currentThemeHelper],
+        helpers: [isCurrentRouteHelper, currentThemeHelper, queryHelper],
       },
     }),
     AdminModule,
