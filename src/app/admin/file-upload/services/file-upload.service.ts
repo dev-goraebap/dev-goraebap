@@ -1,10 +1,12 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { createHash, randomUUID } from 'crypto';
-import { BlobEntity } from '../../../../shared/entities/blob.entity';
-import { R2Service } from './r2.service';
+import { Repository } from 'typeorm';
+
+import { BlobEntity } from 'src/shared';
+
 import { FileUploadResponseDto } from '../dto/file-upload-response.dto';
+import { R2Service } from './r2.service';
 
 @Injectable()
 export class FileUploadService {
