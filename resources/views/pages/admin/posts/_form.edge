@@ -1,23 +1,24 @@
-@let(action = editMode ? `/admin/posts/${post?.id}?_csrf=${csrfToken}` : `/admin/posts?_csrf=${csrfToken}`)
+@let(action = editMode ? `/admin/posts/${post?.id}` : `/admin/posts`)
 @let(method = editMode ? 'PUT' : 'POST')
 @let(submitText = editMode ? '수정' : '등록')
 @let(redirectTo = editMode ? `/admin/posts/${post?.id}/edit` : '/admin/posts/new')
 
 <form 
   action="{{action}}" 
-  method="{{method}}" 
-  enctype="multipart/form-data"
+  method="{{method}}"
   data-controller="editor file-upload"
   data-action="submit->editor#handleSubmit" 
   class="flex gap-2 h-full">
 
+  <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
+
   <div class="w-full max-w-3xl">
-    <input type="text" name="title" class="px-6 w-full text-4xl font-bold focus:outline-none"
+    <input type="text" name="post[title]" class="px-6 w-full text-4xl font-bold focus:outline-none"
       placeholder="제목을 입력해 주세요...">
 
     <div class="prose prose-base w-full min-w-3xl mt-6">
       <div id="editorjs" class="overflow-y-auto"></div>
-      <input type="hidden" name="content" data-editor-target="content">
+      <input type="hidden" name="post[content]" data-editor-target="content">
     </div>
   </div>
 
@@ -37,8 +38,8 @@
         data-image-validate-size-min-height="400"
         data-image-validate-size-max-height="450" --}}
         data-existing-file="{{ post?.imageUrl  ? post.imageUrl : ''}}">
-      <!-- 실제 제출용 숨겨진 input -->
-      <input type="file" name="image" data-file-upload-target="hiddenInput" class="hidden">
+      <!-- FilePond 업로드 완료 시 blobId 저장용 -->
+      <input type="hidden" name="post[thumbnailBlobId]" data-file-upload-target="filePondBlobIds">
       <p class="label">w: 400~420, h: 600~620 사이로 등록 가능</p>
     </fieldset>
     <button type="submit">{{submitText}}</button>
