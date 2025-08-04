@@ -4,11 +4,8 @@ import {
   Get,
   Post,
   Req,
-  Res,
-  UploadedFile,
-  UseInterceptors,
+  Res
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
@@ -25,14 +22,11 @@ export class PostsController {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('image'))
   create(
     @Req() req: NestMvcReq,
-    @UploadedFile() imageFile: Express.Multer.File,
     @Body() dto: any,
     @Res() res: Response,
   ) {
-    console.log(imageFile);
     console.log(dto);
     req.flash.success('게시물 저장 완료');
     return res.redirect('/admin/posts');
