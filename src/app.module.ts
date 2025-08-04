@@ -18,6 +18,7 @@ import {
       view: {
         helpers: [isCurrentRouteHelper, currentThemeHelper, queryHelper],
       },
+      debug: true
     }),
     AdminModule,
   ],
