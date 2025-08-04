@@ -10,7 +10,7 @@
     <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
     <div class="drawer-content flex flex-col min-w-3xl">
       <!-- Navbar -->
-      <div class="navbar p-3 w-full sticky top-0 z-10">
+      <header class="navbar bg-base-100/80 backdrop-blur-sm p-3 w-full sticky top-0 z-10">
         <div class="flex-none lg:hidden">
           <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -27,7 +27,7 @@
         <div class="hidden flex-none lg:block">
           @!partials.themeDropbox()
         </div>
-      </div>
+      </header>
       <!-- Page content here -->
       <div class="max-w-[1980px] grow p-6">
         {{{ await $slots.main() }}}

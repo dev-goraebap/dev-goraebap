@@ -1,0 +1,5 @@
+@layout.admin({ title: '게시물 등록', adminTitle: '게시물 등록' }) 
+  @!component('pages/admin/posts/_form', {  
+    post: flash?.input?.post ?? null
+  })
+@end

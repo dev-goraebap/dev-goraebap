@@ -1,0 +1,47 @@
+@let(action = editMode ? `/admin/posts/${post?.id}?_csrf=${csrfToken}` : `/admin/posts?_csrf=${csrfToken}`)
+@let(method = editMode ? 'PUT' : 'POST')
+@let(submitText = editMode ? '수정' : '등록')
+@let(redirectTo = editMode ? `/admin/posts/${post?.id}/edit` : '/admin/posts/new')
+
+<form 
+  action="{{action}}" 
+  method="{{method}}" 
+  enctype="multipart/form-data"
+  data-controller="editor file-upload"
+  data-action="submit->editor#handleSubmit" 
+  class="flex gap-2 h-full">
+
+  <div class="w-full max-w-3xl">
+    <input type="text" name="title" class="px-6 w-full text-4xl font-bold focus:outline-none"
+      placeholder="제목을 입력해 주세요...">
+
+    <div class="prose prose-base w-full min-w-3xl mt-6">
+      <div id="editorjs" class="overflow-y-auto"></div>
+      <input type="hidden" name="content" data-editor-target="content">
+    </div>
+  </div>
+
+  <div class="w-md">
+    <fieldset class="fieldset">
+      <legend class="fieldset-legend">시리즈 카드 이미지</legend>
+      <input 
+        data-file-upload-target="fileInput"
+        type="file" 
+        class="filepond" 
+        multiple 
+        data-allow-reorder="true"
+        data-max-file-size="3MB" 
+        data-max-files="1"
+        {{-- data-image-validate-size-min-width="1200"
+        data-image-validate-size-max-width="1250"
+        data-image-validate-size-min-height="400"
+        data-image-validate-size-max-height="450" --}}
+        data-existing-file="{{ post?.imageUrl  ? post.imageUrl : ''}}">
+      <!-- 실제 제출용 숨겨진 input -->
+      <input type="file" name="image" data-file-upload-target="hiddenInput" class="hidden">
+      <p class="label">w: 400~420, h: 600~620 사이로 등록 가능</p>
+    </fieldset>
+    <button type="submit">{{submitText}}</button>
+  </div>
+
+</form>
