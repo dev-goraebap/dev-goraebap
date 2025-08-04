@@ -74,7 +74,7 @@ export class R2Service {
 
   getPublicUrl(key: string): string {
     const filePath = this.getFilePath(key);
-    return `${this.publicUrl}/${filePath}`;
+    return `${this.publicUrl}/${this.bucketName}/${filePath}`;
   }
 
   private getFilePath(key: string): string {
