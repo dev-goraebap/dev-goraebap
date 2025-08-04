@@ -7,18 +7,26 @@
     "build": "vite build"
   },
   "dependencies": {
+    "@editorjs/editorjs": "^2.30.8",
+    "@editorjs/header": "^2.8.8",
+    "@editorjs/image": "^2.10.3",
+    "@editorjs/list": "^2.0.8",
+    "@editorjs/paragraph": "^2.11.7",
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo": "^8.0.13",
     "@tailwindcss/vite": "^4.1.10",
     "alpinejs": "^3.14.9",
+    "editorjs-parser": "^1.5.3",
     "filepond": "^4.32.8",
     "filepond-plugin-file-validate-size": "^2.2.8",
     "filepond-plugin-file-validate-type": "^1.2.9",
     "filepond-plugin-image-preview": "^4.6.12",
     "filepond-plugin-image-validate-size": "^1.2.7",
+    "marked": "^16.1.2",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.16",
     "daisyui": "^5.0.50",
     "vite": "^6.3.5"
   }
