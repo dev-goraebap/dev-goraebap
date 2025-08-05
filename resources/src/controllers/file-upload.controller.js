@@ -22,18 +22,9 @@ export class FileUploadController extends Controller {
       FilePondPluginImageValidateSize,
       FilePondPluginFileValidateType,
     );
-    // 기존 파일 URL 확인
-    const existingFile = this.fileInputTarget.dataset.existingFile;
-    const files = existingFile ? [existingFile] : [];
 
     this.pond = FilePond.create(this.fileInputTarget, {
       acceptedFileTypes: ['image/*'],
-      //  imageValidateSizeMinWidth: 400,
-      //  imageValidateSizeMaxWidth: 420,
-      //  imageValidateSizeMinHeight: 600,
-      //  imageValidateSizeMaxHeight: 620,
-      files: files,
-
       // 서버 업로드 설정
       server: {
         process: {
@@ -62,6 +53,7 @@ export class FileUploadController extends Controller {
 
       // 파일이 추가될 때마다 숨겨진 input 업데이트
       onaddfile: (error, fileItem) => {
+        console.log(fileItem);
         if (!error) {
           console.log('FilePond 파일 추가:', fileItem);
           this.updateHiddenInput();

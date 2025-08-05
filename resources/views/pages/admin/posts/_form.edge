@@ -23,15 +23,13 @@
       <fieldset class="fieldset">
         <legend class="fieldset-legend">썸네일 이미지</legend>
         <input data-file-upload-target="fileInput" type="file" class="filepond" multiple data-allow-reorder="true"
-          data-max-file-size="3MB" data-max-files="1" {{-- data-image-validate-size-min-width="1200"
-          data-image-validate-size-max-width="1250" data-image-validate-size-min-height="400"
-          data-image-validate-size-max-height="450" --}} data-existing-file="{{ post?.imageUrl  ? post.imageUrl : ''}}">
+          data-max-file-size="3MB" data-max-files="1" data-existing-file="{{ post?.imageUrl  ? post.imageUrl : ''}}">
         <!-- FilePond 업로드 완료 시 blobId 저장용 -->
         <input type="hidden" name="post[thumbnailBlobId]" data-file-upload-target="filePondBlobIds">
         <p class="label">w: 400~420, h: 600~620 사이로 등록 가능</p>
       </fieldset>
 
-      <br/>
+      <br />
 
       <fieldset class="fieldset">
         <legend class="fieldset-legend">게시물 발행</legend>

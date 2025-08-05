@@ -7,30 +7,32 @@
   data-controller="file-upload"
   class="flex flex-col"
   action="{{action}}"
-  method="{{method}}"
-  enctype="multipart/form-data">
-  
-   @!uikit.flash()
+  method="{{method}}">
 
+  @!uikit.flash()
+
+  <input type="hidden" name="_redirect_to" value="{{ redirectTo }}">
+
+  <!-- 썸네일 이미지가 없을 경우 보여짐 -->
   <fieldset class="fieldset">
     <legend class="fieldset-legend">시리즈 카드 이미지</legend>
     <input
-        data-file-upload-target="fileInput"
-        type="file" 
-        class="filepond"
-        multiple
-        data-allow-reorder="true"
-        data-max-file-size="3MB"
-        data-max-files="1"
-        data-existing-file="{{ series?.imageUrl  ? series.imageUrl : ''}}"
-        >
+      data-file-upload-target="fileInput"
+      type="file" 
+      class="filepond"
+      multiple
+      data-allow-reorder="true"
+      data-max-file-size="3MB"
+      data-max-files="1"
+      data-image-validate-size-min-width="400"
+      data-image-validate-size-max-width="420"
+      data-image-validate-size-min-height="600"
+      data-image-validate-size-max-height="620"
+      data-existing-file="{{ series?.thumbnailUrl ? series.thumbnailUrl : ''}}">
       <!-- 실제 제출용 숨겨진 input -->
-      <input type="file" name="image" data-file-upload-target="hiddenInput" class="hidden">
+      <input type="hidden" name="series[thumbnailBlobId]" data-file-upload-target="filePondBlobIds">
     <p class="label">w: 400~420, h: 600~620 사이로 등록 가능</p>
   </fieldset>
-
-
-  <input type="hidden" name="_redirect_to" value="{{ redirectTo }}">
 
   <fieldset class="fieldset">
     <legend class="fieldset-legend">시리즈 이름</legend>
