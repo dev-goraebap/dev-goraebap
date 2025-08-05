@@ -19,46 +19,19 @@ import { NestMvcReq } from 'nestjs-mvc-tools';
 import { ZodValidationPipe } from 'src/common';
 import { CreateOrUpdateTagDto, CreateOrUpdateTagSchema } from './dto/create-or-update-tag.dto';
 import { GetTagsDto, GetTagsSchema } from './dto/get-tags.dto';
+import { TagsService } from './tags.service';
 
 @Controller({ path: '/admin/tags' })
 export class TagsController {
+
+  constructor(
+    private readonly tagsService: TagsService
+  ) {}
+
   @Get()
   @UsePipes(new ZodValidationPipe(GetTagsSchema))
-  index(@Req() req: NestMvcReq, @Query() dto: GetTagsDto) {
-    console.log(dto);
-
-    const tags = [
-      {
-        name: 'nestjs',
-        description: '',
-        relatedPostCount: 6,
-        createdAt: new Date(),
-      },
-      {
-        name: 'angular',
-        description: '',
-        relatedPostCount: 3,
-        createdAt: new Date(),
-      },
-      {
-        name: 'js',
-        description: '',
-        relatedPostCount: 10,
-        createdAt: new Date(),
-      },
-      {
-        name: 'nodejs',
-        description: '',
-        relatedPostCount: 23,
-        createdAt: new Date(),
-      },
-      {
-        name: 'ruby on rails',
-        description: '',
-        relatedPostCount: 6,
-        createdAt: new Date(),
-      },
-    ];
+  async index(@Req() req: NestMvcReq, @Query() dto: GetTagsDto) {
+    const tags = await this.tagsService.getTags(dto);
 
     if (req.headers['turbo-frame']) {
       return req.view.render('pages/admin/tags/_list', { tags });
@@ -76,23 +49,19 @@ export class TagsController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(CreateOrUpdateTagSchema))
-  create(@Req() req: NestMvcReq, @Body('tag') dto: CreateOrUpdateTagDto) {
-    console.log(dto);
+  async create(@Req() req: NestMvcReq, @Body('tag') dto: CreateOrUpdateTagDto) {
+    await this.tagsService.create(dto);
     req.flash.success('태그를 성공적으로 추가하였습니다.');
     return req.view.render('pages/admin/tags/_success');
   }
 
   @Get(':id/edit')
-  edit(@Param('id', ParseIntPipe) id: number, @Req() req: NestMvcReq) {
+  async edit(@Param('id', ParseIntPipe) id: number, @Req() req: NestMvcReq) {
     if (!req.headers['turbo-frame']) {
       throw new NotFoundException('페이지를 찾을 수 없습니다.');
     }
-    
-    const tag = {
-      id: 1,
-      name: 'test-tag',
-      description: 'hello world',
-    };
+
+    const tag = await this.tagsService.getTag(id);
     return req.view.render('pages/admin/tags/edit', {
       tag,
     });
@@ -100,22 +69,23 @@ export class TagsController {
 
   @Put(':id')
   @UsePipes(new ZodValidationPipe(CreateOrUpdateTagSchema))
-  update(
+  async update(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: NestMvcReq,
     @Body('tag') dto: CreateOrUpdateTagDto,
   ) {
-    console.log(dto);
+    await this.tagsService.update(id, dto);
     req.flash.success('태그를 성공적으로 변경하였습니다.');
     return req.view.render('pages/admin/tags/_success');
   }
 
   @Delete(':id')
-  destroy(
+  async destroy(
     @Param('id', ParseIntPipe) id: number,
     @Req() req: NestMvcReq,
     @Res() res: Response,
   ) {
+    await this.tagsService.destroy(id);
     req.flash.success('태그를 성공적으로 제거하였습니다.');
     return res.redirect(303, req.headers.referer || '/admin/tags');
   }
