@@ -1,14 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
-import * as session from 'express-session';
 import * as express from 'express';
+import * as session from 'express-session';
 import { join } from 'path';
 
-import { AppModule } from './app.module';
+import { MainModule } from './main.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(MainModule);
 
   app.use(cookieParser());
 
