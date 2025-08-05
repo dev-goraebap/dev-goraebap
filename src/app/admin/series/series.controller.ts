@@ -11,64 +11,39 @@ import {
   Req,
   Res,
   UploadedFile,
-  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 import { ZodValidationPipe } from 'src/common';
 
 import {
-  CreateOrUpdateSeriesDto,
-  CreateOrUpdateSeriesSchema,
+  CreateSeriesDto,
+  CreateSeriesSchema,
+  UpdateSeriesDto,
+  UpdateSeriesSchema,
 } from './dto/create-or-update-series.dto';
 import { GetSeriesDto, GetSeriesSchema } from './dto/get-series.dto';
+import { SeriesService } from './series.service';
+import { CreateSeriesUseCase } from './use-cases/create-series.use-case';
+import { DestroySeriesUseCase } from './use-cases/destroy-series.use-case';
+import { UpdateSeriesUseCase } from './use-cases/update-series.use-case';
 
 @Controller({ path: '/admin/series' })
 export class SeriesController {
+  constructor(
+    private readonly seriesService: SeriesService,
+    private readonly createSeriesUseCase: CreateSeriesUseCase,
+    private readonly updateSeriesUseCase: UpdateSeriesUseCase,
+    private readonly destroySeriesUseCase: DestroySeriesUseCase
+  ) {}
+
   @Get()
   @UsePipes(new ZodValidationPipe(GetSeriesSchema))
-  index(@Req() req: NestMvcReq, @Query() dto: GetSeriesDto) {
-    console.log(dto);
-    const series = [
-      {
-        id: 1,
-        imageUrl: '/public/images/bg01.jpg',
-        name: 'nestjs',
-        description:
-          'alskdfjsadlkfjdsalkfjlasdkfjllsadkfjlasldkfjllasdkjfalsdkjfl',
-        relatedPostCount: 6,
-        createdAt: new Date(),
-      },
-      {
-        id: 2,
-        imageUrl: '/public/images/bg02.jpg',
-        name: 'angular',
-        description:
-          'alskdfjsadlkfjdsalkfjlasdkfjllsadkfjlasldkfjllasdkjfalsdkjfl',
-        relatedPostCount: 3,
-        createdAt: new Date(),
-      },
-      {
-        id: 3,
-        imageUrl: '/public/images/bg03.jpg',
-        name: 'js',
-        description:
-          'alskdfjsadlkfjdsalkfjlasdkfjllsadkfjlasldkfjllasdkjfalsdkjfl',
-        relatedPostCount: 10,
-        createdAt: new Date(),
-      },
-      {
-        id: 4,
-        imageUrl: '/public/images/bg04.jpg',
-        name: 'nodejs',
-        description:
-          'alskdfjsadlkfjdsalkfjlasdkfjllsadkfjlasldkfjllasdkjfalsdkjfl',
-        relatedPostCount: 23,
-        createdAt: new Date(),
-      },
-    ];
+  async index(@Req() req: NestMvcReq, @Query() dto: GetSeriesDto) {
+    const series = await this.seriesService.getSeriesList(dto);
+
+    series.forEach(x => console.log(x.thumbnailUrl));
 
     if (req.headers['turbo-frame']) {
       return req.view.render('pages/admin/series/_list', { series });
@@ -85,57 +60,48 @@ export class SeriesController {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('image'))
-  @UsePipes(new ZodValidationPipe(CreateOrUpdateSeriesSchema))
-  create(
+  @UsePipes(new ZodValidationPipe(CreateSeriesSchema))
+  async create(
     @Req() req: NestMvcReq,
-    @UploadedFile() imageFile: Express.Multer.File,
-    @Body('series') dto: CreateOrUpdateSeriesDto,
+    @Body('series') dto: CreateSeriesDto,
   ) {
-    console.log(imageFile);
     console.log(dto);
+    await this.createSeriesUseCase.execute(dto);
     req.flash.success('시리즈를 성공적으로 등록하였습니다.');
     return req.view.render('pages/admin/series/_success');
   }
 
   @Get(':id/edit')
-  edit(@Param('id') id: number, @Req() req: NestMvcReq) {
+  async edit(@Param('id') id: number, @Req() req: NestMvcReq) {
     console.log(id);
-    const series = {
-      id: 1,
-      imageUrl: '/public/images/bg04.jpg',
-      name: 'nodejs',
-      description:
-        'alskdfjsadlkfjdsalkfjlasdkfjllsadkfjlasldkfjllasdkjfalsdkjfl',
-      relatedPostCount: 23,
-      createdAt: new Date(),
-    };
+    const series = await this.seriesService.getSeriesItem(id);
     return req.view.render('pages/admin/series/edit', {
       series,
     });
   }
 
   @Put(':id')
-  @UseInterceptors(FileInterceptor('image'))
-  @UsePipes(new ZodValidationPipe(CreateOrUpdateSeriesSchema))
-  update(
+  @UsePipes(new ZodValidationPipe(UpdateSeriesSchema))
+  async update(
     @Param('id') id: number,
     @Req() req: NestMvcReq,
     @UploadedFile() imageFile: Express.Multer.File,
-    @Body('series') dto: CreateOrUpdateSeriesDto,
+    @Body('series') dto: UpdateSeriesDto,
   ) {
     console.log(imageFile);
     console.log(dto);
+    await this.updateSeriesUseCase.execute(id, dto);
     req.flash.success('시리즈를 성공적으로 변경하였습니다.');
     return req.view.render('pages/admin/series/_success');
   }
 
   @Delete(':id')
-  destroy(
+  async destroy(
     @Param('id') id: number,
     @Req() req: NestMvcReq,
     @Res() res: Response,
   ) {
+    await this.destroySeriesUseCase.execute(id);
     req.flash.success('시리즈를 성공적으로 삭제하였습니다.');
     return res.redirect(303, '/admin/series');
   }
