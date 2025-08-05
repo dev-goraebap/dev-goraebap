@@ -1,8 +1,8 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { PostEntity } from './post.entity';
 
 @Entity({ name: 'series' })
-export class SeriesEntity {
+export class SeriesEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 

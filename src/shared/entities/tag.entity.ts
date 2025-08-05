@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -9,7 +10,7 @@ import {
 import { PostEntity } from './post.entity';
 
 @Entity({ name: 'tags' })
-export class TagEntity {
+export class TagEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
