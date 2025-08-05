@@ -3,46 +3,50 @@
 @let(submitText = editMode ? '수정' : '등록')
 @let(redirectTo = editMode ? `/admin/posts/${post?.id}/edit` : '/admin/posts/new')
 
-<form 
-  action="{{action}}" 
-  method="{{method}}"
-  data-controller="editor file-upload"
-  data-action="submit->editor#handleSubmit" 
-  class="flex gap-2 h-full">
+<form action="{{action}}" method="{{method}}" data-controller="editor file-upload"
+  data-action="submit->editor#handleSubmit" class="flex gap-4 h-full relative">
 
-  <input type="hidden" name="_csrf" value="{{csrfToken}}"/>
+  <input type="hidden" name="_csrf" value="{{csrfToken}}" />
 
-  <div class="w-full max-w-3xl">
+  <div class="w-full max-w-3xl border-r border-base-300">
     <input type="text" name="post[title]" class="px-6 w-full text-4xl font-bold focus:outline-none"
       placeholder="제목을 입력해 주세요...">
 
     <div class="prose prose-base w-full min-w-3xl mt-6">
-      <div id="editorjs" class="overflow-y-auto"></div>
+      <div id="editorjs" class="h-[700px]"></div>
       <input type="hidden" name="post[content]" data-editor-target="content">
     </div>
   </div>
 
-  <div class="w-md">
-    <fieldset class="fieldset">
-      <legend class="fieldset-legend">시리즈 카드 이미지</legend>
-      <input 
-        data-file-upload-target="fileInput"
-        type="file" 
-        class="filepond" 
-        multiple 
-        data-allow-reorder="true"
-        data-max-file-size="3MB" 
-        data-max-files="1"
-        {{-- data-image-validate-size-min-width="1200"
-        data-image-validate-size-max-width="1250"
-        data-image-validate-size-min-height="400"
-        data-image-validate-size-max-height="450" --}}
-        data-existing-file="{{ post?.imageUrl  ? post.imageUrl : ''}}">
-      <!-- FilePond 업로드 완료 시 blobId 저장용 -->
-      <input type="hidden" name="post[thumbnailBlobId]" data-file-upload-target="filePondBlobIds">
-      <p class="label">w: 400~420, h: 600~620 사이로 등록 가능</p>
-    </fieldset>
-    <button type="submit">{{submitText}}</button>
+  <div class="w-sm flex flex-col justify-between">
+    <div class="w-full">
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">썸네일 이미지</legend>
+        <input data-file-upload-target="fileInput" type="file" class="filepond" multiple data-allow-reorder="true"
+          data-max-file-size="3MB" data-max-files="1" {{-- data-image-validate-size-min-width="1200"
+          data-image-validate-size-max-width="1250" data-image-validate-size-min-height="400"
+          data-image-validate-size-max-height="450" --}} data-existing-file="{{ post?.imageUrl  ? post.imageUrl : ''}}">
+        <!-- FilePond 업로드 완료 시 blobId 저장용 -->
+        <input type="hidden" name="post[thumbnailBlobId]" data-file-upload-target="filePondBlobIds">
+        <p class="label">w: 400~420, h: 600~620 사이로 등록 가능</p>
+      </fieldset>
+
+      <br/>
+
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">게시물 발행</legend>
+        <select class="select w-full">
+          <option selected>즉시 발행</option>
+          <option>보류</option>
+          <option>예약 발행</option>
+        </select>
+        <input type="datetime-local" class="input w-full mt-2" />
+        <span class="label"></span>
+      </fieldset>
+    </div>
+
+    <!-- submit button -->
+    <button type="submit" class="btn btn-soft btn-primary">{{submitText}}</button>
   </div>
 
 </form>
