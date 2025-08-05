@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NestMvcModule } from 'nestjs-mvc-tools';
 import { join } from 'path';
 
+import { AppModule } from './app/app.module';
 import { currentThemeHelper, isCurrentRouteHelper, queryHelper, TypeOrmOptionsImpl } from './config';
 
 @Module({
@@ -19,6 +20,7 @@ import { currentThemeHelper, isCurrentRouteHelper, queryHelper, TypeOrmOptionsIm
       },
       debug: true,
     }),
+    AppModule
   ],
 })
 export class MainModule {}
