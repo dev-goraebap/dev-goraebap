@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { join } from 'path';
 
-import { AttachmentEntity, BlobEntity } from 'src/shared';
+import { AttachmentEntity, BlobEntity, PostEntity, SeriesEntity, TagEntity } from 'src/shared';
 
 @Injectable()
 export class TypeOrmOptionsImpl implements TypeOrmOptionsFactory {
@@ -15,7 +15,10 @@ export class TypeOrmOptionsImpl implements TypeOrmOptionsFactory {
       logging: true,
       entities: [
         BlobEntity,
-        AttachmentEntity
+        AttachmentEntity,
+        PostEntity,
+        SeriesEntity,
+        TagEntity
       ],
     };
   }
