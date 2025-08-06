@@ -4,19 +4,34 @@ import Image from '@editorjs/image';
 import List from '@editorjs/list';
 import Paragraph from '@editorjs/paragraph';
 import { Controller } from '@hotwired/stimulus';
+import edjsHTML from 'editorjs-html';
 
 import { MarkdownImporter } from '../editorjs-custom-plugins/markdown-importer';
 
 export class EditorController extends Controller {
-  static targets = ['content'];
+  static targets = ['content', 'contentHtml'];
 
   connect() {
+    const initialContent = this.contentTarget?.dataset?.initialContent;
+    
+    let parsedData;
+    try {
+      parsedData = initialContent && initialContent !== '{}' ? JSON.parse(initialContent) : undefined;
+    } catch (error) {
+      console.error('초기 데이터 파싱 실패:', error);
+      parsedData = undefined;
+    }
+    
     this.editor = new EditorJS({
       holder: 'editorjs',
+      data: parsedData,
       tools: {
         header: Header,
         list: List,
-        paragraph: Paragraph,
+        paragraph: {
+          class: Paragraph,
+          inlineToolbar: true,
+        },
         image: {
           class: Image,
           config: {
@@ -28,6 +43,9 @@ export class EditorController extends Controller {
         markdownImporter: MarkdownImporter,
       },
       placeholder: '내용을 입력하세요...',
+      onReady: () => {
+        console.log('EditorJS 준비 완료');
+      },
     });
   }
 
@@ -41,6 +59,9 @@ export class EditorController extends Controller {
       const response = await fetch('/api/admin/file-upload', {
         method: 'POST',
         body: formData,
+        headers: {
+          'X-CSRF-Token': document.querySelector('input[name="_csrf"]')?.value || '',
+        },
       });
 
       if (!response.ok) {
@@ -54,7 +75,7 @@ export class EditorController extends Controller {
         success: 1,
         file: {
           url: result.url,
-          // 추가 메타데이터
+          blobId: result.blobId,
           caption: result.filename,
           withBorder: false,
           withBackground: false,
@@ -71,10 +92,42 @@ export class EditorController extends Controller {
   }
 
   async handleSubmit(event) {
-    event.preventDefault();
-    const outputData = await this.editor.save();
-    console.log('에디터 저장 데이터:', outputData);
-    this.contentTarget.value = JSON.stringify(outputData);
-    event.target.submit();
+    // Turbo가 폼을 처리하도록 하기 위해 preventDefault 제거
+    // event.preventDefault(); // 이 줄을 제거!
+    
+    try {
+      if (!this.editor) {
+        throw new Error('에디터가 초기화되지 않았습니다.');
+      }
+
+      console.log('데이터 저장 시작...');
+      const outputData = await this.editor.save();
+      console.log('에디터 저장 데이터:', outputData);
+      
+      // JSON 저장
+      this.contentTarget.value = JSON.stringify(outputData);
+      
+      // HTML 변환 후 저장
+      const edjsParser = edjsHTML();
+      const html = edjsParser.parse(outputData);
+      const htmlString = Array.isArray(html) ? html.join('') : html;
+      this.contentHtmlTarget.value = htmlString;
+      
+      console.log('변환된 HTML:', this.contentHtmlTarget.value);
+      
+      // Turbo가 폼을 제출하도록 그대로 둠
+      // event.target.submit(); // 이 줄도 제거!
+      
+    } catch (error) {
+      console.error('저장 중 오류:', error);
+      event.preventDefault(); // 에러가 있을 때만 폼 제출을 막음
+      alert('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+    }
+  }
+
+  disconnect() {
+    if (this.editor && typeof this.editor.destroy === 'function') {
+      this.editor.destroy();
+    }
   }
 }
