@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { PostEntity } from './post.entity';
 import { AttachmentEntity } from './attachment.entity';
+import { PostEntity } from './post.entity';
 
 @Entity({ name: 'series' })
 export class SeriesEntity extends BaseEntity {
@@ -31,7 +31,7 @@ export class SeriesEntity extends BaseEntity {
   readonly posts: PostEntity[];
 
   // 쿼리빌더에서 수동으로 설정되는 속성
-  attachments?: AttachmentEntity[];
+  readonly attachments?: AttachmentEntity[];
 
   get thumbnailUrl(): string | null {
     if (!this.attachments || this.attachments.length === 0) {
