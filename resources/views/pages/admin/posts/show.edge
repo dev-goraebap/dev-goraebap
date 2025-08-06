@@ -1,0 +1,32 @@
+@layout.admin({ title: 'dev.goraebap admin | 게시물 관리', adminTitle: '게시물 조회' })
+
+<div class="max-w-4xl mx-auto p-6">
+  <!-- 게시물 헤더 -->
+  <div class="mb-8">
+    <h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
+    <div class="flex items-center gap-4 text-sm text-gray-600 mb-6">
+      <span>작성일: {{ post.createdAt.toLocaleDateString('ko-KR') }}</span>
+      <span>수정일: {{ post.updatedAt.toLocaleDateString('ko-KR') }}</span>
+    </div>
+    
+    <!-- 썸네일 이미지 -->
+    @if(post.thumbnailUrl)
+    <div class="mb-6">
+      <img src="{{ post.thumbnailUrl }}" alt="{{ post.title }} 썸네일" class="max-w-sm rounded-lg shadow-md">
+    </div>
+    @end
+  </div>
+
+  <!-- 게시물 내용 -->
+  <div class="prose prose-base max-w-none">
+    {{{ post.contentHtml }}}
+  </div>
+
+  <!-- 액션 버튼 -->
+  <div class="flex gap-4 mt-8">
+    <a href="/admin/posts/{{ post.id }}/edit" class="btn btn-primary">수정</a>
+    <a href="/admin/posts" class="btn btn-outline">목록으로</a>
+  </div>
+</div>
+
+@end

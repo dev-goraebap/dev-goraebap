@@ -10,11 +10,13 @@
 
   <div class="w-full max-w-3xl border-r border-base-300">
     <input type="text" name="post[title]" class="px-6 w-full text-4xl font-bold focus:outline-none"
-      placeholder="제목을 입력해 주세요...">
+      placeholder="제목을 입력해 주세요..." value="{{post?.title || ''}}">
 
     <div class="prose prose-base w-full min-w-3xl mt-6">
       <div id="editorjs" class="h-[700px]"></div>
-      <input type="hidden" name="post[content]" data-editor-target="content">
+      <input type="hidden" name="post[content]" data-editor-target="content"
+        data-initial-content="{{post?.content || '{}'}}">
+      <input type="hidden" name="post[contentHtml]" data-editor-target="contentHtml">
     </div>
   </div>
 
@@ -23,7 +25,7 @@
       <fieldset class="fieldset">
         <legend class="fieldset-legend">썸네일 이미지</legend>
         <input data-file-upload-target="fileInput" type="file" class="filepond" multiple data-allow-reorder="true"
-          data-max-file-size="3MB" data-max-files="1" data-existing-file="{{ post?.imageUrl  ? post.imageUrl : ''}}">
+          data-max-file-size="3MB" data-max-files="1">
         <!-- FilePond 업로드 완료 시 blobId 저장용 -->
         <input type="hidden" name="post[thumbnailBlobId]" data-file-upload-target="filePondBlobIds">
         <p class="label">w: 400~420, h: 600~620 사이로 등록 가능</p>
@@ -44,7 +46,7 @@
     </div>
 
     <!-- submit button -->
-    <button type="submit" class="btn btn-soft btn-primary">{{submitText}}</button>
+    <button type="submit" class="btn btn-soft btn-primary" data-turbo-submits-with="저장 중...">{{submitText}}</button>
   </div>
 
 </form>

@@ -12,7 +12,13 @@
     </button>
   </div>
 
-  @!component('pages/admin/series/_list', {  
-    series
-  })
+  @if(series?.length > 0)
+    @!component('pages/admin/series/_list', {  
+      series
+    })
+  @else
+    <div class="w-full flex justify-center p-10">
+      <p class="text-3xl">시리즈가 텅 비었어요!</p>
+    </div>
+  @end
 @end

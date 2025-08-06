@@ -48,6 +48,7 @@ export class PostsService {
     if (!post) {
       throw new BadRequestException('게시물을 찾을 수 없습니다.');
     }
+
     return post;
   }
 }

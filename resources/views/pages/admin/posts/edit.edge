@@ -1,0 +1,6 @@
+@layout.admin({ title: '게시물 수정', adminTitle: '게시물 수정' }) 
+  @!component('pages/admin/posts/_form', {  
+    editMode: true,
+    post: flash?.input?.post ?? post
+  })
+@end

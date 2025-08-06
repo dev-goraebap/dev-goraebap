@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   Req,
   Res,
@@ -58,7 +59,7 @@ export class PostsController {
   @UsePipes(new ZodValidationPipe(CreatePostSchema))
   async create(
     @Req() req: NestMvcReq,
-    @Body() dto: CreatePostDto,
+    @Body('post') dto: CreatePostDto,
     @Res() res: Response,
   ) {
     console.log(dto);
@@ -73,18 +74,19 @@ export class PostsController {
     return req.view.render('pages/admin/posts/edit', { post });
   }
 
-  @Post()
+  @Put(':id')
   @UsePipes(new ZodValidationPipe(UpdatePostSchema))
   async update(
     @Req() req: NestMvcReq,
     @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdatePostDto,
+    @Body('post') dto: UpdatePostDto,
     @Res() res: Response,
   ) {
+    console.log('업데이트!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     console.log(dto);
     await this.updatePostUseCase.execute(id, dto);
     req.flash.success('게시물 변경 완료');
-    return res.redirect('/admin/posts');
+    return res.redirect(303, '/admin/posts');
   }
 
   @Delete(':id')

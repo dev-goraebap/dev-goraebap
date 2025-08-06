@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { AttachmentEntity, BlobEntity, PostEntity } from 'src/shared';
 import { EntityManager, In } from 'typeorm';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { extractBlobIds } from '../utils/extract-content';
 
 @Injectable()
 export class UpdatePostUseCase {
@@ -20,6 +21,7 @@ export class UpdatePostUseCase {
         ...post,
         title: dto.title,
         content: dto.content,
+        contentHtml: dto.contentHtml,
       });
       await updatedPost.save();
 
@@ -54,11 +56,27 @@ export class UpdatePostUseCase {
         await newThumbnailAttachment.save();
       }
 
+      // 기존의 모든 컨텐츠 이미지 첨부 제거
+      const contentImageAttachments = await AttachmentEntity.find({
+        where: {
+          name: 'contentImage',
+          recordType: 'post',
+          recordId: updatedPost.id.toString(),
+        },
+      });
+      await AttachmentEntity.remove(contentImageAttachments);
+
+      const contentBlobIds = extractBlobIds(dto.content);
+      console.log(contentBlobIds);
+      console.log(contentBlobIds);
+      console.log(contentBlobIds);
+      console.log(contentBlobIds);
+
       // 게시물 컨텐츠 이미지가 있을 경우 컨텐츠 이미지 첨부 생성
-      if (dto.contentBlobIds.length !== 0) {
+      if (contentBlobIds.length !== 0) {
         const blobs = await BlobEntity.find({
           where: {
-            id: In(dto.contentBlobIds),
+            id: In(contentBlobIds),
           },
         });
         const newAttachments = blobs.map((x) => {

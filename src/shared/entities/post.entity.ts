@@ -9,6 +9,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { AttachmentEntity } from './attachment.entity';
 import { SeriesEntity } from './series.entity';
 import { TagEntity } from './tag.entity';
 
@@ -24,10 +26,16 @@ export class PostEntity extends BaseEntity {
   readonly content: string;
 
   @Column()
+  readonly contentHtml: string;
+
+  @Column()
   readonly isPublished: boolean;
 
   @Column()
   readonly publishedAt: Date;
+
+  @Column({ default: 0 })
+  readonly viewCount: number;
 
   @CreateDateColumn()
   readonly createdAt: Date;
@@ -53,4 +61,18 @@ export class PostEntity extends BaseEntity {
     },
   })
   readonly tags: TagEntity[];
+
+  // 쿼리빌더에서 수동으로 설정되는 속성
+  readonly attachments?: AttachmentEntity[];
+
+  get thumbnailUrl(): string | null {
+    if (!this.attachments || this.attachments.length === 0) {
+      return null;
+    }
+
+    const thumbnail = this.attachments.find((a) => a.name === 'thumbnail');
+    return thumbnail
+      ? `https://pub-25798484b9f84767985e92fba1219739.r2.dev/my-blog-files/${thumbnail.blob.getFilePath()}`
+      : null;
+  }
 }

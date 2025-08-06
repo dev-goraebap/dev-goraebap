@@ -3,6 +3,7 @@ import { EntityManager, In } from 'typeorm';
 
 import { AttachmentEntity, BlobEntity, PostEntity } from 'src/shared';
 import { CreatePostDto } from '../dto/create-post.dto';
+import { extractBlobIds } from '../utils/extract-content';
 
 @Injectable()
 export class CreatePostUseCase {
@@ -14,6 +15,7 @@ export class CreatePostUseCase {
       let newPost = PostEntity.create({
         title: dto.title,
         content: dto.content,
+        contentHtml: dto.contentHtml,
         isPublished: false,
         publishedAt: new Date(),
       });
@@ -36,11 +38,17 @@ export class CreatePostUseCase {
       });
       await newThumbnailAttachment.save();
 
+      const contentBlobIds = extractBlobIds(dto.content);
+      console.log(contentBlobIds);
+      console.log(contentBlobIds);
+      console.log(contentBlobIds);
+      console.log(contentBlobIds);
+
       // 게시물 컨텐츠 이미지가 있을 경우 컨텐츠 이미지 첨부 생성
-      if (dto.contentBlobIds.length !== 0) {
+      if (contentBlobIds.length !== 0) {
         const blobs = await BlobEntity.find({
           where: {
-            id: In(dto.contentBlobIds),
+            id: In(contentBlobIds),
           },
         });
         const newAttachments = blobs.map((x) => {
