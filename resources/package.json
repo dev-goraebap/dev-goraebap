@@ -16,6 +16,7 @@
     "@hotwired/turbo": "^8.0.13",
     "@tailwindcss/vite": "^4.1.10",
     "alpinejs": "^3.14.9",
+    "editorjs-html": "^4.0.5",
     "editorjs-parser": "^1.5.3",
     "filepond": "^4.32.8",
     "filepond-plugin-file-validate-size": "^2.2.8",
