@@ -23,6 +23,9 @@ export class PostEntity extends BaseEntity {
   readonly title: string;
 
   @Column()
+  readonly summary: string;
+
+  @Column()
   readonly content: string;
 
   @Column()
@@ -65,14 +68,19 @@ export class PostEntity extends BaseEntity {
   // 쿼리빌더에서 수동으로 설정되는 속성
   readonly attachments?: AttachmentEntity[];
 
-  get thumbnailUrl(): string | null {
+  get thumbnail() {
     if (!this.attachments || this.attachments.length === 0) {
       return null;
     }
 
-    const thumbnail = this.attachments.find((a) => a.name === 'thumbnail');
-    return thumbnail
-      ? `https://pub-25798484b9f84767985e92fba1219739.r2.dev/my-blog-files/${thumbnail.blob.getFilePath()}`
-      : null;
+    const attachment = this.attachments.find((a) => a.name === 'thumbnail');
+    if (!attachment) {
+      return null;
+    }
+
+    return {
+      url: attachment.blob.getFilePath(),
+      dominantColor: attachment.blob.metadata?.dominantColor,
+    };
   }
 }
