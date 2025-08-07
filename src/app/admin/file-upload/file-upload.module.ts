@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { BlobEntity } from 'src/shared/entities/blob.entity';
 import { FileUploadApiController } from './file-upload.api.controller';
-import { FileUploadTestController } from './file-upload.test.controller';
-import { FileUploadService } from './services/file-upload.service';
-import { R2Service } from './services/r2.service';
 import { FileCleanupService } from './services/file-cleanup.service';
-import { BlobEntity } from '../../../shared/entities/blob.entity';
+import { FileUploadService } from './services/file-upload.service';
+import { GoogleVisionService } from './services/google-vision.service';
+import { R2Service } from './services/r2.service';
 
 @Module({
   imports: [
@@ -15,17 +16,12 @@ import { BlobEntity } from '../../../shared/entities/blob.entity';
   ],
   controllers: [
     FileUploadApiController,
-    FileUploadTestController,
   ],
   providers: [
     FileUploadService,
     R2Service,
     FileCleanupService,
-  ],
-  exports: [
-    FileUploadService,
-    R2Service,
-    FileCleanupService,
-  ],
+    GoogleVisionService
+  ]
 })
 export class FileUploadModule {}

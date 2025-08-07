@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import { BlobEntity } from 'src/shared';
 
 import { FileUploadResponseDto } from '../dto/file-upload-response.dto';
+import { GoogleVisionService } from './google-vision.service';
 import { R2Service } from './r2.service';
 
 @Injectable()
@@ -16,6 +17,7 @@ export class FileUploadService {
     @InjectRepository(BlobEntity)
     private readonly blobRepository: Repository<BlobEntity>,
     private readonly r2Service: R2Service,
+    private readonly googleVisionService: GoogleVisionService
   ) {}
 
   async uploadFile(file: Express.Multer.File): Promise<FileUploadResponseDto> {
@@ -104,10 +106,14 @@ export class FileUploadService {
   private async extractMetadata(file: Express.Multer.File): Promise<Record<string, any>> {
     const metadata: Record<string, any> = {};
 
-    // 이미지 파일인 경우 메타데이터 추출 (향후 sharp 라이브러리 사용 가능)
+    // 이미지 파일인 경우 메타데이터 추출
     if (file.mimetype.startsWith('image/')) {
-      // TODO: 이미지 크기 및 메타데이터 추출
       metadata.type = 'image';
+
+      // 지배적 색상 추출
+      const colorData = await this.googleVisionService.extractColors(file.buffer);
+      metadata.dominantPrimaryColor = colorData[0] ? colorData[0].hex : null;
+      metadata.dominantSecondaryColor = colorData[1] ? colorData[1].hex : null;
     }
 
     return Promise.resolve(metadata);
