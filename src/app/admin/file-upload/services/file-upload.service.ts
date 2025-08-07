@@ -112,8 +112,8 @@ export class FileUploadService {
 
       // 지배적 색상 추출
       const colorData = await this.googleVisionService.extractColors(file.buffer);
-      metadata.dominantPrimaryColor = colorData[0] ? colorData[0].hex : null;
-      metadata.dominantSecondaryColor = colorData[1] ? colorData[1].hex : null;
+      metadata.dominantColor = colorData[0] ? colorData[0].hex : null;
+      metadata.dominantColor2 = colorData[1] ? colorData[1].hex : null;
     }
 
     return metadata;
