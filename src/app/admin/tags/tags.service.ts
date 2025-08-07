@@ -19,7 +19,7 @@ export class TagsService {
       where.name = Like(`%${dto.search}%`);
     }
 
-    return await TagEntity.find({
+    return await this.tagRepository.find({
       where,
       order: {
         [dto.orderKey]: dto.orderBy,
@@ -41,7 +41,7 @@ export class TagsService {
   }
 
   async update(id: number, dto: CreateOrUpdateTagDto) {
-    const tag = await TagEntity.findOne({
+    const tag = await this.tagRepository.findOne({
       where: { id },
     });
     if (!tag) {
@@ -52,7 +52,7 @@ export class TagsService {
   }
 
   async destroy(id: number) {
-    const tag = await TagEntity.findOne({
+    const tag = await this.tagRepository.findOne({
       where: { id },
     });
     if (!tag) {
