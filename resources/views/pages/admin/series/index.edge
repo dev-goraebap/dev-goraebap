@@ -1,6 +1,9 @@
 @layout.admin({ title: 'dev.goraebap admin | 시리즈 관리', adminTitle: '시리즈 관리' })
   <div class="flex justify-between items-center">
-    @!component('pages/admin/series/_query')
+    @!partials.queryForm({
+      frameId: 'seriesListFrame',
+      placeholder: '시리즈 이름 검색'
+    })
 
     <button class="btn" data-action="modal#onOpen" data-content-url="/admin/series/new">
       시리즈 추가

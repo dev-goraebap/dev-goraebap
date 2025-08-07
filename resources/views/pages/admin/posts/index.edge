@@ -1,27 +1,10 @@
 @layout.admin({ title: 'dev.goraebap admin | 게시물 관리', adminTitle: '게시물 관리' })
 
 <div class="pb-2 flex justify-between items-center">
-  <form class="flex">
-    <div class="flex gap-2 w-full">
-      <label class="input">
-        <svg class="h-[2em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-          <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.3-4.3"></path>
-          </g>
-        </svg>
-        <input type="search" class="grow" placeholder="Search" />
-        <kbd class="kbd kbd-sm">⌘</kbd>
-        <kbd class="kbd kbd-sm">K</kbd>
-      </label>
-
-      <select class="select max-w-[100px]">
-        <option selected>조회수</option>
-        <option>최신</option>
-        <option>오래된</option>
-      </select>
-    </div>
-  </form>
+  @!partials.queryForm({
+    frameId: 'postListFrame',
+    placeholder: '게시물 제목 검색'
+  })
 
   <a href="/admin/posts/new" class="btn">
     게시물 작성
