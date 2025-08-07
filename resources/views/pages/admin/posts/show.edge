@@ -10,10 +10,11 @@
     </div>
     
     <!-- 썸네일 이미지 -->
-    @if(post.thumbnailUrl)
-    <div class="mb-6">
-      <img src="{{ post.thumbnailUrl }}" alt="{{ post.title }} 썸네일" class="max-w-sm rounded-lg shadow-md">
-    </div>
+    @if(post.thumbnail?.url)
+      @!uikit.image({
+        url: cloudImageUrl(post?.thumbnail?.url),
+        dominantColor: post?.thumbnail?.dominantColor
+      })
     @end
   </div>
 

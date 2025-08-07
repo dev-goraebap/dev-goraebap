@@ -39,7 +39,7 @@
         <!-- Sidebar content here -->
         <li class="p-4 pb-2 text-xs opacity-60 tracking-wide">Menu</li>
 
-        <li>
+        {{-- <li>
           <a href="/admin" class="{{ isCurrentRoute('/admin', true) && 'bg-neutral text-neutral-content' }} p-3">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="size-5">
@@ -48,7 +48,7 @@
             </svg>
             대시보드
           </a>
-        </li>
+        </li> --}}
         <li>
           <a href="/admin/posts" class="{{ isCurrentRoute('/admin/posts') && 'bg-neutral text-neutral-content' }} p-3">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -82,7 +82,7 @@
             태그 관리
           </a>
         </li>
-        <li>
+        {{-- <li>
           <a href="/admin/patch-notes"
             class="{{ isCurrentRoute('/admin/patch-notes') && 'bg-neutral text-neutral-content' }} p-3">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -93,7 +93,7 @@
 
             패치노트
           </a>
-        </li>
+        </li> --}}
       </ul>
     </div>
   </div>
