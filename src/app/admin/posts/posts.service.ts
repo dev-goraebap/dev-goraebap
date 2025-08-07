@@ -1,18 +1,25 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { Like } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
+import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity } from 'src/shared';
 import { GetPostsDTO } from './dto/get-posts.dto';
 
 @Injectable()
 export class PostsService {
+
+  constructor(
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>
+  ) {}
+
   async getPosts(dto: GetPostsDTO) {
     const where: any = {};
     if (dto.search) {
       where.name = Like(`%${dto.search}%`);
     }
 
-    const queryBuilder = PostEntity.createQueryBuilder('post')
+    const queryBuilder = this.postRepository.createQueryBuilder('post')
       .leftJoinAndMapMany(
         'post.attachments',
         'attachments',
@@ -33,7 +40,7 @@ export class PostsService {
   }
 
   async getPost(id: number) {
-    const post = await PostEntity.createQueryBuilder('post')
+    const post = await this.postRepository.createQueryBuilder('post')
       .leftJoinAndMapMany(
         'post.attachments',
         'attachments',

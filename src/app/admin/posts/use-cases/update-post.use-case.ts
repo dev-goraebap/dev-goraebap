@@ -1,33 +1,43 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, In, Repository } from 'typeorm';
+
 import { AttachmentEntity, BlobEntity, PostEntity } from 'src/shared';
-import { EntityManager, In } from 'typeorm';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { extractBlobIds } from '../utils/extract-content';
 
 @Injectable()
 export class UpdatePostUseCase {
-  constructor(private readonly entityManager: EntityManager) {}
+  constructor(
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
+    @InjectRepository(BlobEntity)
+    private readonly blobRepository: Repository<BlobEntity>,
+    @InjectRepository(AttachmentEntity)
+    private readonly attachmentRepository: Repository<AttachmentEntity>,
+    private readonly entityManager: EntityManager,
+  ) {}
 
   async execute(id: number, dto: UpdatePostDto) {
     await this.entityManager.transaction(async () => {
       // 게시물 변경
-      const post = await PostEntity.findOne({
+      const post = await this.postRepository.findOne({
         where: { id },
       });
       if (!post) {
         throw new BadRequestException('게시물을 찾을 수 없습니다.');
       }
-      const updatedPost = PostEntity.create({
+      const updatedPost = this.postRepository.create({
         ...post,
         title: dto.title,
         content: dto.content,
         contentHtml: dto.contentHtml,
       });
-      await updatedPost.save();
+      await this.postRepository.save(updatedPost);
 
       // 썸네일이 변경된 경우
       if (dto.thumbnailBlobId) {
-        const existsThumbnailAttachments = await AttachmentEntity.find({
+        const existsThumbnailAttachments = await this.attachmentRepository.find({
           where: {
             name: 'thumbnail',
             recordType: 'post',
@@ -35,10 +45,10 @@ export class UpdatePostUseCase {
           },
         });
         if (existsThumbnailAttachments.length !== 0) {
-          await AttachmentEntity.remove(existsThumbnailAttachments);
+          await this.attachmentRepository.remove(existsThumbnailAttachments);
         }
 
-        const thumbnailBlob = await BlobEntity.findOne({
+        const thumbnailBlob = await this.blobRepository.findOne({
           where: {
             id: dto.thumbnailBlobId,
           },
@@ -47,47 +57,43 @@ export class UpdatePostUseCase {
         if (!thumbnailBlob) {
           throw new BadRequestException('썸네일 파일이 존재하지 않습니다.');
         }
-        const newThumbnailAttachment = AttachmentEntity.create({
+        const newThumbnailAttachment = this.attachmentRepository.create({
           blob: thumbnailBlob,
           name: 'thumbnail',
           recordType: 'post',
           recordId: updatedPost.id.toString(),
         });
-        await newThumbnailAttachment.save();
+        await this.attachmentRepository.save(newThumbnailAttachment);
       }
 
       // 기존의 모든 컨텐츠 이미지 첨부 제거
-      const contentImageAttachments = await AttachmentEntity.find({
+      const contentImageAttachments = await this.attachmentRepository.find({
         where: {
           name: 'contentImage',
           recordType: 'post',
           recordId: updatedPost.id.toString(),
         },
       });
-      await AttachmentEntity.remove(contentImageAttachments);
+      await this.attachmentRepository.remove(contentImageAttachments);
 
       const contentBlobIds = extractBlobIds(dto.content);
-      console.log(contentBlobIds);
-      console.log(contentBlobIds);
-      console.log(contentBlobIds);
-      console.log(contentBlobIds);
 
       // 게시물 컨텐츠 이미지가 있을 경우 컨텐츠 이미지 첨부 생성
       if (contentBlobIds.length !== 0) {
-        const blobs = await BlobEntity.find({
+        const blobs = await this.blobRepository.find({
           where: {
             id: In(contentBlobIds),
           },
         });
         const newAttachments = blobs.map((x) => {
-          return AttachmentEntity.create({
+          return this.attachmentRepository.create({
             blob: x,
             name: 'contentImage',
             recordType: 'post',
             recordId: updatedPost.id.toString(),
           });
         });
-        await AttachmentEntity.save(newAttachments);
+        await this.attachmentRepository.save(newAttachments);
       }
     });
   }

@@ -1,15 +1,23 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
+
 import { AttachmentEntity, PostEntity } from 'src/shared';
-import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class DestroyPostUseCase {
-  constructor(private readonly entityManager: EntityManager) {}
+  constructor(
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
+    @InjectRepository(AttachmentEntity)
+    private readonly attachmentRepository: Repository<AttachmentEntity>,
+    private readonly entityManager: EntityManager,
+  ) {}
 
   async execute(id: number) {
     await this.entityManager.transaction(async () => {
       // 삭제할 게시물 조회
-      const post = await PostEntity.findOne({
+      const post = await this.postRepository.findOne({
         where: { id },
       });
       if (!post) {
@@ -17,18 +25,18 @@ export class DestroyPostUseCase {
       }
 
       // 게시물에 관련된 모든 첨부 삭제
-      const existsPostAttachments = await AttachmentEntity.find({
+      const existsPostAttachments = await this.attachmentRepository.find({
         where: {
           recordType: 'post',
           recordId: post.id.toString(),
         },
       });
       if (existsPostAttachments.length !== 0) {
-        await AttachmentEntity.remove(existsPostAttachments);
+        await this.attachmentRepository.remove(existsPostAttachments);
       }
 
       // 게시물 삭제
-      await post.remove();
+      await this.postRepository.remove(post);
     });
   }
 }
