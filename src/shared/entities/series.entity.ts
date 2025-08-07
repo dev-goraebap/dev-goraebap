@@ -1,17 +1,17 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
+
 import { AttachmentEntity } from './attachment.entity';
 import { PostEntity } from './post.entity';
 
 @Entity({ name: 'series' })
-export class SeriesEntity extends BaseEntity {
+export class SeriesEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 

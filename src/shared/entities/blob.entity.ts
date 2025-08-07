@@ -1,15 +1,14 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   OneToMany,
-  PrimaryGeneratedColumn,
+  PrimaryGeneratedColumn
 } from 'typeorm';
 import { AttachmentEntity } from './attachment.entity';
 
 @Entity({ name: 'blobs' })
-export class BlobEntity extends BaseEntity {
+export class BlobEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 

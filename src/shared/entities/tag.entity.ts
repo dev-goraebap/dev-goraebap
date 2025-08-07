@@ -1,16 +1,16 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   ManyToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
+
 import { PostEntity } from './post.entity';
 
 @Entity({ name: 'tags' })
-export class TagEntity extends BaseEntity {
+export class TagEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 

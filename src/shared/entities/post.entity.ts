@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
@@ -7,7 +6,7 @@ import {
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  UpdateDateColumn
 } from 'typeorm';
 
 import { AttachmentEntity } from './attachment.entity';
@@ -15,7 +14,7 @@ import { SeriesEntity } from './series.entity';
 import { TagEntity } from './tag.entity';
 
 @Entity({ name: 'posts' })
-export class PostEntity extends BaseEntity {
+export class PostEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
