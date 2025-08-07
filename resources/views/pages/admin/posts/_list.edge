@@ -3,14 +3,14 @@
     <li class="list-row">
       <div class="w-[200px] h-[120px]">
         @!uikit.image({
-          url: cloudImageUrl(post?.thumbnail?.url),
-          dominantColor: post?.thumbnail?.dominantColor
+          url: cloudImageUrl(post?.getImage('thumbnail')?.url),
+          dominantColor: post?.getImage('thumbnail')?.dominantColor
         })
       </div>
       <div class="w-full flex flex-col gap-2">
         <div class="flex justify-between">
           <div>
-            <a href="/admin/posts/{{post?.id}}" class="text-2xl">{{post?.title}}</a>
+            <a href="/admin/posts/{{post?.id}}" data-turbo-frame="_top" class="text-2xl">{{post?.title}}</a>
             <div class="text-xs uppercase font-semibold opacity-60">
               <span>#nestjs</span>
               <span>#mvc</span>

@@ -10,12 +10,10 @@
     </div>
     
     <!-- 썸네일 이미지 -->
-    @if(post.thumbnail?.url)
-      @!uikit.image({
-        url: cloudImageUrl(post?.thumbnail?.url),
-        dominantColor: post?.thumbnail?.dominantColor
-      })
-    @end
+    @!uikit.image({
+      url: cloudImageUrl(post?.getImage('thumbnail')?.url),
+      dominantColor: post?.getImage('thumbnail')?.dominantColor
+    })
   </div>
 
   <!-- 게시물 내용 -->
