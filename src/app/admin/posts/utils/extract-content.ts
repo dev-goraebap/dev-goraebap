@@ -58,3 +58,31 @@ export function extractBlobIds(jsonString: string): number[] {
 
   return blobIds;
 }
+
+/**
+ * EditorJS JSON에서 paragraph 타입 블록 중 첫 번째 블록의 텍스트를 추출하는 함수
+ * @param jsonString - EditorJS JSON 문자열
+ * @returns 첫 번째 paragraph의 텍스트 또는 빈 문자열
+ */
+export function extractFirstParagraph(jsonString: string): string {
+  try {
+    const editorData = JSON.parse(jsonString) as EditorJSData;
+
+    // blocks가 없거나 배열이 아닌 경우 빈 문자열 반환
+    if (!editorData.blocks || !Array.isArray(editorData.blocks)) {
+      return '';
+    }
+
+    // paragraph 타입인 첫 번째 블록 찾기
+    const firstParagraph = editorData.blocks.find(block => block.type === 'paragraph');
+    
+    if (firstParagraph && firstParagraph.data && firstParagraph.data.text) {
+      return firstParagraph.data?.text as string || '';
+    }
+    
+    return '';
+  } catch (error) {
+    console.error('JSON 파싱 실패:', error);
+    return '';
+  }
+}
