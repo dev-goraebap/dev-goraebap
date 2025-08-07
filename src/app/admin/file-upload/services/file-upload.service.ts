@@ -116,6 +116,6 @@ export class FileUploadService {
       metadata.dominantSecondaryColor = colorData[1] ? colorData[1].hex : null;
     }
 
-    return Promise.resolve(metadata);
+    return metadata;
   }
 }
