@@ -42,9 +42,6 @@ export class SeriesController {
   @UsePipes(new ZodValidationPipe(GetSeriesSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetSeriesDto) {
     const series = await this.seriesService.getSeriesList(dto);
-
-    series.forEach(x => console.log(x.thumbnailUrl));
-
     if (req.headers['turbo-frame']) {
       return req.view.render('pages/admin/series/_list', { series });
     }

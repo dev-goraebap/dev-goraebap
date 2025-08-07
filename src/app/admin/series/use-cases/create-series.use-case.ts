@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
 
 import { AttachmentEntity, BlobEntity, SeriesEntity } from 'src/shared';
 import { CreateSeriesDto } from '../dto/create-or-update-series.dto';
@@ -7,13 +8,19 @@ import { CreateSeriesDto } from '../dto/create-or-update-series.dto';
 @Injectable()
 export class CreateSeriesUseCase {
   constructor(
-    private readonly entityManager: EntityManager
+    @InjectRepository(BlobEntity)
+    private readonly blobRepository: Repository<BlobEntity>,
+    @InjectRepository(AttachmentEntity)
+    private readonly attachmentRepository: Repository<AttachmentEntity>,
+    @InjectRepository(SeriesEntity)
+    private readonly seriesRepository: Repository<SeriesEntity>,
+    private readonly entityManager: EntityManager,
   ) {}
 
   async execute(dto: CreateSeriesDto) {
     await this.entityManager.transaction(async () => {
       // 썸네일 파일 존재 확인
-      const blobEntity = await BlobEntity.findOne({
+      const blobEntity = await this.blobRepository.findOne({
         where: { id: dto.thumbnailBlobId },
       });
       if (!blobEntity) {
@@ -23,7 +30,7 @@ export class CreateSeriesUseCase {
       }
 
       // 시리즈 이름 중복 채크
-      const hasDuplicateSeries = await SeriesEntity.exists({
+      const hasDuplicateSeries = await this.seriesRepository.exists({
         where: {
           name: dto.name,
         },
@@ -33,17 +40,17 @@ export class CreateSeriesUseCase {
       }
 
       // 시리즈 생성
-      let newSeriesEntity = SeriesEntity.create({ ...dto });
-      newSeriesEntity = await newSeriesEntity.save();
+      let newSeriesEntity = this.seriesRepository.create({ ...dto });
+      newSeriesEntity = await this.entityManager.save(newSeriesEntity);
 
       // 시리즈와 파일의 첨부 관계 생성
-      const newAttachmentEntity = AttachmentEntity.create({
+      const newAttachmentEntity = this.attachmentRepository.create({
         blob: blobEntity,
         name: 'thumbnail',
         recordType: 'series',
         recordId: newSeriesEntity.id.toString(),
       });
-      await newAttachmentEntity.save();
+      await this.entityManager.save(newAttachmentEntity);
     });
   }
 }
