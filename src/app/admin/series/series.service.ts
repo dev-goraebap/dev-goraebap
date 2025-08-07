@@ -1,18 +1,25 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { SeriesEntity } from 'src/shared';
-import { Like } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
+import { InjectRepository } from '@nestjs/typeorm';
 import { GetSeriesDto } from './dto/get-series.dto';
 
 @Injectable()
 export class SeriesService {
+
+  constructor(
+    @InjectRepository(SeriesEntity)
+    private readonly seriesRepository: Repository<SeriesEntity>
+  ) {}
+
   async getSeriesList(dto: GetSeriesDto) {
     const where: any = {};
     if (dto.search) {
       where.name = Like(`%${dto.search}%`);
     }
 
-    const queryBuilder = SeriesEntity
+    const queryBuilder = this.seriesRepository
       .createQueryBuilder('series')
       .leftJoinAndSelect('series.posts', 'posts')
       .leftJoinAndMapMany('series.attachments', 'attachments', 'attachment', 
@@ -30,7 +37,7 @@ export class SeriesService {
   }
 
   async getSeriesItem(id: number) {
-    const series = await SeriesEntity
+    const series = await this.seriesRepository
       .createQueryBuilder('series')
       .leftJoinAndSelect('series.posts', 'posts')
       .leftJoinAndMapMany('series.attachments', 'attachments', 'attachment', 
