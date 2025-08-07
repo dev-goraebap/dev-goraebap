@@ -9,12 +9,12 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { AttachmentEntity } from './attachment.entity';
+import { BaseEntityWithAttachments } from './_/base-entity-with-attachments';
 import { SeriesEntity } from './series.entity';
 import { TagEntity } from './tag.entity';
 
 @Entity({ name: 'posts' })
-export class PostEntity {
+export class PostEntity extends BaseEntityWithAttachments {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
@@ -63,23 +63,4 @@ export class PostEntity {
     },
   })
   readonly tags: TagEntity[];
-
-  // 쿼리빌더에서 수동으로 설정되는 속성
-  readonly attachments?: AttachmentEntity[];
-
-  get thumbnail() {
-    if (!this.attachments || this.attachments.length === 0) {
-      return null;
-    }
-
-    const attachment = this.attachments.find((a) => a.name === 'thumbnail');
-    if (!attachment) {
-      return null;
-    }
-
-    return {
-      url: attachment.blob.getFilePath(),
-      dominantColor: attachment.blob.metadata?.dominantColor,
-    };
-  }
 }
