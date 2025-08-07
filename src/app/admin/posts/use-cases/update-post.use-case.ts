@@ -4,7 +4,10 @@ import { EntityManager, In, Repository } from 'typeorm';
 
 import { AttachmentEntity, BlobEntity, PostEntity } from 'src/shared';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import { extractBlobIds } from '../utils/extract-content';
+import {
+  extractBlobIds,
+  extractFirstParagraph,
+} from '../utils/extract-content';
 
 @Injectable()
 export class UpdatePostUseCase {
@@ -20,32 +23,39 @@ export class UpdatePostUseCase {
 
   async execute(id: number, dto: UpdatePostDto) {
     await this.entityManager.transaction(async () => {
-      // 게시물 변경
       const post = await this.postRepository.findOne({
         where: { id },
       });
       if (!post) {
         throw new BadRequestException('게시물을 찾을 수 없습니다.');
       }
+
+      // 요약 텍스트 추출
+      const summary = extractFirstParagraph(dto.content);
+
+      // 게시물 변경
       const updatedPost = this.postRepository.create({
         ...post,
         title: dto.title,
+        summary,
         content: dto.content,
         contentHtml: dto.contentHtml,
       });
-      await this.postRepository.save(updatedPost);
+      await this.entityManager.save(updatedPost);
 
       // 썸네일이 변경된 경우
       if (dto.thumbnailBlobId) {
-        const existsThumbnailAttachments = await this.attachmentRepository.find({
-          where: {
-            name: 'thumbnail',
-            recordType: 'post',
-            recordId: updatedPost.id.toString(),
+        const existsThumbnailAttachments = await this.attachmentRepository.find(
+          {
+            where: {
+              name: 'thumbnail',
+              recordType: 'post',
+              recordId: updatedPost.id.toString(),
+            },
           },
-        });
+        );
         if (existsThumbnailAttachments.length !== 0) {
-          await this.attachmentRepository.remove(existsThumbnailAttachments);
+          await this.entityManager.remove(existsThumbnailAttachments);
         }
 
         const thumbnailBlob = await this.blobRepository.findOne({
@@ -63,7 +73,7 @@ export class UpdatePostUseCase {
           recordType: 'post',
           recordId: updatedPost.id.toString(),
         });
-        await this.attachmentRepository.save(newThumbnailAttachment);
+        await this.entityManager.save(newThumbnailAttachment);
       }
 
       // 기존의 모든 컨텐츠 이미지 첨부 제거
@@ -74,7 +84,7 @@ export class UpdatePostUseCase {
           recordId: updatedPost.id.toString(),
         },
       });
-      await this.attachmentRepository.remove(contentImageAttachments);
+      await this.entityManager.remove(contentImageAttachments);
 
       const contentBlobIds = extractBlobIds(dto.content);
 
@@ -93,7 +103,7 @@ export class UpdatePostUseCase {
             recordId: updatedPost.id.toString(),
           });
         });
-        await this.attachmentRepository.save(newAttachments);
+        await this.entityManager.save(newAttachments);
       }
     });
   }

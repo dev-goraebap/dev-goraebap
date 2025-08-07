@@ -4,7 +4,10 @@ import { EntityManager, In, Repository } from 'typeorm';
 
 import { AttachmentEntity, BlobEntity, PostEntity } from 'src/shared';
 import { CreatePostDto } from '../dto/create-post.dto';
-import { extractBlobIds } from '../utils/extract-content';
+import {
+  extractBlobIds,
+  extractFirstParagraph,
+} from '../utils/extract-content';
 
 @Injectable()
 export class CreatePostUseCase {
@@ -15,20 +18,24 @@ export class CreatePostUseCase {
     private readonly blobRepository: Repository<BlobEntity>,
     @InjectRepository(AttachmentEntity)
     private readonly attachmentRepository: Repository<AttachmentEntity>,
-    private readonly entityManager: EntityManager
+    private readonly entityManager: EntityManager,
   ) {}
 
   async execute(dto: CreatePostDto) {
     await this.entityManager.transaction(async () => {
+      // 요약 텍스트 추출
+      const summary = extractFirstParagraph(dto.content);
+
       // 게시물 생성
       let newPost = this.postRepository.create({
         title: dto.title,
         content: dto.content,
         contentHtml: dto.contentHtml,
+        summary,
         isPublished: false,
         publishedAt: new Date(),
       });
-      newPost = await this.postRepository.save(newPost);
+      newPost = await this.entityManager.save(newPost);
 
       // 썸네일 첨부 생성
       const thumbnailBlob = await this.blobRepository.findOne({
@@ -45,7 +52,7 @@ export class CreatePostUseCase {
         recordType: 'post',
         recordId: newPost.id.toString(),
       });
-      await this.attachmentRepository.save(newThumbnailAttachment);
+      await this.entityManager.save(newThumbnailAttachment);
 
       const contentBlobIds = extractBlobIds(dto.content);
 
@@ -64,7 +71,7 @@ export class CreatePostUseCase {
             recordId: newPost.id.toString(),
           });
         });
-        await this.attachmentRepository.save(newAttachments);
+        await this.entityManager.save(newAttachments);
       }
     });
   }

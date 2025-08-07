@@ -6,7 +6,9 @@ import { CreateSeriesDto } from '../dto/create-or-update-series.dto';
 
 @Injectable()
 export class CreateSeriesUseCase {
-  constructor(private readonly entityManager: EntityManager) {}
+  constructor(
+    private readonly entityManager: EntityManager
+  ) {}
 
   async execute(dto: CreateSeriesDto) {
     await this.entityManager.transaction(async () => {

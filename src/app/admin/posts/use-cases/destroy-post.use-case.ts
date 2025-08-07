@@ -32,11 +32,11 @@ export class DestroyPostUseCase {
         },
       });
       if (existsPostAttachments.length !== 0) {
-        await this.attachmentRepository.remove(existsPostAttachments);
+        await this.entityManager.remove(existsPostAttachments);
       }
 
       // 게시물 삭제
-      await this.postRepository.remove(post);
+      await this.entityManager.remove(post);
     });
   }
 }
