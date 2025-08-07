@@ -38,6 +38,11 @@ export class PostsController {
   async index(@Req() req: NestMvcReq, @Query() dto: GetPostsDTO) {
     const posts = await this.postsService.getPosts(dto);
     console.log(posts);
+
+    if (req.headers['turbo-frame']) {
+      return req.view.render('pages/admin/posts/_list', { posts });
+    }
+
     return req.view.render('pages/admin/posts/index', {
       posts,
     });
@@ -82,7 +87,6 @@ export class PostsController {
     @Body('post') dto: UpdatePostDto,
     @Res() res: Response,
   ) {
-    console.log('업데이트!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
     console.log(dto);
     await this.updatePostUseCase.execute(id, dto);
     req.flash.success('게시물 변경 완료');
