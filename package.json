@@ -36,7 +36,7 @@
     "cross-env": "^10.0.0",
     "express-session": "^1.18.2",
     "multer": "^2.0.2",
-    "nestjs-mvc-tools": "^0.9.10",
+    "nestjs-mvc-tools": "^0.9.11",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.25",
