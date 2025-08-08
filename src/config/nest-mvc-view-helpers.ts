@@ -6,17 +6,13 @@ import { ViewHelperFactory } from 'nestjs-mvc-tools';
  * 템플릿에서 {{ isCurrentRoute('/home') }} 형태로 사용
  */
 export const isCurrentRouteHelper: ViewHelperFactory = (req: Request) => {
-  return {
-    key: 'isCurrentRoute',
-    fn: (routePath: string, exact: boolean = false) => {
-      if (!exact) {
-        return (
-          req.originalUrl.startsWith(routePath) ||
-          req.path.startsWith(routePath)
-        );
-      }
-      return req.originalUrl === routePath || req.path === routePath;
-    },
+  return (routePath: string, exact: boolean = false) => {
+    if (!exact) {
+      return (
+        req.originalUrl.startsWith(routePath) || req.path.startsWith(routePath)
+      );
+    }
+    return req.originalUrl === routePath || req.path === routePath;
   };
 };
 
@@ -25,37 +21,59 @@ export const isCurrentRouteHelper: ViewHelperFactory = (req: Request) => {
  * 템플릿에서 {{ currentTheme() }} 형태로 사용
  */
 export const currentThemeHelper: ViewHelperFactory = (req: Request) => {
-  return {
-    key: 'currentTheme',
-    fn: () => {
-      const defaultTheme = 'light';
-      const cookies = req.cookies as Record<string, string>;
-      if (!cookies) {
-        console.debug('쿠키가 활성화되지 않았습니다.');
-        return defaultTheme;
-      }
-      const theme = cookies?.theme;
-      if (!theme) {
-        return defaultTheme;
-      }
-      return theme;
-    },
+  return () => {
+    const defaultTheme = 'light';
+    const cookies = req.cookies as Record<string, string>;
+    if (!cookies) {
+      console.debug('쿠키가 활성화되지 않았습니다.');
+      return defaultTheme;
+    }
+    const theme = cookies?.theme;
+    if (!theme) {
+      return defaultTheme;
+    }
+    return theme;
   };
 };
 
 export const queryHelper: ViewHelperFactory = (req: Request) => {
-  return {
-    key: 'query',
-    fn: (name: string, value?: any): any => {
-      if (req.query[name]) {
-        return req.query[name];
-      }
+  return (name: string, value?: any): any => {
+    if (req.query[name]) {
+      return req.query[name];
+    }
 
-      if (value !== undefined) {
-        return value;
-      }
+    if (value !== undefined) {
+      return value;
+    }
 
-      return '';
-    },
+    return '';
   };
+};
+
+// ------------------------------------------------------------------
+// Globals
+// ------------------------------------------------------------------
+
+export const formatDate = (
+  date: Date | string | number,
+  separator: '/' | '-' = '/',
+) => {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+
+  return `${year}${separator}${month}${separator}${day}`;
+};
+
+export const formatDateTime = (
+  date: Date | string | number,
+  separator: '/' | '-' = '/',
+) => {
+  const d = new Date(date);
+  const dateStr = formatDate(d, separator);
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+
+  return `${dateStr} ${hours}:${minutes}`;
 };

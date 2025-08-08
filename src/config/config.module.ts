@@ -5,7 +5,7 @@ import { NestMvcModule } from 'nestjs-mvc-tools';
 import { join } from 'path';
 
 import { AttachmentEntity, BlobEntity, PostEntity, SeriesEntity, TagEntity } from 'src/shared';
-import { currentThemeHelper, isCurrentRouteHelper, queryHelper } from './nest-mvc-view-helpers';
+import { nestMvcOptions } from './nest-mvc.options';
 import { TypeOrmOptionsImpl } from './typeorm.options';
 
 @Global()
@@ -17,12 +17,7 @@ import { TypeOrmOptionsImpl } from './typeorm.options';
     }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmOptionsImpl }),
     TypeOrmModule.forFeature([PostEntity, TagEntity, SeriesEntity, BlobEntity, AttachmentEntity]),
-    NestMvcModule.forRoot({
-      view: {
-        helpers: [isCurrentRouteHelper, currentThemeHelper, queryHelper],
-      },
-      debug: true,
-    }),
+    NestMvcModule.forRoot(nestMvcOptions),
   ],
   exports: [
     TypeOrmModule

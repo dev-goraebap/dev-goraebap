@@ -5,20 +5,10 @@ import * as express from 'express';
 import * as session from 'express-session';
 import { join } from 'path';
 
-import { ConfigService } from '@nestjs/config';
-import { EdgeJsService } from 'nestjs-mvc-tools';
 import { MainModule } from './main.module';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(MainModule);
-
-  // Edge.js 글로벌 설정 등록
-  const edgeJsService = app.get(EdgeJsService);
-  const configService = app.get(ConfigService);
-  const r2DevEndpoint = configService.get('R2_DEV_ENDPOINT');
-  edgeJsService
-    .getEdgeInstance()
-    .global('cloudImageUrl', (url: string) => `${r2DevEndpoint}/${url}`);
 
   app.use(cookieParser());
 
