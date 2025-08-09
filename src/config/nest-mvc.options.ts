@@ -29,8 +29,11 @@ export const nestMvcOptions: NestMvcOptions = {
     },
     globalsInjects: [ConfigService],
     globalsFactory: (configService: ConfigService) => ({
-      cloudImageUrl: (url: string) =>
-        `${configService.get('R2_DEV_ENDPOINT')}/${url}`,
+      cloudImageUrl: (url: string) => {
+        // URL이 없을 경우 기본 이미지 표시
+        if (!url) return '/public/images/post-default.jpg';
+        return `${configService.get('R2_DEV_ENDPOINT')}/${url}`;
+      },
     }),
   },
   asset: {

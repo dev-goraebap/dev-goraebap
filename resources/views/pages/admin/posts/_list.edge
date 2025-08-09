@@ -1,7 +1,7 @@
 <turbo-frame id="postListFrame">
   @each((post, index) in posts)
     <li class="list-row">
-      <div class="w-[200px] h-[120px]">
+      <div class="w-[200px] h-[120px] rounded-xl overflow-hidden">
         @!uikit.image({
           url: cloudImageUrl(post?.getImage('thumbnail')?.url),
           dominantColor: post?.getImage('thumbnail')?.dominantColor
