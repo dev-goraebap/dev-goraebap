@@ -1,0 +1,26 @@
+<div data-controller="tag-input">
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">태그 추가</legend>
+
+    <input type="text" data-tag-input-target="input" data-action="keydown->tag-input#onKeydown"
+    placeholder="태그 입력 후 Enter" class="input w-full" />
+    <div class="flex flex-wrap gap-2 mt-1" data-tag-input-target="container">
+      <!-- 태그들이 여기에 추가됨 -->
+
+      <!-- 수정모드의 경우 존재하는 태그를 미리 랜더링 -->
+      @each(tag in tags)
+        @!component('pages/admin/posts/_form/_tag_badge', {  
+          tagName: tag?.name
+        })
+      @end
+    </div>
+    <span class="label">총 3개까지 태그를 등록할 수 있습니다.</span>
+  </fieldset>
+
+  <!-- 태그 템플릿 -->
+  <template data-tag-input-target="template">
+    @!component('pages/admin/posts/_form/_tag_badge', {  
+      tagName: null
+    })
+  </template>
+</div>

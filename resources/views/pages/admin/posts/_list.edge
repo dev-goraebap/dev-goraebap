@@ -12,9 +12,9 @@
           <div>
             <a href="/admin/posts/{{post?.id}}" data-turbo-frame="_top" class="text-2xl">{{post?.title}}</a>
             <div class="text-xs uppercase font-semibold opacity-60">
-              <span>#nestjs</span>
-              <span>#mvc</span>
-              <span>#lib</span>
+              @each(tag in post?.tags)
+                <span>#{{tag?.name}}</span>
+              @end
             </div>
           </div>
           <div>

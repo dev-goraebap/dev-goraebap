@@ -33,20 +33,12 @@
 
       <br />
 
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">게시물 발행</legend>
-        <select class="select w-full">
-          <option selected>즉시 발행</option>
-          <option>보류</option>
-          <option>예약 발행</option>
-        </select>
-        <input type="datetime-local" class="input w-full mt-2" />
-        <span class="label"></span>
-      </fieldset>
+      @!component('pages/admin/posts/_form/_tag_input', {  
+        tags: post?.tags || []
+      })
     </div>
 
     <!-- submit button -->
     <button type="submit" class="btn btn-soft btn-primary" data-turbo-submits-with="저장 중...">{{submitText}}</button>
   </div>
-
 </form>

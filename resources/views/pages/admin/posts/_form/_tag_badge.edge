@@ -1,0 +1,5 @@
+<div class="tag badge badge-ghost">
+  <span data-tag-input-target="tagText">{{tagName}}</span>
+  <button type="button" class="cursor-pointer" data-action="click->tag-input#removeTag">×</button>
+  <input type="hidden" name="post[tags][]" data-tag-input-target="hiddenInput" value="{{tagName || ''}}">
+</div>
