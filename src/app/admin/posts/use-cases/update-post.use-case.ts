@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, In, Repository } from 'typeorm';
 
-import { AttachmentEntity, BlobEntity, PostEntity } from 'src/shared';
+import { AttachmentEntity, BlobEntity, PostEntity, TagEntity } from 'src/shared';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import {
   extractBlobIds,
@@ -12,19 +12,24 @@ import {
 @Injectable()
 export class UpdatePostUseCase {
   constructor(
-    @InjectRepository(PostEntity)
-    private readonly postRepository: Repository<PostEntity>,
+    private readonly entityManager: EntityManager,
     @InjectRepository(BlobEntity)
     private readonly blobRepository: Repository<BlobEntity>,
     @InjectRepository(AttachmentEntity)
     private readonly attachmentRepository: Repository<AttachmentEntity>,
-    private readonly entityManager: EntityManager,
+    @InjectRepository(TagEntity)
+    private readonly tagRepository: Repository<TagEntity>,
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
   ) {}
 
   async execute(id: number, dto: UpdatePostDto) {
     await this.entityManager.transaction(async () => {
       const post = await this.postRepository.findOne({
         where: { id },
+        relations: {
+          tags: true,
+        },
       });
       if (!post) {
         throw new BadRequestException('게시물을 찾을 수 없습니다.');
@@ -33,14 +38,41 @@ export class UpdatePostUseCase {
       // 요약 텍스트 추출
       const summary = extractFirstParagraph(dto.content);
 
-      // 게시물 변경
+      // 태그 처리 (생성과 동일한 로직)
+      const existingTags = await this.tagRepository.find({
+        where: { name: In(dto.tags) },
+      });
+
+      const existingTagNames = existingTags.map((tag) => tag.name);
+      const newTagNames = dto.tags.filter(
+        (name) => !existingTagNames.includes(name),
+      );
+
+      // 새로운 태그들 생성
+      let newTags: TagEntity[] = [];
+      if (newTagNames.length > 0) {
+        const tagsToCreate = newTagNames.map((name) =>
+          this.tagRepository.create({
+            name,
+            description: '',
+          }),
+        );
+        newTags = await this.entityManager.save(tagsToCreate);
+      }
+
+      // 전체 태그 목록
+      const allTags = [...existingTags, ...newTags];
+
+      // 게시물 업데이트 (태그 관계도 함께)
       const updatedPost = this.postRepository.create({
         ...post,
         title: dto.title,
         summary,
         content: dto.content,
         contentHtml: dto.contentHtml,
+        tags: allTags, // 새로운 태그 관계로 완전 교체
       });
+
       await this.entityManager.save(updatedPost);
 
       // 썸네일이 변경된 경우

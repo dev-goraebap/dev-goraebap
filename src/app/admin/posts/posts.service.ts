@@ -13,7 +13,9 @@ export class PostsService {
   ) {}
 
   async getPosts(dto: GetPostsDTO) {
-    const qb = this.postRepository.createQueryBuilder('post');
+    const qb = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.tags', 'tag');
     AttachmentQueryHelper.withAttachments(qb, 'post');
 
     // 검색 조건 추가
@@ -30,7 +32,9 @@ export class PostsService {
   }
 
   async getPost(id: number) {
-    const qb = this.postRepository.createQueryBuilder('post');
+    const qb = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.tags', 'tag');
     AttachmentQueryHelper.withAttachments(qb, 'post');
     qb.where('post.id = :id', { id });
     const post = await qb.getOne();
