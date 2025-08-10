@@ -1,0 +1,22 @@
+<turbo-frame id="loginProcessFrame">
+  <div class="mb-4">
+    <svg class="mx-auto h-12 w-12 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+    </svg>
+  </div>
+
+  <h1 class="text-2xl font-bold text-gray-900 mb-4">이메일 전송 완료</h1>
+
+  <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+    {{ message }}
+  </div>
+
+  <p class="text-gray-600 mb-6">
+    이메일을 확인하고 매직링크를 클릭하여 로그인하세요.
+  </p>
+
+  <a href="/session/login"
+    class="inline-block bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition duration-200">
+    로그인 페이지로 돌아가기
+  </a>
+</turbo-frame>
