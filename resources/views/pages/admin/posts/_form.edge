@@ -3,7 +3,7 @@
 @let(submitText = editMode ? '수정' : '등록')
 @let(redirectTo = editMode ? `/admin/posts/${post?.id}/edit` : '/admin/posts/new')
 
-<form action="{{action}}" method="{{method}}" data-controller="editor file-upload"
+<form action="{{action}}" method="{{method}}" data-controller="editor"
   data-action="submit->editor#handleSubmit" class="flex gap-4 h-full relative">
 
   <input type="hidden" name="_csrf" value="{{csrfToken}}" />
@@ -22,14 +22,12 @@
 
   <div class="w-sm flex flex-col justify-between">
     <div class="w-full">
-      <fieldset class="fieldset">
-        <legend class="fieldset-legend">썸네일 이미지</legend>
-        <input data-file-upload-target="fileInput" type="file" class="filepond" multiple data-allow-reorder="true"
-          data-max-file-size="3MB" data-max-files="1">
-        <!-- FilePond 업로드 완료 시 blobId 저장용 -->
-        <input type="hidden" name="post[thumbnailBlobId]" data-file-upload-target="filePondBlobIds">
-        <p class="label">w: 400~420, h: 600~620 사이로 등록 가능</p>
-      </fieldset>
+      @!partials.thumbnailUploader({
+        'data-image-validate-size-min-width': '600',
+        'data-image-validate-size-min-height': '400',
+        sizeGuideText: 'w: 600 이상, h: 400 이상 사이로 등록 가능',
+        post: post || null,
+      })
 
       <br />
 
