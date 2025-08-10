@@ -3,13 +3,17 @@ import {
   Post, 
   UploadedFile, 
   UseInterceptors,
-  BadRequestException 
+  BadRequestException, 
+  UseGuards
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+
+import { AdminAuthGuard } from 'src/common';
 import { FileUploadService } from './services/file-upload.service';
 import { FileUploadResponseDto } from './dto/file-upload-response.dto';
 
 @Controller({ path: 'api/admin/file-upload' })
+@UseGuards(AdminAuthGuard)
 export class FileUploadApiController {
   constructor(private readonly fileUploadService: FileUploadService) {}
 

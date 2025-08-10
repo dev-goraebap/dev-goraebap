@@ -11,12 +11,13 @@ import {
   Req,
   Res,
   UploadedFile,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
-import { ZodValidationPipe } from 'src/common';
 
+import { AdminAuthGuard, ZodValidationPipe } from 'src/common';
 import {
   CreateSeriesDto,
   CreateSeriesSchema,
@@ -30,6 +31,7 @@ import { DestroySeriesUseCase } from './use-cases/destroy-series.use-case';
 import { UpdateSeriesUseCase } from './use-cases/update-series.use-case';
 
 @Controller({ path: '/admin/series' })
+@UseGuards(AdminAuthGuard)
 export class SeriesController {
   constructor(
     private readonly seriesService: SeriesService,

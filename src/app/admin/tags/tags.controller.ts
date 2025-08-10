@@ -11,17 +11,19 @@ import {
   Query,
   Req,
   Res,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { ZodValidationPipe } from 'src/common';
+import { AdminAuthGuard, ZodValidationPipe } from 'src/common';
 import { CreateOrUpdateTagDto, CreateOrUpdateTagSchema } from './dto/create-or-update-tag.dto';
 import { GetTagsDto, GetTagsSchema } from './dto/get-tags.dto';
 import { TagsService } from './tags.service';
 
 @Controller({ path: '/admin/tags' })
+@UseGuards(AdminAuthGuard)
 export class TagsController {
 
   constructor(

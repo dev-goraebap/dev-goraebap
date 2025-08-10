@@ -10,12 +10,13 @@ import {
   Query,
   Req,
   Res,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { ZodValidationPipe } from 'src/common';
+import { AdminAuthGuard, ZodValidationPipe } from 'src/common';
 import { CreatePostDto, CreatePostSchema } from './dto/create-post.dto';
 import { GetPostsDTO, GetPostsSchema } from './dto/get-posts.dto';
 import { UpdatePostDto, UpdatePostSchema } from './dto/update-post.dto';
@@ -25,6 +26,7 @@ import { DestroyPostUseCase } from './use-cases/destroy-post.use-case';
 import { UpdatePostUseCase } from './use-cases/update-post.use-case';
 
 @Controller({ path: '/admin/posts' })
+@UseGuards(AdminAuthGuard)
 export class PostsController {
   constructor(
     private readonly postsService: PostsService,
