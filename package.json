@@ -40,7 +40,7 @@
     "cross-env": "^10.0.0",
     "express-session": "^1.18.2",
     "multer": "^2.0.2",
-    "nestjs-mvc-tools": "^0.9.11",
+    "nestjs-mvc-tools": "^0.9.12",
     "nodemailer": "^7.0.5",
     "passport": "^0.7.0",
     "passport-custom": "^1.1.1",
