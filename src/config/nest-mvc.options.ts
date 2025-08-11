@@ -11,8 +11,8 @@ import {
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isProduction = process.env.NODE_ENV === 'production';
 
-console.log(isDevelopment);
-console.log(isProduction);
+console.debug(isDevelopment);
+console.debug(isProduction);
 
 export const nestMvcOptions: NestMvcOptions = {
   view: {

@@ -39,7 +39,7 @@ export class PostsController {
   @UsePipes(new ZodValidationPipe(GetPostsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetPostsDTO) {
     const posts = await this.postsService.getPosts(dto);
-    console.log(posts);
+    console.debug(posts);
 
     if (req.headers['turbo-frame']) {
       return req.view.render('pages/admin/posts/_list', { posts });
@@ -58,7 +58,7 @@ export class PostsController {
   @Get(':id')
   async show(@Req() req: NestMvcReq, @Param('id', ParseIntPipe) id: number) {
     const post = await this.postsService.getPost(id);
-    console.log(post);
+    console.debug(post);
     return req.view.render('pages/admin/posts/show', { post });
   }
 
@@ -69,7 +69,7 @@ export class PostsController {
     @Body('post') dto: CreatePostDto,
     @Res() res: Response,
   ) {
-    console.log(dto);
+    console.debug(dto);
     await this.createPostUseCase.execute(dto);
     req.flash.success('게시물 저장 완료');
     return res.redirect('/admin/posts');
@@ -89,7 +89,7 @@ export class PostsController {
     @Body('post') dto: UpdatePostDto,
     @Res() res: Response,
   ) {
-    console.log(dto);
+    console.debug(dto);
     await this.updatePostUseCase.execute(id, dto);
     req.flash.success('게시물 변경 완료');
     return res.redirect(303, '/admin/posts');

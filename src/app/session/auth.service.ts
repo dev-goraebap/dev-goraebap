@@ -58,7 +58,7 @@ export class AuthService {
       const result = this.jwtService.verify(token) as { email: string } | null;
       return Promise.resolve(result);
     } catch (error: unknown) {
-      console.log(error);
+      console.debug(error);
       return Promise.resolve(null);
     }
   }
