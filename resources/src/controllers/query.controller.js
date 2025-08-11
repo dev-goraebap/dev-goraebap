@@ -38,8 +38,6 @@ export class QueryController extends Controller {
     const currentUrl = new URL(window.location.href);
     const newUrl = `${currentUrl.pathname}?${params.toString()}`;
 
-    console.log(this.frameIdValue);
-
     document.getElementById(this.frameIdValue).src = newUrl;
     history.replaceState({}, '', newUrl);
   }

@@ -1,5 +1,5 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
-import { NestMvcReq } from 'nestjs-mvc-tools';
+import { Controller, Get, Res, UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 
 import { AdminAuthGuard } from 'src/common';
 
@@ -7,7 +7,7 @@ import { AdminAuthGuard } from 'src/common';
 @UseGuards(AdminAuthGuard)
 export class AdminController {
   @Get()
-  index(@Req() req: NestMvcReq) {
-    return req.view.render('pages/admin/index');
+  index(@Res() res: Response) {
+    return res.redirect('/admin/posts');
   }
 }
