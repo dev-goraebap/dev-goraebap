@@ -12,13 +12,14 @@ import {
 import { BaseEntityWithAttachments } from './_/base-entity-with-attachments';
 import { SeriesEntity } from './series.entity';
 import { TagEntity } from './tag.entity';
+import { UserEntity } from './user.entity';
 
 @Entity({ name: 'posts' })
 export class PostEntity extends BaseEntityWithAttachments {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column()
+  @Column({ unique: true })
   readonly title: string;
 
   @Column()
@@ -44,6 +45,9 @@ export class PostEntity extends BaseEntityWithAttachments {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
+
+  @ManyToOne(() => UserEntity, e => e.posts, { onDelete: 'CASCADE' })
+  readonly user: UserEntity;
 
   @ManyToOne(() => SeriesEntity, (e) => e.posts, {
     nullable: true,

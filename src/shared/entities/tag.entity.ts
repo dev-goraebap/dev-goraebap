@@ -3,18 +3,20 @@ import {
   CreateDateColumn,
   Entity,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { PostEntity } from './post.entity';
+import { UserEntity } from './user.entity';
 
 @Entity({ name: 'tags' })
 export class TagEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column()
+  @Column({ unique: true })
   readonly name: string;
 
   @Column()
@@ -25,6 +27,9 @@ export class TagEntity {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
+
+  @ManyToOne(() => UserEntity, (e) => e.tags, { onDelete: 'CASCADE' })
+  readonly user: UserEntity;
 
   @ManyToMany(() => PostEntity, (post) => post.tags)
   readonly posts: PostEntity[];

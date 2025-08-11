@@ -12,7 +12,7 @@ export class BlobEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column()
+  @Column({ unique: true })
   readonly key: string; // 저장된 파일이름
 
   @Column()
@@ -27,8 +27,11 @@ export class BlobEntity {
   @Column({ name: 'byte_size' })
   readonly byteSize: number; // 파일 바이트 크기
 
-  @Column()
+  @Column({ unique: true })
   readonly checksum: string; // md5로 채크한 파일의 고유한 버퍼스트링
+
+  @Column()
+  readonly createdBy: string; // 생성한 사용자의 식별값
 
   @CreateDateColumn()
   readonly createdAt: Date;
