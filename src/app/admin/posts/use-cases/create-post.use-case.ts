@@ -7,6 +7,7 @@ import {
   BlobEntity,
   PostEntity,
   TagEntity,
+  UserEntity,
 } from 'src/shared';
 import { CreatePostDto } from '../dto/create-post.dto';
 import {
@@ -28,7 +29,7 @@ export class CreatePostUseCase {
     private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  async execute(dto: CreatePostDto) {
+  async execute(user: UserEntity, dto: CreatePostDto) {
     await this.entityManager.transaction(async () => {
       // 요약 텍스트 추출
       const summary = extractFirstParagraph(dto.content);
@@ -60,6 +61,7 @@ export class CreatePostUseCase {
 
       // 게시물 생성 (태그와 함께)
       const newPost = this.postRepository.create({
+        user,
         title: dto.title,
         content: dto.content,
         contentHtml: dto.contentHtml,

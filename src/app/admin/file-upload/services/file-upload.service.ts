@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { createHash, randomUUID } from 'crypto';
 import { Repository } from 'typeorm';
 
-import { BlobEntity } from 'src/shared';
-
+import { BlobEntity, UserEntity } from 'src/shared';
 import { FileUploadResponseDto } from '../dto/file-upload-response.dto';
 import { GoogleVisionService } from './google-vision.service';
 import { R2Service } from './r2.service';
@@ -20,7 +19,7 @@ export class FileUploadService {
     private readonly googleVisionService: GoogleVisionService
   ) {}
 
-  async uploadFile(file: Express.Multer.File): Promise<FileUploadResponseDto> {
+  async uploadFile(user: UserEntity, file: Express.Multer.File): Promise<FileUploadResponseDto> {
     // 1단계: 파일 검증
     this.validateFile(file);
 
@@ -42,6 +41,7 @@ export class FileUploadService {
         byteSize: file.size,
         checksum,
         metadata,
+        createdBy: user.id.toString()
       });
 
       const savedBlob = await this.blobRepository.save(blob);

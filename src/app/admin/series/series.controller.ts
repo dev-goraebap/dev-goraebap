@@ -17,7 +17,8 @@ import {
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { AdminAuthGuard, ZodValidationPipe } from 'src/common';
+import { AdminAuthGuard, CurrentUser, ZodValidationPipe } from 'src/common';
+import { UserEntity } from 'src/shared';
 import {
   CreateSeriesDto,
   CreateSeriesSchema,
@@ -63,9 +64,10 @@ export class SeriesController {
   async create(
     @Req() req: NestMvcReq,
     @Body('series') dto: CreateSeriesDto,
+    @CurrentUser() user: UserEntity
   ) {
     console.debug(dto);
-    await this.createSeriesUseCase.execute(dto);
+    await this.createSeriesUseCase.execute(user, dto);
     req.flash.success('시리즈를 성공적으로 등록하였습니다.');
     return req.view.render('pages/admin/series/_success');
   }

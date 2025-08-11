@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 
-import { TagEntity } from 'src/shared';
+import { TagEntity, UserEntity } from 'src/shared';
 import { CreateOrUpdateTagDto } from './dto/create-or-update-tag.dto';
 import { GetTagsDto } from './dto/get-tags.dto';
 
@@ -35,8 +35,8 @@ export class TagsService {
     return tag;
   }
 
-  async create(dto: CreateOrUpdateTagDto) {
-    const newTagEntity = this.tagRepository.create({ ...dto });
+  async create(user: UserEntity, dto: CreateOrUpdateTagDto) {
+    const newTagEntity = this.tagRepository.create({ user, ...dto });
     await this.tagRepository.save(newTagEntity);
   }
 

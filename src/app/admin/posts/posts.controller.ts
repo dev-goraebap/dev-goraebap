@@ -16,7 +16,8 @@ import {
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { AdminAuthGuard, ZodValidationPipe } from 'src/common';
+import { AdminAuthGuard, CurrentUser, ZodValidationPipe } from 'src/common';
+import { UserEntity } from 'src/shared';
 import { CreatePostDto, CreatePostSchema } from './dto/create-post.dto';
 import { GetPostsDTO, GetPostsSchema } from './dto/get-posts.dto';
 import { UpdatePostDto, UpdatePostSchema } from './dto/update-post.dto';
@@ -66,11 +67,12 @@ export class PostsController {
   @UsePipes(new ZodValidationPipe(CreatePostSchema))
   async create(
     @Req() req: NestMvcReq,
-    @Body('post') dto: CreatePostDto,
     @Res() res: Response,
+    @Body('post') dto: CreatePostDto,
+    @CurrentUser() user: UserEntity,
   ) {
     console.debug(dto);
-    await this.createPostUseCase.execute(dto);
+    await this.createPostUseCase.execute(user, dto);
     req.flash.success('게시물 저장 완료');
     return res.redirect('/admin/posts');
   }

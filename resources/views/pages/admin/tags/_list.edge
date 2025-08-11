@@ -17,7 +17,7 @@
         <td>{{tag?.name}}</td>
         <td>{{tag?.description}}</td>
         <td>{{tag?.relatedPostCount}}</td>
-        <td>{{tag?.createdAt}}</td>
+        <td>{{formatDate(tag?.createdAt)}}</td>
         <td>
           <div class="flex gap-4">
             <button data-action="modal#onOpen" data-content-url="/admin/tags/{{tag?.id}}/edit"

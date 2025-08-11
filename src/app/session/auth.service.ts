@@ -1,8 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import { EdgeJsService } from 'nestjs-mvc-tools';
 import { createTransport, Transporter } from 'nodemailer';
+import { Repository } from 'typeorm';
+
+import { UserEntity } from 'src/shared';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +16,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly edgeService: EdgeJsService,
     private readonly configService: ConfigService,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {
     this.transporter = createTransport({
       host: this.configService.get('SMTP_HOST'),
@@ -25,18 +31,22 @@ export class AuthService {
   }
 
   async sendMagicLink(email: string): Promise<boolean> {
-    const adminEmail = this.configService.get('ADMIN_USERNAME');
-
-    if (email !== adminEmail) {
-      return false;
+    const user = await this.userRepository.findOne({
+      where: {
+        email,
+      },
+    });
+    if (!user) {
+      throw new BadRequestException('사용할 수 없는 email 입니다.');
     }
-
     const token = this.jwtService.sign({ email }, { expiresIn: '5m' });
 
     const magicLink = `${this.configService.get('APP_URL')}/session/verify?token=${token}`;
 
     const edge = this.edgeService.getEdgeInstance();
-    const template = edge.renderSync('components/mail/admin_login', { magicLink });
+    const template = edge.renderSync('components/mail/admin_login', {
+      magicLink,
+    });
 
     try {
       await this.transporter.sendMail({
