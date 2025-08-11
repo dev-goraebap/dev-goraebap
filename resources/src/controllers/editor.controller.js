@@ -1,56 +1,86 @@
-import EditorJS from '@editorjs/editorjs';
-import Header from '@editorjs/header';
-import Image from '@editorjs/image';
-import List from '@editorjs/list';
-import Paragraph from '@editorjs/paragraph';
 import { Controller } from '@hotwired/stimulus';
-import edjsHTML from 'editorjs-html';
-
-import { MarkdownImporter } from '../editorjs-custom-plugins/markdown-importer';
 
 export class EditorController extends Controller {
   static targets = ['content', 'contentHtml'];
 
-  connect() {
-    const initialContent = this.contentTarget?.dataset?.initialContent;
-    
-    let parsedData;
+  async connect() {
     try {
-      parsedData = initialContent && initialContent !== '{}' ? JSON.parse(initialContent) : undefined;
-    } catch (error) {
-      console.error('초기 데이터 파싱 실패:', error);
-      parsedData = undefined;
-    }
-    
-    this.editor = new EditorJS({
-      holder: 'editorjs',
-      data: parsedData,
-      tools: {
-        header: Header,
-        list: List,
-        paragraph: {
-          class: Paragraph,
-          inlineToolbar: true,
-        },
-        image: {
-          class: Image,
-          config: {
-            uploader: {
-              uploadByFile: this.uploadByFile.bind(this),
+      // EditorJS와 모든 플러그인들을 동적으로 임포트
+      const [
+        EditorJSModule,
+        HeaderModule,
+        ImageModule,
+        ListModule,
+        ParagraphModule,
+        edjsHTMLModule,
+        MarkdownImporterModule
+      ] = await Promise.all([
+        import('@editorjs/editorjs'),
+        import('@editorjs/header'),
+        import('@editorjs/image'),
+        import('@editorjs/list'),
+        import('@editorjs/paragraph'),
+        import('editorjs-html'),
+        import('../editorjs-custom-plugins/markdown-importer')
+      ]);
+
+      // 모듈에서 필요한 클래스들 추출 (default export 처리)
+      const EditorJS = EditorJSModule.default || EditorJSModule;
+      const Header = HeaderModule.default || HeaderModule;
+      const Image = ImageModule.default || ImageModule;
+      const List = ListModule.default || ListModule;
+      const Paragraph = ParagraphModule.default || ParagraphModule;
+      const edjsHTML = edjsHTMLModule.default || edjsHTMLModule;
+      const { MarkdownImporter } = MarkdownImporterModule;
+
+      // EditorJS HTML 파서를 인스턴스 변수로 저장
+      this.edjsParser = edjsHTML();
+
+      const initialContent = this.contentTarget?.dataset?.initialContent;
+      
+      let parsedData;
+      try {
+        parsedData = initialContent && initialContent !== '{}' ? JSON.parse(initialContent) : undefined;
+      } catch (error) {
+        console.error('초기 데이터 파싱 실패:', error);
+        parsedData = undefined;
+      }
+      
+      this.editor = new EditorJS({
+        holder: 'editorjs',
+        data: parsedData,
+        tools: {
+          header: Header,
+          list: List,
+          paragraph: {
+            class: Paragraph,
+            inlineToolbar: true,
+          },
+          image: {
+            class: Image,
+            config: {
+              uploader: {
+                uploadByFile: this.uploadByFile.bind(this),
+              },
             },
           },
+          markdownImporter: MarkdownImporter,
         },
-        markdownImporter: MarkdownImporter,
-      },
-      placeholder: '내용을 입력하세요...',
-      onReady: () => {
-        console.log('EditorJS 준비 완료');
-      },
-    });
+        placeholder: '내용을 입력하세요...',
+        onReady: () => {
+          console.debug('EditorJS 준비 완료');
+        },
+      });
+
+    } catch (error) {
+      console.error('EditorJS 라이브러리 로드 실패:', error);
+      // 폴백 처리 또는 에러 메시지 표시
+      alert('에디터를 불러오는데 실패했습니다. 페이지를 새로고침해주세요.');
+    }
   }
 
   async uploadByFile(file) {
-    console.log('파일 업로드 시작:', file);
+    console.debug('파일 업로드 시작:', file);
     
     const formData = new FormData();
     formData.append('file', file);
@@ -69,7 +99,7 @@ export class EditorController extends Controller {
       }
 
       const result = await response.json();
-      console.log('업로드 성공:', result);
+      console.debug('업로드 성공:', result);
 
       return {
         success: 1,
@@ -100,27 +130,27 @@ export class EditorController extends Controller {
         throw new Error('에디터가 초기화되지 않았습니다.');
       }
 
-      console.log('데이터 저장 시작...');
+      if (!this.edjsParser) {
+        throw new Error('HTML 파서가 초기화되지 않았습니다.');
+      }
+
+      console.debug('데이터 저장 시작...');
       const outputData = await this.editor.save();
-      console.log('에디터 저장 데이터:', outputData);
+      console.debug('에디터 저장 데이터:', outputData);
       
       // JSON 저장
       this.contentTarget.value = JSON.stringify(outputData);
       
       // HTML 변환 후 저장
-      const edjsParser = edjsHTML();
-      const html = edjsParser.parse(outputData);
+      const html = this.edjsParser.parse(outputData);
       const htmlString = Array.isArray(html) ? html.join('') : html;
       this.contentHtmlTarget.value = htmlString;
       
-      console.log('변환된 HTML:', this.contentHtmlTarget.value);
-      
-      // Turbo가 폼을 제출하도록 그대로 둠
-      // event.target.submit(); // 이 줄도 제거!
+      console.debug('변환된 HTML:', this.contentHtmlTarget.value);
       
     } catch (error) {
       console.error('저장 중 오류:', error);
-      event.preventDefault(); // 에러가 있을 때만 폼 제출을 막음
+      event.preventDefault();
       alert('저장 중 오류가 발생했습니다. 다시 시도해주세요.');
     }
   }
