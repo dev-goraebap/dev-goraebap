@@ -2,7 +2,7 @@
   data-controller="image-loader"
   data-image-loader-target="container"
   class="relative overflow-hidden transition-colors duration-700 flex items-center justify-center {{ width ?? 'w-full' }} {{ height ?? 'h-full' }}"
-  style="background-color: {{ dominantColor ?? '#f0f0f0' }};"
+  style="background-color: {{ dominantColor !== undefined ? dominantColor : '#f0f0f0' }};"
 >
   <img
     data-image-loader-target="image"

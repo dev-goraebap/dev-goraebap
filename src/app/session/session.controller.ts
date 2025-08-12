@@ -76,6 +76,6 @@ export class SessionController {
         console.error('Session destroy error:', err);
       }
     });
-    return res.redirect('/admin/session/login');
+    return res.redirect('/session/login');
   }
 }

@@ -3,6 +3,9 @@
 
 <head>
   @!partials.head({ title, description })
+  @if ($slots.meta)
+    {{{ await $slots.meta() }}}
+  @endif
 </head>
 
 <body>
