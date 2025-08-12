@@ -6,7 +6,12 @@
 @plugin "@tailwindcss/typography";
 @plugin "daisyui";
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark, cupcake, retro;
+  themes: light --default, dark --prefersdark, cupcake, retro, lemonade, caramellatte;
+}
+
+:root {
+  --header-height: 4rem;      /* 기본 64px (h-16) */
+  --header-height-sm: 5rem;   /* sm 이상 80px (h-20) */
 }
 
 /* 기본 전환 효과 (크로스페이드) */
