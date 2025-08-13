@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="cupcake">
+<html lang="ko" data-theme="{{currentTheme() || 'cupcake'}}">
 
 <head>
   @!partials.head({ title, description })
@@ -9,7 +9,15 @@
 </head>
 
 <body>
-  {{{ await $slots.main() }}}
+  <div class="flex flex-col h-screen">
+    @!layout.app.header()
+    <div class="grow">
+      {{{ await $slots.main() }}}
+    </div>
+    <div class="bg-base-200/50">
+      @!layout.app.footer()
+    </div>
+  </div>
 </body>
 
 </html>

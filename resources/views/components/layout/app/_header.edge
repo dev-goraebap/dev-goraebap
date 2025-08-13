@@ -1,0 +1,29 @@
+{{-- 상단 헤더 --}}
+<div class="w-full backdrop-blur-md border-b border-base-300 fixed left-0 top-0 z-50">
+  <header class="flex justify-between items-center 
+      navbar container max-w-6xl h-[var(--header-height-sm)] sm:h-[var(--header-height)] mx-auto px-4">
+    <figure>
+      <a href="/" class="flex items-center gap-1">
+        <div class="w-12 h-12 sm:w-16 sm:h-16">
+          @!uikit.image({ url: '/public/images/logo.png', dominantColor: null })
+        </div>
+        <div class="leading-4 font-bold">
+          데브고래밥<br />
+          블로그
+        </div>
+      </a>
+    </figure>
+
+    <ul class="flex items-center gap-2">
+      <li>
+        <a href="/series">시리즈</a>
+      </li>
+      <li>
+        <a href="/posts">포스트</a>
+      </li>
+      <li>
+        @!partials.themeDropbox() 
+      </li>
+    </ul>
+  </header>
+</div>

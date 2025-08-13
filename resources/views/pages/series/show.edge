@@ -1,0 +1,146 @@
+@layout.app({ title: `devgoraebap | ${series.title}` })
+  <!-- 메인 섹션 -->
+  <section class="relative py-16 lg:py-24 flex flex-col items-center min-h-screen">
+      <!-- 시리즈 헤더 영역 -->
+      <div class="w-full max-w-6xl px-4 mb-16 animate-fade-in text-center">
+          <!-- 상태 배지 -->
+          <div class="flex justify-center gap-2 mb-6">
+              @if(series.status === '완료')
+                <div class="badge badge-success">완료</div>
+              @elseif(series.status === '연재중')
+                <div class="badge badge-warning">연재중</div>
+              @else
+                <div class="badge badge-ghost">계획중</div>
+              @end
+              <div class="badge badge-outline">{{ series.episodes }}개 포스트</div>
+          </div>
+
+          <!-- 시리즈 제목 -->
+          <h1 class="text-3xl lg:text-4xl font-bold text-base-content mb-6">
+              {{ series.title }}
+          </h1>
+          
+          <!-- 시리즈 설명 -->
+          <p class="text-base-content/80 text-lg leading-relaxed mb-8 max-w-3xl mx-auto">
+              {{ series.description }}
+          </p>
+
+
+          <!-- 액션 버튼 -->
+          <div class="flex justify-center">
+              <button class="btn btn-primary btn-lg">구독하기</button>
+          </div>
+      </div>
+
+      <!-- 포스트 리스트 섹션 -->
+      <div class="container max-w-6xl px-4 flex-1 animate-slide-up">
+          <!-- 포스트 헤더 -->
+          <div class="flex items-center gap-3 mb-8">
+              <div class="w-1 h-6 bg-gradient-to-b from-primary to-primary rounded-full"></div>
+              <h2 class="text-2xl font-bold text-base-content">시리즈 포스트</h2>
+              <div class="flex-1 h-px bg-gradient-to-r from-base-300 to-transparent"></div>
+          </div>
+
+          <!-- 포스트 리스트 -->
+          <div class="grid lg:grid-cols-3 gap-8 lg:gap-12">
+              <!-- 포스트 리스트 (왼쪽, 2/3) -->
+              <div class="lg:col-span-2">
+                  <div class="space-y-6">
+                      @each(post in posts)
+                      <article class="group card bg-base-100/70 backdrop-blur-sm p-6 border border-base-300/50 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer">
+                          <div class="flex items-start gap-6">
+                              <div class="flex-1 min-w-0">
+                                  <h3 class="text-lg font-semibold text-base-content group-hover:text-primary transition-colors duration-300 mb-2 line-clamp-2">
+                                      {{ post.title }}
+                                  </h3>
+                                  <p class="text-base-content/70 text-sm mb-3 line-clamp-2">
+                                      {{ post.content }}
+                                  </p>
+                                  <div class="flex items-center gap-4 text-xs text-base-content/60">
+                                      <time>{{ post.date }}</time>
+                                      <span class="badge badge-{{ post.tagColor }} badge-outline">{{ post.tag }}</span>
+                                      <span class="flex items-center gap-1">
+                                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 616 0z"></path>
+                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                          </svg>
+                                          {{ post.views.toLocaleString() }}
+                                      </span>
+                                  </div>
+                              </div>
+
+                              <div class="flex-shrink-0 w-24 h-16 lg:w-32 lg:h-20 rounded-xl overflow-hidden bg-gradient-to-br from-{{ post.tagColor }}/20 to-{{ post.tagColor }}/10 group-hover:scale-105 transition-transform duration-300">
+                                  <img src="{{ post.thumbnail }}" 
+                                        alt="썸네일" 
+                                        class="w-full h-full object-cover">
+                              </div>
+                          </div>
+                      </article>
+                      @end
+                  </div>
+
+                  <!-- 더보기 버튼 -->
+                  <div class="mt-12 text-center">
+                      <button class="btn btn-outline btn-wide">더 많은 포스트 보기</button>
+                  </div>
+              </div>
+
+              <!-- 사이드바 (오른쪽, 1/3) -->
+              <aside class="lg:col-span-1">
+                  <div class="sticky top-8 space-y-8">
+                      <!-- 시리즈 정보 -->
+                      <div class="bg-base-100/70 backdrop-blur-sm card p-6 border border-base-300/50">
+                          <div class="flex items-center gap-3 mb-6">
+                              <div class="w-1 h-6 bg-gradient-to-b from-info to-primary rounded-full"></div>
+                              <h3 class="text-lg font-bold text-base-content">시리즈 정보</h3>
+                          </div>
+                          <div class="space-y-3 text-sm">
+                              <div class="flex justify-between">
+                                  <span class="text-base-content/70">총 포스트</span>
+                                  <span class="font-medium">{{ series.episodes }}개</span>
+                              </div>
+                              <div class="flex justify-between">
+                                  <span class="text-base-content/70">상태</span>
+                                  <span class="font-medium">{{ series.status }}</span>
+                              </div>
+                          </div>
+                      </div>
+
+                      <!-- 관련 시리즈 -->
+                      <div class="bg-base-100/70 backdrop-blur-sm card p-6 border border-base-300/50">
+                          <div class="flex items-center gap-3 mb-6">
+                              <div class="w-1 h-6 bg-gradient-to-b from-secondary to-warning rounded-full"></div>
+                              <h3 class="text-lg font-bold text-base-content">관련 시리즈</h3>
+                          </div>
+                          <div class="space-y-4">
+                              <article class="group cursor-pointer">
+                                  <h4 class="font-medium text-base-content group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2 text-sm">
+                                      React 완전정복
+                                  </h4>
+                                  <p class="text-xs text-base-content/60">15개 포스트</p>
+                              </article>
+                              
+                              <article class="group cursor-pointer">
+                                  <h4 class="font-medium text-base-content group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2 text-sm">
+                                      Vue.js 3 완전가이드
+                                  </h4>
+                                  <p class="text-xs text-base-content/60">14개 포스트</p>
+                              </article>
+
+                              <article class="group cursor-pointer">
+                                  <h4 class="font-medium text-base-content group-hover:text-primary transition-colors duration-200 mb-1 line-clamp-2 text-sm">
+                                      NestJS 마스터하기
+                                  </h4>
+                                  <p class="text-xs text-base-content/60">20개 포스트</p>
+                              </article>
+                          </div>
+                      </div>
+                  </div>
+              </aside>
+          </div>
+      </div>
+
+      <!-- 푸터와 자연스러운 연결을 위한 블러박스 -->
+      <div class="w-full h-24 absolute -bottom-24 -translate-y-1/2 backdrop-blur-xl z-10"></div>
+  </section>
+@end
