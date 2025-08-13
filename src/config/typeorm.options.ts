@@ -1,17 +1,37 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { join } from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import { AttachmentEntity, BlobEntity, PostEntity, SeriesEntity, TagEntity, UserEntity } from 'src/shared';
+import {
+  AttachmentEntity,
+  BlobEntity,
+  PostEntity,
+  SeriesEntity,
+  TagEntity,
+  UserEntity,
+} from 'src/shared';
 
 @Injectable()
 export class TypeOrmOptionsImpl implements TypeOrmOptionsFactory {
+  constructor(private readonly configService: ConfigService) {}
+
   createTypeOrmOptions(): Promise<TypeOrmModuleOptions> | TypeOrmModuleOptions {
+    const host = this.configService.get('DB_HOST');
+    const port = this.configService.get('DB_PORT');
+    const username = this.configService.get('DB_USERNAME');
+    const password = this.configService.get('DB_PASSWORD');
+    const database = this.configService.get('DB_NAME');
+    console.log(process.env.NODE_ENV !== 'production')
+
     return {
-      type: 'better-sqlite3',
-      database: join(process.cwd(), 'storage', 'development.sqlite'),
-      synchronize: true,
+      type: 'postgres',
+      host,
+      port,
+      username,
+      password,
+      database,
+      synchronize: process.env.NODE_ENV !== 'production',
       logger: 'debug',
       logging: true,
       entities: [
@@ -20,9 +40,9 @@ export class TypeOrmOptionsImpl implements TypeOrmOptionsFactory {
         AttachmentEntity,
         PostEntity,
         SeriesEntity,
-        TagEntity
+        TagEntity,
       ],
-      namingStrategy: new SnakeNamingStrategy()
+      namingStrategy: new SnakeNamingStrategy(),
     };
   }
 }
