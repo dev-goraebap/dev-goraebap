@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  nestjs-mvc-is-coming:
+    image: devgoraebap/my-blog:${APP_VERSION:-latest}
+    container_name: my-blog
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./storage:/app/storage
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    restart: unless-stopped
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    name: my-network
+    external: true
