@@ -22,7 +22,6 @@ export class TypeOrmOptionsImpl implements TypeOrmOptionsFactory {
     const username = this.configService.get('DB_USERNAME');
     const password = this.configService.get('DB_PASSWORD');
     const database = this.configService.get('DB_NAME');
-    console.log(process.env.NODE_ENV !== 'production')
 
     return {
       type: 'postgres',

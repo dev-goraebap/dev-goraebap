@@ -11,9 +11,6 @@ import {
 const isDevelopment = process.env.NODE_ENV === 'development';
 const isProduction = process.env.NODE_ENV === 'production';
 
-console.debug(isDevelopment);
-console.debug(isProduction);
-
 export const nestMvcOptions: NestMvcOptions = {
   view: {
     cache: isProduction, // 프로덕션 환경에서 캐시 활성화
