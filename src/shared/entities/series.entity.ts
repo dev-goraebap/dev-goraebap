@@ -23,6 +23,9 @@ export class SeriesEntity extends BaseEntityWithAttachments {
   @Column()
   readonly description: string;
 
+  @Column({ default: 'PENDING' })
+  readonly status: string; // PLAN, PROGRESS, COMPLETE
+
   @CreateDateColumn()
   readonly createdAt: Date;
 
@@ -33,5 +36,5 @@ export class SeriesEntity extends BaseEntityWithAttachments {
   readonly user: UserEntity;
 
   @OneToMany(() => PostEntity, (e) => e.series)
-  readonly posts: PostEntity[];
+  posts: PostEntity[];
 }
