@@ -20,6 +20,9 @@ export default defineConfig({
         entryFileNames: '[name]-[hash].js',
         chunkFileNames: '[name]-[hash].js',
         assetFileNames: '[name]-[hash].[ext]',
+        manualChunks: {
+          filepond: ['filepond', 'filepond-plugin-image-preview', 'filepond-plugin-file-validate-size', 'filepond-plugin-file-validate-type', 'filepond-plugin-image-validate-size']
+        }
       },
     },
   },
