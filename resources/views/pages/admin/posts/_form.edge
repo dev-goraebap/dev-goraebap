@@ -21,12 +21,10 @@
 
   <div class="min-w-sm flex flex-col justify-between h-screen sticky top-0 border-l border-base-300 p-4">
     <div>
-      {{-- --}}
       @!partials.thumbnailUploader({
       'data-image-validate-size-min-width': '600',
       'data-image-validate-size-min-height': '400',
-      sizeGuideText: 'w: 600 이상, h: 400 이상 사이로 등록 가능',
-      post: post || null,
+      sizeGuideText: 'w: 600 이상, h: 400 이상 사이로 등록 가능'
       })
 
       <br />
