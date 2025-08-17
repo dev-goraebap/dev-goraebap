@@ -1,31 +1,35 @@
-<div data-controller="file-upload"
-     class="relative">
+<div data-controller="file-upload" class="relative">
+  <!-- prettier-ignore-start -->
   <fieldset class="fieldset">
-    <legend class="fieldset-legend">썸네일 이미지</legend>
-    <input type="file"
-           class="filepond"
-           multiple
-           data-file-upload-target="fileInput"
-           {{
-           $props.merge({ 'data-allow-reorder'
-           : 'true'
-           , 'data-max-file-size'
-           : '3MB'
-           , 'data-max-files'
-           : '1'
-           }).only([ 'data-allow-reorder'
-           , 'data-max-file-size'
-           , 'data-max-files'
-           , 'data-image-validate-size-min-width'
-           , 'data-image-validate-size-max-width'
-           , 'data-image-validate-size-min-height'
-           , 'data-image-validate-size-max-height'
-           ]).toAttrs()
-           }}>
+    <legend class="fieldset-legend">
+      썸네일 이미지
+    </legend>
+    <input
+      type="file"
+      class="filepond"
+      multiple
+      data-file-upload-target="fileInput"
+      {{ $props.merge({ 
+            'data-allow-reorder': 'true', 
+            'data-max-file-size': '3MB', 
+            'data-max-files': '1' 
+        })
+       .only([ 
+            'data-allow-reorder', 
+            'data-max-file-size', 
+            'data-max-files', 
+            'data-image-validate-size-min-width', 
+            'data-image-validate-size-max-width', 
+            'data-image-validate-size-min-height', 
+            'data-image-validate-size-max-height'
+        ]).toAttrs() }}
+    />
+    {{-- skip-format-end --}}
     <!-- FilePond 업로드 완료 시 blobId 저장용 -->
-    <input type="hidden"
-           name="{{ blobIdName || 'post[thumbnailBlobId]' }}"
-           data-file-upload-target="filePondBlobIds">
-    <p class="label">{{ sizeGuideText || 'w: 400~420, h: 600~620 사이로 등록 가능' }}</p>
+    <input type="hidden" name="{{ blobIdName || 'post[thumbnailBlobId]' }}" data-file-upload-target="filePondBlobIds" />
+    <p class="label">
+      {{ sizeGuideText || 'w: 400~420, h: 600~620 사이로 등록 가능' }}
+    </p>
   </fieldset>
+  <!-- prettier-ignore-end -->
 </div>

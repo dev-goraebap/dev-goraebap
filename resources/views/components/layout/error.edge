@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="{{currentTheme() || 'cupcake'}}">
+<html lang="ko" data-theme="{{ currentTheme() || 'cupcake' }}">
 
-<head>
-  @!partials.head({ title, description })
-  @if ($slots.meta)
-    {{{ await $slots.meta() }}}
-  @endif
-</head>
+  <head>
+    @!partials.head({ title, description })
+    @if ($slots.meta)
+      {{{ await $slots.meta() }}}
+    @endif
+  </head>
 
-<body>
-  {{{ await $slots.main() }}}
-</body>
+  <body>
+    {{{ await $slots.main() }}}
+  </body>
 
 </html>

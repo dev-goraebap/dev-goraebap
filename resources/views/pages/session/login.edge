@@ -1,51 +1,57 @@
 @layout.app({ title: '관리자 로그인' })
-<section class="relative h-full flex items-center justify-center py-16">
-  <div class="container mx-auto max-w-md px-4">
-    <div class="card bg-base-100/90 backdrop-blur-sm border border-base-300/50">
-      <div class="card-body p-8">
-        <div class="text-center mb-8">
-          <h1 class="text-3xl font-bold text-base-content mb-2">블로그 관리자 로그인</h1>
-          <p class="text-base-content/60">매직링크로 간편하게 로그인하세요</p>
-        </div>
-
-        @if(flash)
-          @!uikit.flash()
-          <div class="mb-6"></div>
-        @end
-
-        <turbo-frame id="loginProcessFrame">
-          <form method="POST" action="/session/login" class="space-y-6">
-            <div class="form-control">
-              <label for="email" class="label">
-                <span class="label-text text-base-content font-medium">이메일 주소</span>
-              </label>
-              <input type="email" 
-                     id="email" 
-                     name="email" 
-                     value="{{ email || '' }}" 
-                     required
-                     class="input input-bordered w-full focus:input-primary"
-                     placeholder="admin@example.com" />
-            </div>
-      
-            <button type="submit"
-              data-turbo-submits-with="이메일 발송중.."
-              class="btn btn-primary w-full btn-lg">
-              매직링크 발송
-            </button>
-          </form>
-      
-          <div class="text-center mt-6">
-            <p class="text-sm text-base-content/60">
-              매직링크가 이메일로 전송됩니다.
+  <section class="relative h-full flex items-center justify-center py-16">
+    <div class="container mx-auto max-w-md px-4">
+      <div class="card bg-base-100/90 backdrop-blur-sm border border-base-300/50">
+        <div class="card-body p-8">
+          <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-base-content mb-2">
+              블로그 관리자 로그인
+            </h1>
+            <p class="text-base-content/60">
+              매직링크로 간편하게 로그인하세요
             </p>
           </div>
-        </turbo-frame>
+
+          @if(flash)
+            @!uikit.flash()
+            <div class="mb-6">
+            </div>
+          @end
+          
+          <turbo-frame id="loginProcessFrame">
+            <form method="POST" action="/session/login" class="space-y-6">
+              <div class="form-control">
+                <label for="email" class="label">
+                  <span class="label-text text-base-content font-medium">이메일 주소</span>
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value="{{ email || '' }}"
+                  required
+                  class="input input-bordered w-full focus:input-primary"
+                  placeholder="admin@example.com"
+                />
+              </div>
+
+              <button type="submit" data-turbo-submits-with="이메일 발송중.." class="btn btn-primary w-full btn-lg">
+                매직링크 발송
+              </button>
+            </form>
+
+            <div class="text-center mt-6">
+              <p class="text-sm text-base-content/60">
+                매직링크가 이메일로 전송됩니다.
+              </p>
+            </div>
+          </turbo-frame>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- 푸터와 자연스러운 연결을 위한 블러박스 -->
-  <div class="w-full h-24 absolute -bottom-24 -translate-y-1/2 backdrop-blur-xl z-10"></div>
-</section>
+    <!-- 푸터와 자연스러운 연결을 위한 블러박스 -->
+    <div class="w-full h-24 absolute -bottom-24 -translate-y-1/2 backdrop-blur-xl z-10">
+    </div>
+  </section>
 @end

@@ -1,30 +1,30 @@
 @layout.admin({ title: 'dev.goraebap admin | 게시물 관리', adminTitle: '게시물 조회' })
 
-<div class="max-w-4xl mx-auto p-6">
-  <!-- 게시물 헤더 -->
-  <div class="mb-8">
-    <div class="flex items-center gap-4 text-sm text-gray-600 mb-6">
-      <span>작성일: {{ post.createdAt.toLocaleDateString('ko-KR') }}</span>
-      <span>수정일: {{ post.updatedAt.toLocaleDateString('ko-KR') }}</span>
+  <div class="max-w-4xl mx-auto p-6">
+    <!-- 게시물 헤더 -->
+    <div class="mb-8">
+      <div class="flex items-center gap-4 text-sm text-gray-600 mb-6">
+        <span>작성일: {{ post.createdAt.toLocaleDateString('ko-KR') }}</span>
+        <span>수정일: {{ post.updatedAt.toLocaleDateString('ko-KR') }}</span>
+      </div>
+
+      <!-- 썸네일 이미지 -->
+      @!uikit.image({
+        url: cloudImageUrl(post?.getImage('thumbnail')?.url),
+        dominantColor: post?.getImage('thumbnail')?.dominantColor
+      })
     </div>
-    
-    <!-- 썸네일 이미지 -->
-    @!uikit.image({
-      url: cloudImageUrl(post?.getImage('thumbnail')?.url),
-      dominantColor: post?.getImage('thumbnail')?.dominantColor
-    })
-  </div>
 
-  <!-- 게시물 내용 -->
-  <div class="prose prose-base max-w-none">
-    {{{ post.content }}}
-  </div>
+    <!-- 게시물 내용 -->
+    <div class="prose prose-base max-w-none">
+      {{{ post.content }}}
+    </div>
 
-  <!-- 액션 버튼 -->
-  <div class="flex gap-4 mt-8">
-    <a href="/admin/posts/{{ post.id }}/edit" class="btn btn-primary">수정</a>
-    <a href="/admin/posts" class="btn btn-outline">목록으로</a>
+    <!-- 액션 버튼 -->
+    <div class="flex gap-4 mt-8">
+      <a href="/admin/posts/{{ post.id }}/edit" class="btn btn-primary">수정</a>
+      <a href="/admin/posts" class="btn btn-outline">목록으로</a>
+    </div>
   </div>
-</div>
 
 @end

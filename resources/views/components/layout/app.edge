@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="ko" data-theme="{{currentTheme() || 'cupcake'}}">
+<html lang="ko" data-theme="{{ currentTheme() || 'cupcake' }}">
 
-<head>
-  @!partials.head({ title, description })
-  @if ($slots.meta)
-    {{{ await $slots.meta() }}}
-  @endif
-</head>
+  <head>
+    @!partials.head({ title, description })
+    @if ($slots.meta)
+      {{{ await $slots.meta() }}}
+    @endif
+  </head>
 
-<body>
-  <div class="flex flex-col h-screen">
-    @!layout.app.header()
-    <div class="grow">
-      {{{ await $slots.main() }}}
+  <body>
+    <div class="flex flex-col h-screen">
+      @!layout.app.header()
+      <div class="grow">
+        {{{ await $slots.main() }}}
+      </div>
+      <div class="bg-secondary/10">
+        @!layout.app.footer()
+      </div>
     </div>
-    <div class="bg-secondary/10">
-      @!layout.app.footer()
-    </div>
-  </div>
-</body>
+  </body>
 
 </html>

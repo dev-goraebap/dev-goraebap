@@ -1,113 +1,131 @@
 @layout.app({ title: '데브고래밥 | Home', description: '랜딩 페이지' })
 
-{{-- 섹션 1 --}}
-<section class="relative py-24 flex flex-col items-center">
+  {{-- 섹션 1 --}}
+  <section class="relative py-24 flex flex-col items-center">
 
-  {{-- 컨텐츠 --}}
-  <div class="container max-w-6xl mt-[clamp(0.5rem,2vh,2rem)]">
-    {{-- 소개글 UI --}}
-    <div class="flex flex-col gap-[clamp(0.5rem,2vh,2rem)] mb-[clamp(1rem,4vh,3rem)] px-4">
-      <h1 class="text-[clamp(1.875rem,5vw,3.5rem)] font-bold leading-tight">시리즈 겔러리</h1>
-      <p class="text-[clamp(1rem,2.5vw,1.5rem)] leading-relaxed">
-        진지한 작품과 진지한 척 하는 작품이 혼재되어 있습니다.
+    {{-- 컨텐츠 --}}
+    <div class="container max-w-6xl mt-[clamp(0.5rem,2vh,2rem)]">
+      {{-- 소개글 UI --}}
+      <div class="flex flex-col gap-[clamp(0.5rem,2vh,2rem)] mb-[clamp(1rem,4vh,3rem)] px-4">
+        <h1 class="text-[clamp(1.875rem,5vw,3.5rem)] font-bold leading-tight">
+          시리즈 겔러리
+        </h1>
+        <p class="text-[clamp(1rem,2.5vw,1.5rem)] leading-relaxed">
+          진지한 작품과 진지한 척 하는 작품이 혼재되어 있습니다.
         <br class="hidden sm:block" />계속 업데이트 중—
-      </p>
-    </div>
-
-    {{-- 시리즈 리스트 UI --}}
-    @if(series.length > 0)
-    <ul class="flex gap-[clamp(1rem,3vw,2rem)] overflow-x-auto p-4">
-      @each(item in series)
-      {{-- 시리즈 아이템 UI --}}
-      <li class="flex-shrink-0 w-[clamp(180px,20vw,280px)]">
-        <div class="w-[clamp(180px,20vw,280px)] aspect-[2/3] shadow-2xl rounded-lg overflow-hidden">
-          @!uikit.image({
-            url: cloudImageUrl(item?.getImage('thumbnail')?.url),
-            dominantColor: item?.getImage('thumbnail')?.dominantColor
-          })
-        </div>
-        <div class="mt-[clamp(0.5rem,1.5vh,1rem)]">
-          <p class="text-[clamp(0.875rem,2vw,1.25rem)] font-semibold truncate leading-tight">
-            {{ item.name }}
-          </p>
-          <p class="text-[clamp(0.75rem,1.5vw,1rem)] truncate opacity-70 mt-1">
-            {{ item.description }}
-          </p>
-        </div>
-      </li>
-      @end
-    </ul>
-    @else
-    <div class="flex flex-col items-center justify-center py-16 px-4">
-      <div class="text-6xl mb-4">📚</div>
-      <p class="text-xl font-medium text-gray-600 mb-2">아직 시리즈가 없어요</p>
-      <p class="text-gray-500">곧 흥미로운 시리즈를 준비할 예정입니다!</p>
-    </div>
-    @end
-
-    <div class="text-end p-4">
-      <a href="/series" class="underline decoration-wavy">...더보기</a>
-    </div>
-  </div>
-
-  {{-- 섹션2 와 자연스러운 연결을 위한 블러박스 --}}
-  <div class="w-full h-24 absolute -bottom-24 -translate-y-1/2 backdrop-blur-xl z-10"></div>
-</section>
-
-{{-- 섹션 2 --}}
-<section class="bg-primary/10 relative py-24 flex flex-col items-center">
-
-  {{-- 컨텐츠 --}}
-  <div class="container max-w-6xl">
-    {{-- 소개글 UI --}}
-    <div class="flex flex-col gap-[clamp(0.5rem,2vh,2rem)] mb-[clamp(1rem,4vh,3rem)] px-4">
-      <h1 class="text-[clamp(1.875rem,5vw,3.5rem)] font-bold leading-tight">기술 블로그</h1>
-      <p class="text-[clamp(1rem,2.5vw,1.5rem)] leading-relaxed">
-        기술 블로그라 우기고 있지만, 판단은 여러분의 몫입니다.
-        <span>¯\_(ツ)_/¯</span>
-      </p>
-    </div>
-
-    {{-- 게시물 리스트 UI --}}
-    <div class="px-4">
-      @if(posts.length > 0)
-      <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(1rem,3vw,2rem)]">
-        @each(post in posts)
-        {{-- 게시물 아이템 UI --}}
-        <li class="flex-shrink-0">
-          <div class="w-full aspect-[3/2] shadow-2xl rounded-lg overflow-hidden">
-            @!uikit.image({
-              url: cloudImageUrl(post?.getImage('thumbnail')?.url),
-              dominantColor: post?.getImage('thumbnail')?.dominantColor
-            })
-          </div>
-          <div class="mt-[clamp(0.5rem,1.5vh,1rem)]">
-            <p class="text-[clamp(0.875rem,2vw,1.25rem)] font-semibold truncate leading-tight">
-              {{ post.title }}
-            </p>
-            <p class="text-[clamp(0.75rem,1.5vw,1rem)] truncate opacity-70 mt-1">
-              {{ post.summary }}
-            </p>
-          </div>
-        </li>
-        @end
-      </ul>
-
-      {{-- 더보기 링크 --}}
-      <div class="text-center mt-[clamp(1rem,3vh,2rem)]">
-        <a href="/posts" class="underline decoration-wavy">...더보기</a>
+        </p>
       </div>
+
+      {{-- 시리즈 리스트 UI --}}
+      @if(series.length > 0)
+        <ul class="flex gap-[clamp(1rem,3vw,2rem)] overflow-x-auto p-4">
+          @each(item in series)
+            {{-- 시리즈 아이템 UI --}}
+            <li class="flex-shrink-0 w-[clamp(180px,20vw,280px)]">
+              <div class="w-[clamp(180px,20vw,280px)] aspect-[2/3] shadow-2xl rounded-lg overflow-hidden">
+                @!uikit.image({
+                url: cloudImageUrl(item?.getImage('thumbnail')?.url),
+                dominantColor: item?.getImage('thumbnail')?.dominantColor
+                })
+              </div>
+              <div class="mt-[clamp(0.5rem,1.5vh,1rem)]">
+                <p class="text-[clamp(0.875rem,2vw,1.25rem)] font-semibold truncate leading-tight">
+                  {{ item.name }}
+                </p>
+                <p class="text-[clamp(0.75rem,1.5vw,1rem)] truncate opacity-70 mt-1">
+                  {{ item.description }}
+                </p>
+              </div>
+            </li>
+          @end
+        </ul>
       @else
-      <div class="flex flex-col items-center justify-center py-16">
-        <div class="text-6xl mb-4">✍️</div>
-        <p class="text-xl font-medium text-gray-600 mb-2">아직 게시물이 없어요</p>
-        <p class="text-gray-500">첫 번째 포스트를 작성 중입니다!</p>
-      </div>
+        <div class="flex flex-col items-center justify-center py-16 px-4">
+          <div class="text-6xl mb-4">
+            📚
+          </div>
+          <p class="text-xl font-medium text-gray-600 mb-2">
+            아직 시리즈가 없어요
+          </p>
+          <p class="text-gray-500">
+            곧 흥미로운 시리즈를 준비할 예정입니다!
+          </p>
+        </div>
       @end
+      
+      <div class="text-end p-4">
+        <a href="/series" class="underline decoration-wavy">...더보기</a>
+      </div>
     </div>
-  </div>
 
-  {{-- 푸터와 자연스러운 연결을 위한 블러박스 --}}
-  <div class="w-full h-24 absolute -bottom-24 -translate-y-1/2 backdrop-blur-xl z-10"></div>
-</section>
+    {{-- 섹션2 와 자연스러운 연결을 위한 블러박스 --}}
+    <div class="w-full h-24 absolute -bottom-24 -translate-y-1/2 backdrop-blur-xl z-10">
+    </div>
+  </section>
+
+  {{-- 섹션 2 --}}
+  <section class="bg-primary/10 relative py-24 flex flex-col items-center">
+
+    {{-- 컨텐츠 --}}
+    <div class="container max-w-6xl">
+      {{-- 소개글 UI --}}
+      <div class="flex flex-col gap-[clamp(0.5rem,2vh,2rem)] mb-[clamp(1rem,4vh,3rem)] px-4">
+        <h1 class="text-[clamp(1.875rem,5vw,3.5rem)] font-bold leading-tight">
+          기술 블로그
+        </h1>
+        <p class="text-[clamp(1rem,2.5vw,1.5rem)] leading-relaxed">
+          기술 블로그라 우기고 있지만, 판단은 여러분의 몫입니다.
+        <span>¯\_(ツ)_/¯</span>
+        </p>
+      </div>
+
+      {{-- 게시물 리스트 UI --}}
+      <div class="px-4">
+        @if(posts.length > 0)
+          <ul class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[clamp(1rem,3vw,2rem)]">
+            @each(post in posts)
+              {{-- 게시물 아이템 UI --}}
+              <li class="flex-shrink-0">
+                <div class="w-full aspect-[3/2] shadow-2xl rounded-lg overflow-hidden">
+                  @!uikit.image({
+                    url: cloudImageUrl(post?.getImage('thumbnail')?.url),
+                    dominantColor: post?.getImage('thumbnail')?.dominantColor
+                  })
+                </div>
+                <div class="mt-[clamp(0.5rem,1.5vh,1rem)]">
+                  <p class="text-[clamp(0.875rem,2vw,1.25rem)] font-semibold truncate leading-tight">
+                    {{ post.title }}
+                  </p>
+                  <p class="text-[clamp(0.75rem,1.5vw,1rem)] truncate opacity-70 mt-1">
+                    {{ post.summary }}
+                  </p>
+                </div>
+              </li>
+            @end
+          </ul>
+
+          {{-- 더보기 링크 --}}
+          <div class="text-center mt-[clamp(1rem,3vh,2rem)]">
+            <a href="/posts" class="underline decoration-wavy">...더보기</a>
+          </div>
+        @else
+          <div class="flex flex-col items-center justify-center py-16">
+            <div class="text-6xl mb-4">
+              ✍️
+            </div>
+            <p class="text-xl font-medium text-gray-600 mb-2">
+              아직 게시물이 없어요
+            </p>
+            <p class="text-gray-500">
+              첫 번째 포스트를 작성 중입니다!
+            </p>
+          </div>
+        @end
+      </div>
+    </div>
+
+    {{-- 푸터와 자연스러운 연결을 위한 블러박스 --}}
+    <div class="w-full h-24 absolute -bottom-24 -translate-y-1/2 backdrop-blur-xl z-10">
+    </div>
+  </section>
 @end

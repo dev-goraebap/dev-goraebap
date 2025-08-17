@@ -1,99 +1,120 @@
 @layout.app({ title: 'devgoraebap | 시리즈' })
   <!-- 메인 섹션 -->
   <section class="relative py-16 lg:py-24 flex flex-col items-center min-h-screen">
-      <!-- 헤더 영역 -->
-      <div class="w-full max-w-6xl px-4 mb-12 animate-fade-in">
-          <div class="text-center">
-              <h1 class="text-3xl lg:text-4xl font-bold text-base-content mb-4">
-                  시리즈 갤러리
-              </h1>
-              <p class="text-base-content/70 text-lg max-w-2xl mx-auto">
-                진지한 작품과 진지한 척 하는 작품이 혼재되어 있습니다.
-                <br class="hidden sm:block" />계속 업데이트 중—
-              </p>
-          </div>
+    <!-- 헤더 영역 -->
+    <div class="w-full max-w-6xl px-4 mb-12 animate-fade-in">
+      <div class="text-center">
+        <h1 class="text-3xl lg:text-4xl font-bold text-base-content mb-4">
+          시리즈 갤러리
+        </h1>
+        <p class="text-base-content/70 text-lg max-w-2xl mx-auto">
+          진지한 작품과 진지한 척 하는 작품이 혼재되어 있습니다.
+          <br class="hidden sm:block" />계속 업데이트 중—
+        </p>
       </div>
-      
-      <!-- 컨텐츠 -->
-      <div class="container max-w-6xl px-4 flex-1 animate-slide-up">
-          <!-- 시리즈 그리드 - 최대 3개 컬럼 -->
-          @if(series.length > 0)
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
-              @each(serie in series)
-              <div class="group flex-shrink-0 w-[clamp(200px,25vw,320px)]">
-                  <!-- 시리즈 카드 - 단순한 호버 효과 -->
-                  <div class="w-full aspect-[2/3] shadow-xl overflow-hidden mb-4 relative cursor-pointer
-                              transform transition-all duration-300 ease-out
-                              group-hover:scale-105 group-hover:shadow-2xl">
-                      @!uikit.image({
-                        url: cloudImageUrl(serie?.getImage('thumbnail')?.url),
-                        dominantColor: serie?.getImage('thumbnail')?.dominantColor,
-                        alt: serie.name
-                      })
-                      
-                      <!-- 상태 오버레이 -->
-                      <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30 
-                                  opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                      
-                      <!-- 상태 배지 -->
-                      <div class="absolute top-3 left-3">
-                          @if(serie.status === 'COMPLETE')
-                            <div class="badge badge-success">완료</div>
-                          @elseif(serie.status === 'PROGRESS')
-                            <div class="badge badge-warning">연재중</div>
-                          @else
-                            <div class="badge badge-ghost">준비중</div>
-                          @end
-                      </div>
+    </div>
 
-                      <!-- 에피소드 수 -->
-                      <div class="absolute bottom-3 right-3 bg-black/80 text-white text-sm px-3 py-1 font-medium">
-                          {{ serie.posts?.length || 0 }}개의 에피소드
-                      </div>
+    <!-- 컨텐츠 -->
+    <div class="container max-w-6xl px-4 flex-1 animate-slide-up">
+      <!-- 시리즈 그리드 - 최대 3개 컬럼 -->
+      @if(series.length > 0)
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
+          @each(item in series)
+            <div class="group flex-shrink-0 w-[clamp(200px,25vw,320px)]">
+              <!-- 시리즈 카드 - 단순한 호버 효과 -->
+              <div
+                class="w-full aspect-[2/3] shadow-xl overflow-hidden mb-4 relative cursor-pointer
+                  transform transition-all duration-300 ease-out
+                  group-hover:scale-105 group-hover:shadow-2xl"
+              >
+                @!uikit.image({
+                    url: cloudImageUrl(item?.getImage('thumbnail')?.url),
+                    dominantColor: item?.getImage('thumbnail')?.dominantColor,
+                    alt: item.name
+                })
 
-                      <!-- 호버 시 플레이 버튼 -->
-                      <div class="absolute inset-0 flex items-center justify-center 
-                                  opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <button class="btn btn-circle btn-primary btn-lg shadow-xl">
-                              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                                  <path d="M8 5v14l11-7z"/>
-                              </svg>
-                          </button>
-                      </div>
-                  </div>
+                <!-- 상태 오버레이 -->
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30 
+                                  opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                </div>
 
-                  <!-- 시리즈 정보 -->
-                  <div class="space-y-2">
-                      <!-- 제목 -->
-                      <h3 class="text-base font-bold text-base-content line-clamp-2 
-                                 group-hover:text-primary transition-colors leading-tight">
-                          {{ serie.name }}
-                      </h3>
-                      
+                <!-- 상태 배지 -->
+                <div class="absolute top-3 left-3">
+                  @if(item.status === 'COMPLETE')
+                    <div class="badge badge-success">
+                      완료
+                    </div>
+                  @elseif(item.status === 'PROGRESS')
+                    <div class="badge badge-warning">
+                      연재중
+                    </div>
+                  @else
+                    <div class="badge badge-ghost">
+                      준비중
+                    </div>
+                  @end
+                </div>
 
-                      <!-- 설명 -->
-                      <p class="text-sm text-base-content/60 line-clamp-3 leading-relaxed">
-                          {{ serie.description }}
-                      </p>
-                  </div>
+                <!-- 에피소드 수 -->
+                <div class="absolute bottom-3 right-3 bg-black/80 text-white text-sm px-3 py-1 font-medium">
+                  {{ item.posts?.length || 0 }}개의 에피소드
+                </div>
+
+                <!-- 호버 시 플레이 버튼 -->
+                <div
+                  class="absolute inset-0 flex items-center justify-center 
+                    opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                >
+                  <button class="btn btn-circle btn-primary btn-lg shadow-xl">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </button>
+                </div>
               </div>
-              @end
-          </div>
 
-          <!-- 더 많은 시리즈 로드 -->
-          <div class="text-center mt-16">
-              <button class="btn btn-outline btn-wide">더 많은 시리즈 보기</button>
-          </div>
-          @else
-          <div class="flex flex-col items-center justify-center py-16">
-              <div class="text-6xl mb-4">📚</div>
-              <p class="text-xl font-medium text-gray-600 mb-2">아직 시리즈가 없어요</p>
-              <p class="text-gray-500">곧 흥미로운 시리즈를 준비할 예정입니다!</p>
-          </div>
-          @endif
-      </div>
+              <!-- 시리즈 정보 -->
+              <div class="space-y-2">
+                <!-- 제목 -->
+                <h3
+                  class="text-base font-bold text-base-content line-clamp-2 
+                    group-hover:text-primary transition-colors leading-tight"
+                >
+                  {{ item.name }}
+                </h3>
 
-      <!-- 푸터와 자연스러운 연결을 위한 블러박스 -->
-      <div class="w-full h-24 absolute -bottom-24 -translate-y-1/2 backdrop-blur-xl z-10"></div>
+                <!-- 설명 -->
+                <p class="text-sm text-base-content/60 line-clamp-3 leading-relaxed">
+                  {{ item.description }}
+                </p>
+              </div>
+            </div>
+          @end
+        </div>
+
+        <!-- 더 많은 시리즈 로드 -->
+        <div class="text-center mt-16">
+          <button class="btn btn-outline btn-wide">더 많은 시리즈 보기</button>
+        </div>
+      @else
+        <div class="flex flex-col items-center justify-center py-16">
+          <div class="text-6xl mb-4">
+            📚
+          </div>
+          <p class="text-xl font-medium text-gray-600 mb-2">
+            아직 시리즈가 없어요
+          </p>
+          <p class="text-gray-500">
+            곧 흥미로운 시리즈를 준비할 예정입니다!
+          </p>
+        </div>
+      @endif
+    </div>
+
+    <!-- 푸터와 자연스러운 연결을 위한 블러박스 -->
+    <div class="w-full h-24 absolute -bottom-24 -translate-y-1/2 backdrop-blur-xl z-10">
+    </div>
   </section>
 @end

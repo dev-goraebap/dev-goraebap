@@ -3,49 +3,38 @@
 @let(submitText = editMode ? '수정' : '등록')
 @let(redirectTo = editMode ? `/admin/posts/${post?.id}/edit` : '/admin/posts/new')
 
-<form action="{{action}}"
-      method="{{method}}"
-      class="flex justify-between gap-4 relative">
+<form action="{{ action }}" method="{{ method }}" class="flex justify-between gap-4 relative">
 
-  <input type="hidden"
-         name="_csrf"
-         value="{{csrfToken}}" />
-
-
+  <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
 
   <div class="grow flex flex-col p-4 gap-4">
     @!uikit.flash()
-    <textarea id="tinymceEditor"
-              name="post[content]">{{post?.content || ''}}</textarea>
+    <textarea id="tinymceEditor" name="post[content]">{{ post?.content || '' }}</textarea>
   </div>
 
   <div class="min-w-sm flex flex-col justify-between h-screen sticky top-0 border-l border-base-300 p-4">
     <div>
       @!partials.thumbnailUploader({
-      'data-image-validate-size-min-width': '600',
-      'data-image-validate-size-min-height': '400',
-      sizeGuideText: 'w: 600 이상, h: 400 이상 사이로 등록 가능'
+        'data-image-validate-size-min-width': '600',
+        'data-image-validate-size-min-height': '400',
+        sizeGuideText: 'w: 600 이상, h: 400 이상 사이로 등록 가능'
       })
 
       <br />
 
       @!component('pages/admin/posts/_form/_tag_input', {
-      tags: post?.tags || []
+        tags: post?.tags || []
       })
     </div>
 
     <div class="flex justify-between gap-4">
       {{-- 작업 취소 버튼 --}}
-      <a href="/admin/posts"
-         data-turbo="false"
-         class="flex-1/2 btn btn-soft btn-warning">
+      <a href="/admin/posts" data-turbo="false" class="flex-1/2 btn btn-soft btn-warning">
         작업 취소
       </a>
       {{-- 서브밋 버튼 --}}
-      <button type="submit"
-              class="flex-1/2 btn btn-primary"
-              data-turbo-submits-with="저장 중...">
-        {{submitText}}
+      <button type="submit" class="flex-1/2 btn btn-primary" data-turbo-submits-with="저장 중...">
+        {{ submitText }}
       </button>
     </div>
   </div>

@@ -1,30 +1,43 @@
 @layout.admin({ title: 'dev.goraebap admin | 게시물 관리', adminTitle: '게시물 관리' })
 
-<div class="pb-2 flex justify-between items-center">
-  @!partials.queryForm({
-    frameId: 'postListFrame',
-    placeholder: '게시물 제목 검색'
-  })
+  <div class="pb-2 flex justify-between items-center">
+    @!partials.queryForm({
+      frameId: 'postListFrame',
+      placeholder: '게시물 제목 검색'
+    })
 
-  <a href="/admin/posts/new" class="btn">
-    게시물 작성
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-      class="size-4">
-      <path stroke-linecap="round" stroke-linejoin="round"
-        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-    </svg>
-  </a>
-</div>
+    <a href="/admin/posts/new" class="btn">
+      게시물 작성
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-4"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
+        />
+      </svg>
+    </a>
+  </div>
 
   @if(posts?.length > 0)
     <ul class="list bg-base-100">
-      <li class="pb-2 text-xs opacity-60 tracking-wide mt-6">My Posts / total 78</li>
+      <li class="pb-2 text-xs opacity-60 tracking-wide mt-6">
+        My Posts / total 78
+      </li>
 
       @!component('pages/admin/posts/_list', { posts })
     </ul>
   @else
     <div class="w-full flex justify-center p-10">
-      <p class="text-3xl">포스트가 텅 비었어요!</p>
+      <p class="text-3xl">
+        포스트가 텅 비었어요!
+      </p>
     </div>
   @end
 @end

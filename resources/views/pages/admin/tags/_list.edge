@@ -2,31 +2,49 @@
   <table class="table">
     <thead class="bg-base-200">
       <tr>
-        <th></th>
-        <th>태그명</th>
-        <th>설명</th>
-        <th>엮인 게시물 수</th>
-        <th>생성일</th>
-        <th></th>
+        <th>
+        </th>
+        <th>
+          태그명
+        </th>
+        <th>
+          설명
+        </th>
+        <th>
+          엮인 게시물 수
+        </th>
+        <th>
+          생성일
+        </th>
+        <th>
+        </th>
       </tr>
     </thead>
     <tbody>
       @each((tag, index) in tags)
-      <tr>
-        <th>{{index+1}}</th>
-        <td>{{tag?.name}}</td>
-        <td>{{tag?.description}}</td>
-        <td>{{tag?.relatedPostCount}}</td>
-        <td>{{formatDate(tag?.createdAt)}}</td>
-        <td>
-          <div class="flex gap-4">
-            <button data-action="modal#onOpen" data-content-url="/admin/tags/{{tag?.id}}/edit"
-              class="cursor-pointer text-warning">수정</button>
-            <a href="/admin/tags/{{tag?.id}}" data-turbo-method="delete" data-turbo-confirm="정말 삭제하시겠어요?"
-              class="text-error">삭제</a>
-          </div>
-        </td>
-      </tr>
+        <tr>
+          <th>
+            {{ index+1 }}
+          </th>
+          <td>
+            {{ tag?.name }}
+          </td>
+          <td>
+            {{ tag?.description }}
+          </td>
+          <td>
+            {{ tag?.posts?.length }}
+          </td>
+          <td>
+            {{ formatDate(tag?.createdAt) }}
+          </td>
+          <td>
+            <div class="flex gap-4">
+              <button data-action="modal#onOpen" data-content-url="/admin/tags/{{ tag?.id }}/edit" class="cursor-pointer text-warning">수정</button>
+              <a href="/admin/tags/{{ tag?.id }}" data-turbo-method="delete" data-turbo-confirm="정말 삭제하시겠어요?" class="text-error">삭제</a>
+            </div>
+          </td>
+        </tr>
       @end
     </tbody>
   </table>

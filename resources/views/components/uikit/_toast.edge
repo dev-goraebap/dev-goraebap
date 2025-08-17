@@ -3,15 +3,15 @@
 </div>
 
 @pushOnceTo('toastJs')
-<script defer>
-  document.addEventListener('DOMContentLoaded', function () {
-    window.Stimulus.register("toast", class extends window.StimulusController {
-      connect() {
-        setTimeout(() => {
-          this.element.remove();
-        }, 2000);
-      }
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function() {
+      window.Stimulus.register("toast", class extends window.StimulusController {
+        connect() {
+          setTimeout(() => {
+            this.element.remove();
+          }, 2e3);
+        }
+      });
     });
-  });
-</script>
+  </script>
 @end

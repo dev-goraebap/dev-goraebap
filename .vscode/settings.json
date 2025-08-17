@@ -3,16 +3,21 @@
   "emmet.includeLanguages": {
     "edge": "html"
   },
+  // Edge 템플릿 디스크 설정 (자동완성과 Go-To 링크 지원)
+  "edge.disks": {
+    "default": "resources/views"
+  },
   // // edge 파일을 HTML로 인식하도록 설정
   // "files.associations": {
   //   "*.edge": "html"
   // },
-  // HTML 포맷팅 설정 - 속성 줄바꿈 유지
-  "html.format.wrapAttributes": "force-aligned",
-  "html.format.wrapLineLength": 120,
-  "html.format.wrapAttributesIndentSize": 2,
-  // edge 파일도 HTML처럼 포맷팅 (Prettier 사용)
-  "[edge]": {
-    "editor.defaultFormatter": "vscode.html-language-features"
-  }
+  // HTML 포맷팅 설정 (Edge 파일은 Prettier 플러그인 사용)
+  // "html.format.wrapAttributes": "force-aligned",
+  // "html.format.wrapLineLength": 120,
+  // "html.format.wrapAttributesIndentSize": 2,
+  // edge 파일 포맷팅 (EdgeJS Prettier 플러그인 사용)
+  // "[edge]": {
+  //   "editor.defaultFormatter": "esbenp.prettier-vscode",
+  //   "editor.formatOnSave": true
+  // }
 }
