@@ -9,6 +9,10 @@
   themes: light --default, dark --prefersdark, cupcake, retro, lemonade, caramellatte;
 }
 
+/* FilePond CSS */
+@import 'filepond/dist/filepond.min.css';
+@import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+
 :root {
   --header-height: 4rem;      /* 기본 64px (h-16) */
   --header-height-sm: 5rem;   /* sm 이상 80px (h-20) */

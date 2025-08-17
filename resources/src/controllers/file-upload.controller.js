@@ -10,7 +10,7 @@ export class FileUploadController extends Controller {
     }
 
     try {
-      // 동적으로 FilePond와 필요한 플러그인들 임포트
+      // 동적으로 FilePond와 필요한 플러그인들 임포트 (CSS는 style.css에서 미리 로드됨)
       const [
         FilePondModule,
         FilePondPluginFileValidateSize,
@@ -23,12 +23,6 @@ export class FileUploadController extends Controller {
         import('filepond-plugin-file-validate-type'),
         import('filepond-plugin-image-preview'),
         import('filepond-plugin-image-validate-size')
-      ]);
-
-      // CSS 파일들도 동적으로 임포트
-      await Promise.all([
-        import('filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css'),
-        import('filepond/dist/filepond.min.css')
       ]);
 
       // FilePond 객체 추출 (default export 처리)
