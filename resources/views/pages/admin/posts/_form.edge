@@ -3,24 +3,42 @@
 @let(submitText = editMode ? '수정' : '등록')
 @let(redirectTo = editMode ? `/admin/posts/${post?.id}/edit` : '/admin/posts/new')
 
-<form action="{{action}}" method="{{method}}" data-controller="editor"
-  data-action="submit->editor#handleSubmit" class="flex gap-4 h-full relative">
+<form 
+  action="{{action}}" 
+  method="{{method}}" 
+  data-controller="editor"
+  data-action="submit->editor#handleSubmit" 
+  class="flex justify-between gap-4 h-full relative">
 
-  <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+  <div class="">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+  </div>
 
-  <div class="w-full max-w-3xl border-r border-base-300">
-    <input type="text" name="post[title]" class="px-6 h-[60px] w-full text-4xl font-bold focus:outline-none"
-      placeholder="제목을 입력해 주세요..." value="{{post?.title || ''}}">
+  <div class="flex flex-col w-full border-r border-base-300">
+    <div>
+      <input 
+        type="text" 
+        name="post[title]" 
+        class="px-6 h-[60px] w-full text-4xl font-bold focus:outline-none"
+        placeholder="제목을 입력해 주세요..." 
+        value="{{post?.title || ''}}">
+    </div>
 
-    <div class="prose prose-base w-full min-w-3xl mt-6">
-      <div id="editorjs" class="h-[700px]"></div>
-      <input type="hidden" name="post[content]" data-editor-target="content"
+    <div class="grow prose prose-base w-full min-w-3xl mt-6">
+      <div id="editorjs" class=""></div>
+      <input 
+        type="hidden" 
+        name="post[content]" 
+        data-editor-target="content"
         data-initial-content="{{post?.content || '{}'}}">
-      <input type="hidden" name="post[contentHtml]" data-editor-target="contentHtml">
+      <input 
+        type="hidden" 
+        name="post[contentHtml]" 
+        data-editor-target="contentHtml">
     </div>
   </div>
 
-  <div class="w-sm flex flex-col justify-between">
+  <div class="min-w-sm flex flex-col justify-between h-full">
     <div class="w-full">
       @!partials.thumbnailUploader({
         'data-image-validate-size-min-width': '600',

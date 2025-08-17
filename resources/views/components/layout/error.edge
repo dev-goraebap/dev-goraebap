@@ -9,15 +9,7 @@
 </head>
 
 <body>
-  <div class="flex flex-col h-screen">
-    @!layout.app.header()
-    <div class="grow">
-      {{{ await $slots.main() }}}
-    </div>
-    <div class="bg-secondary/10">
-      @!layout.app.footer()
-    </div>
-  </div>
+  {{{ await $slots.main() }}}
 </body>
 
 </html>
