@@ -29,10 +29,29 @@ export class FileUploadService {
     const metadata = await this.extractMetadata(file);
 
     try {
-      // 3단계: R2 업로드
+      // 3단계: 중복 파일 확인
+      const existingBlob = await this.blobRepository.findOne({ 
+        where: { checksum } 
+      });
+      
+      if (existingBlob) {
+        // 기존 파일이 있으면 새로 업로드하지 않고 기존 blob 반환
+        this.logger.log(`기존 파일 재사용: ${existingBlob.filename} (checksum: ${checksum})`);
+        return {
+          blobId: existingBlob.id,
+          key: existingBlob.key,
+          filename: existingBlob.filename,
+          contentType: existingBlob.contentType,
+          byteSize: existingBlob.byteSize,
+          url: this.r2Service.getPublicUrl(existingBlob.key),
+          metadata: existingBlob.metadata,
+        };
+      }
+
+      // 4단계: R2 업로드 (새로운 파일인 경우에만)
       await this.r2Service.uploadFile(key, file.buffer, file.mimetype);
 
-      // 4단계: DB 저장
+      // 5단계: DB 저장
       const blob = this.blobRepository.create({
         key,
         filename: file.originalname,
@@ -46,7 +65,7 @@ export class FileUploadService {
 
       const savedBlob = await this.blobRepository.save(blob);
 
-      // 5단계: 응답 반환
+      // 6단계: 응답 반환
       return {
         blobId: savedBlob.id,
         key: savedBlob.key,
