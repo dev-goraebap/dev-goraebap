@@ -14,6 +14,9 @@ RUN cd resources && npm install
 # Copy source code
 COPY . .
 
+# Copy config folder (including google-vision.json)
+COPY .config ./.config
+
 # Build the application
 RUN npm run build
 
@@ -29,6 +32,7 @@ RUN npm ci --only=production
 # Copy built application and resources from builder stage
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/resources ./resources
+COPY --from=builder /app/.config ./.config
 
 # Copy environment file if it exists
 COPY .env.production.local* ./
