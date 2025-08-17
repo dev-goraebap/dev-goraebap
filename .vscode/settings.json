@@ -3,4 +3,16 @@
   "emmet.includeLanguages": {
     "edge": "html"
   },
+  // // edge 파일을 HTML로 인식하도록 설정
+  // "files.associations": {
+  //   "*.edge": "html"
+  // },
+  // HTML 포맷팅 설정 - 속성 줄바꿈 유지
+  "html.format.wrapAttributes": "force-aligned",
+  "html.format.wrapLineLength": 120,
+  "html.format.wrapAttributesIndentSize": 2,
+  // edge 파일도 HTML처럼 포맷팅 (Prettier 사용)
+  "[edge]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  }
 }
