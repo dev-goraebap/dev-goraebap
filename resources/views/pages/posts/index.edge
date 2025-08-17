@@ -27,6 +27,7 @@
                   </div>
 
                   <!-- 게시물 리스트 -->
+                  @if(posts.length > 0)
                   <div class="space-y-6">
                       @each(post in posts)
                       <article class="group card bg-base-100/70 backdrop-blur-sm p-6 border border-base-300/50 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer {{ $index === 0 ? 'animate-scale-in' : '' }}">
@@ -36,29 +37,39 @@
                                       {{ post.title }}
                                   </h3>
                                   <p class="text-base-content/70 text-sm mb-3 line-clamp-2">
-                                      {{ post.content }}
+                                      {{ post.summary }}
                                   </p>
                                   <div class="flex items-center gap-4 text-xs text-base-content/60">
-                                      <time>{{ post.date }}</time>
-                                      <span class="badge badge-{{ post.tagColor }} badge-outline">{{ post.tag }}</span>
+                                      <time>{{ post.publishedAt?.toLocaleDateString('ko-KR') || post.createdAt?.toLocaleDateString('ko-KR') }}</time>
+                                      @if(post.tags && post.tags.length > 0)
+                                      <span class="badge badge-outline">{{ post.tags[0].name }}</span>
+                                      @endif
                                       <span class="flex items-center gap-1">
                                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 616 0z"></path>
                                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                           </svg>
-                                          {{ post.views.toLocaleString() }}
+                                          {{ post.viewCount.toLocaleString() }}
                                       </span>
                                   </div>
                               </div>
-                              <div class="flex-shrink-0 w-24 h-16 lg:w-32 lg:h-20 rounded-xl overflow-hidden bg-gradient-to-br from-{{ post.tagColor }}/20 to-{{ post.tagColor }}/10 group-hover:scale-105 transition-transform duration-300">
-                                  <img src="{{ post.thumbnail }}" 
-                                        alt="썸네일" 
-                                        class="w-full h-full object-cover">
+                              <div class="flex-shrink-0 w-24 h-16 lg:w-32 lg:h-20 rounded-xl overflow-hidden bg-gradient-to-br from-primary/20 to-primary/10 group-hover:scale-105 transition-transform duration-300">
+                                  @!uikit.image({
+                                    url: cloudImageUrl(post?.getImage('thumbnail')?.url),
+                                    dominantColor: post?.getImage('thumbnail')?.dominantColor
+                                  })
                               </div>
                           </div>
                       </article>
                       @end
                   </div>
+                  @else
+                  <div class="flex flex-col items-center justify-center py-16">
+                      <div class="text-6xl mb-4">📝</div>
+                      <p class="text-xl font-medium text-gray-600 mb-2">아직 게시물이 없어요</p>
+                      <p class="text-gray-500">첫 번째 포스트를 작성 중입니다!</p>
+                  </div>
+                  @endif
 
                   <!-- 페이지네이션 -->
                   <div class="mt-12 flex justify-center">
@@ -96,6 +107,7 @@
                               <div class="w-1 h-6 bg-gradient-to-b from-secondary to-warning rounded-full"></div>
                               <h3 class="text-lg font-bold text-base-content">인기 글</h3>
                           </div>
+                          @if(popularPosts.length > 0)
                           <div class="space-y-4">
                               @each(popularPost in popularPosts)
                               <article class="group cursor-pointer">
@@ -108,14 +120,19 @@
                                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 616 0z"></path>
                                               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                                           </svg>
-                                          {{ popularPost.views.toLocaleString() }}
+                                          {{ popularPost.viewCount.toLocaleString() }}
                                       </span>
                                       <span>•</span>
-                                      <time>{{ popularPost.date }}</time>
+                                      <time>{{ popularPost.publishedAt?.toLocaleDateString('ko-KR') || popularPost.createdAt?.toLocaleDateString('ko-KR') }}</time>
                                   </div>
                               </article>
                               @end
                           </div>
+                          @else
+                          <div class="text-center py-8 text-gray-500">
+                              <p>인기 글이 없어요</p>
+                          </div>
+                          @endif
                       </div>
 
                       <!-- 태그 클라우드 -->
@@ -124,11 +141,17 @@
                               <div class="w-1 h-6 bg-gradient-to-b from-success to-accent rounded-full"></div>
                               <h3 class="text-lg font-bold text-base-content">인기 태그</h3>
                           </div>
+                          @if(tags.length > 0)
                           <div class="flex flex-wrap gap-2">
                               @each(tag in tags)
-                              <span class="badge badge-{{ tag.color }} hover:badge-{{ tag.color }} hover:bg-{{ tag.color }}/80 cursor-pointer">{{ tag.name }}</span>
+                              <span class="badge badge-outline hover:badge-primary cursor-pointer">{{ tag.name }}</span>
                               @end
                           </div>
+                          @else
+                          <div class="text-center py-8 text-gray-500">
+                              <p>태그가 없어요</p>
+                          </div>
+                          @endif
                       </div>
 
                       <!-- 최근 활동 -->
@@ -137,6 +160,7 @@
                               <div class="w-1 h-6 bg-gradient-to-b from-info to-primary rounded-full"></div>
                               <h3 class="text-lg font-bold text-base-content">최근 활동</h3>
                           </div>
+                          @if(activities.length > 0)
                           <div class="space-y-3 text-sm">
                               @each(activity in activities)
                               <div class="flex items-start gap-3">
@@ -148,6 +172,11 @@
                               </div>
                               @end
                           </div>
+                          @else
+                          <div class="text-center py-8 text-gray-500">
+                              <p>최근 활동이 없어요</p>
+                          </div>
+                          @endif
                       </div>
                   </div>
               </aside>
