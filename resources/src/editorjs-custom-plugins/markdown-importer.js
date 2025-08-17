@@ -51,23 +51,122 @@ export class MarkdownImporter {
   }
 
   importMarkdown(markdown) {
-    // marked를 사용해서 HTML로 변환 후 EditorJS 블록으로 변환
-    const html = marked(markdown);
-
-    // HTML을 EditorJS 블록으로 변환하거나
-    // 또는 간단하게 paragraph로 HTML 삽입
+    // marked를 사용해서 토큰화
+    const tokens = marked.lexer(markdown);
+    
     const currentIndex = this.api.blocks.getCurrentBlockIndex();
     this.api.blocks.delete(currentIndex);
 
-    // HTML을 paragraph로 삽입 (marked의 결과를 그대로 사용)
-    this.api.blocks.insert(
-      'paragraph',
-      {
-        text: html,
-      },
-      {},
-      currentIndex,
-    );
+    // 각 토큰을 EditorJS 블록으로 변환
+    let insertIndex = currentIndex;
+    tokens.forEach(token => {
+      const blockData = this.convertTokenToBlock(token);
+      if (blockData) {
+        this.api.blocks.insert(
+          blockData.type,
+          blockData.data,
+          {},
+          insertIndex
+        );
+        insertIndex++;
+      }
+    });
+  }
+
+  convertTokenToBlock(token) {
+    switch (token.type) {
+      case 'heading':
+        return {
+          type: 'header',
+          data: {
+            text: this.processInlineMarkdown(token.text),
+            level: token.depth
+          }
+        };
+      
+      case 'paragraph':
+        return {
+          type: 'paragraph',
+          data: {
+            text: this.processInlineMarkdown(token.text)
+          }
+        };
+      
+      case 'list':
+        const items = token.items.map(item => this.processInlineMarkdown(item.text));
+        return {
+          type: 'list',
+          data: {
+            style: token.ordered ? 'ordered' : 'unordered',
+            items: items
+          }
+        };
+      
+      case 'code':
+        const language = token.lang || '';
+        const codeClass = language ? ` class="language-${language}"` : '';
+        return {
+          type: 'paragraph',
+          data: {
+            text: `<pre><code${codeClass}>${token.text}</code></pre>`
+          }
+        };
+        
+      case 'codespan':
+        return {
+          type: 'paragraph',
+          data: {
+            text: `<code>${token.text}</code>`
+          }
+        };
+      
+      case 'blockquote':
+        return {
+          type: 'paragraph',
+          data: {
+            text: this.cleanHtml(token.text)
+          }
+        };
+      
+      case 'hr':
+        return {
+          type: 'paragraph',
+          data: {
+            text: '<hr>'
+          }
+        };
+      
+      case 'space':
+        return null;
+      
+      default:
+        return {
+          type: 'paragraph',
+          data: {
+            text: this.cleanHtml(token.raw || '')
+          }
+        };
+    }
+  }
+
+  processInlineMarkdown(text) {
+    if (!text) return '';
+    
+    // marked를 사용해 인라인 요소만 변환
+    const inlineHtml = marked.parseInline(text);
+    return this.cleanHtml(inlineHtml);
+  }
+
+  cleanHtml(text) {
+    if (!text) return '';
+    
+    return text
+      .replace(/<strong>(.*?)<\/strong>/g, '<b>$1</b>')
+      .replace(/<em>(.*?)<\/em>/g, '<i>$1</i>')
+      .replace(/<code>(.*?)<\/code>/g, '<code>$1</code>')
+      .replace(/<a href="([^"]*)"[^>]*>(.*?)<\/a>/g, '<a href="$1">$2</a>')
+      .replace(/<(?!\/?(?:b|i|code|pre|hr|a\s)[^>]*>)[^>]*>/g, '')
+      .trim();
   }
 
   save() {

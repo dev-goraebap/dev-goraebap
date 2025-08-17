@@ -13,7 +13,7 @@ export class EditorController extends Controller {
         ListModule,
         ParagraphModule,
         edjsHTMLModule,
-        MarkdownImporterModule
+        MarkdownImporterModule,
       ] = await Promise.all([
         import('@editorjs/editorjs'),
         import('@editorjs/header'),
@@ -21,7 +21,7 @@ export class EditorController extends Controller {
         import('@editorjs/list'),
         import('@editorjs/paragraph'),
         import('editorjs-html'),
-        import('../editorjs-custom-plugins/markdown-importer')
+        import('../editorjs-custom-plugins/markdown-importer'),
       ]);
 
       // 모듈에서 필요한 클래스들 추출 (default export 처리)
@@ -37,15 +37,18 @@ export class EditorController extends Controller {
       this.edjsParser = edjsHTML();
 
       const initialContent = this.contentTarget?.dataset?.initialContent;
-      
+
       let parsedData;
       try {
-        parsedData = initialContent && initialContent !== '{}' ? JSON.parse(initialContent) : undefined;
+        parsedData =
+          initialContent && initialContent !== '{}'
+            ? JSON.parse(initialContent)
+            : undefined;
       } catch (error) {
         console.error('초기 데이터 파싱 실패:', error);
         parsedData = undefined;
       }
-      
+
       this.editor = new EditorJS({
         holder: 'editorjs',
         data: parsedData,
@@ -71,7 +74,6 @@ export class EditorController extends Controller {
           console.debug('EditorJS 준비 완료');
         },
       });
-
     } catch (error) {
       console.error('EditorJS 라이브러리 로드 실패:', error);
       // 폴백 처리 또는 에러 메시지 표시
@@ -81,7 +83,7 @@ export class EditorController extends Controller {
 
   async uploadByFile(file) {
     console.debug('파일 업로드 시작:', file);
-    
+
     const formData = new FormData();
     formData.append('file', file);
 
@@ -90,7 +92,8 @@ export class EditorController extends Controller {
         method: 'POST',
         body: formData,
         headers: {
-          'X-CSRF-Token': document.querySelector('input[name="_csrf"]')?.value || '',
+          'X-CSRF-Token':
+            document.querySelector('input[name="_csrf"]')?.value || '',
         },
       });
 
@@ -124,7 +127,7 @@ export class EditorController extends Controller {
   async handleSubmit(event) {
     // Turbo가 폼을 처리하도록 하기 위해 preventDefault 제거
     // event.preventDefault(); // 이 줄을 제거!
-    
+
     try {
       if (!this.editor) {
         throw new Error('에디터가 초기화되지 않았습니다.');
@@ -137,17 +140,16 @@ export class EditorController extends Controller {
       console.debug('데이터 저장 시작...');
       const outputData = await this.editor.save();
       console.debug('에디터 저장 데이터:', outputData);
-      
+
       // JSON 저장
       this.contentTarget.value = JSON.stringify(outputData);
-      
+
       // HTML 변환 후 저장
       const html = this.edjsParser.parse(outputData);
       const htmlString = Array.isArray(html) ? html.join('') : html;
       this.contentHtmlTarget.value = htmlString;
-      
+
       console.debug('변환된 HTML:', this.contentHtmlTarget.value);
-      
     } catch (error) {
       console.error('저장 중 오류:', error);
       event.preventDefault();
