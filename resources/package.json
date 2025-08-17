@@ -24,6 +24,7 @@
     "filepond-plugin-image-preview": "^4.6.12",
     "filepond-plugin-image-validate-size": "^1.2.7",
     "marked": "^16.1.2",
+    "prismjs": "^1.30.0",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
