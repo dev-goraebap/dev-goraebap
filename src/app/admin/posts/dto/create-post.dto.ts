@@ -1,10 +1,9 @@
 import { z } from 'zod';
+import { validateAndExtractContent } from '../utils/extract-html-content';
 
 export const CreatePostSchema = z
   .object({
-    title: z.string().min(1, '제목을 입력해 주세요.'),
     content: z.string().min(1, '내용을 입력해 주세요.'),
-    contentHtml: z.string().min(1, '내용을 입력해 주세요.'),
     thumbnailBlobId: z.string().optional(),
     tags: z.preprocess(
       (val) => (val === undefined ? [] : val),
@@ -12,9 +11,18 @@ export const CreatePostSchema = z
     ),
   })
   .transform((x) => {
+    const contentValidation = validateAndExtractContent(x.content);
+    
+    if (!contentValidation.isValid) {
+      throw new Error(contentValidation.errors.join(', '));
+    }
+
     return {
-      ...x,
+      content: x.content,
+      title: contentValidation.title,
+      summary: contentValidation.summary,
       thumbnailBlobId: x.thumbnailBlobId ? Number(x.thumbnailBlobId) : null,
+      tags: x.tags,
     };
   });
 

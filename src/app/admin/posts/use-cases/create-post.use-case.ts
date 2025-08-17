@@ -10,10 +10,7 @@ import {
   UserEntity,
 } from 'src/shared';
 import { CreatePostDto } from '../dto/create-post.dto';
-import {
-  extractBlobIds,
-  extractFirstParagraph,
-} from '../utils/extract-content';
+import { extractImageUrls } from '../utils/extract-html-content';
 
 @Injectable()
 export class CreatePostUseCase {
@@ -31,9 +28,6 @@ export class CreatePostUseCase {
 
   async execute(user: UserEntity, dto: CreatePostDto) {
     await this.entityManager.transaction(async () => {
-      // 요약 텍스트 추출
-      const summary = extractFirstParagraph(dto.content);
-
       // 태그 처리 (포스트 생성 전에)
       const existingTags = await this.tagRepository.find({
         where: { name: In(dto.tags) },
@@ -64,8 +58,7 @@ export class CreatePostUseCase {
         user,
         title: dto.title,
         content: dto.content,
-        contentHtml: dto.contentHtml,
-        summary,
+        summary: dto.summary,
         isPublished: false,
         publishedAt: new Date(),
         tags: allTags, // 태그 관계 설정
@@ -92,24 +85,40 @@ export class CreatePostUseCase {
         await this.entityManager.save(newThumbnailAttachment);
       }
 
-      const contentBlobIds = extractBlobIds(dto.content);
+      // TinyMCE HTML에서 이미지 URL 추출
+      const imageUrls = extractImageUrls(dto.content);
 
-      // 게시물 컨텐츠 이미지가 있을 경우 컨텐츠 이미지 첨부 생성
-      if (contentBlobIds.length !== 0) {
-        const blobs = await this.blobRepository.find({
-          where: {
-            id: In(contentBlobIds),
-          },
-        });
-        const newAttachments = blobs.map((x) => {
-          return this.attachmentRepository.create({
-            blob: x,
-            name: 'contentImage',
-            recordType: 'post',
-            recordId: newPost.id.toString(),
+      console.log('=======================');
+      console.log(imageUrls);
+      console.log('=======================');
+
+      // 이미지 URL이 있는 경우 blob key로 변환하여 첨부 생성
+      if (imageUrls.length > 0) {
+        // 이미지 URL에서 blob key 추출 (32자리 hex key)
+        const blobKeys = imageUrls
+          .map((url) => {
+            // URL에서 blob key를 추출하는 로직 (마지막 32자리 hex 문자열)
+            const match = url.match(/([a-f0-9]{32})$/);
+            return match ? match[1] : null;
+          })
+          .filter((key) => key !== null);
+
+        if (blobKeys.length > 0) {
+          const blobs = await this.blobRepository.find({
+            where: {
+              key: In(blobKeys),
+            },
           });
-        });
-        await this.entityManager.save(newAttachments);
+          const newAttachments = blobs.map((x) => {
+            return this.attachmentRepository.create({
+              blob: x,
+              name: 'contentImage',
+              recordType: 'post',
+              recordId: newPost.id.toString(),
+            });
+          });
+          await this.entityManager.save(newAttachments);
+        }
       }
     });
   }

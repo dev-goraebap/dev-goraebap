@@ -3,58 +3,52 @@
 @let(submitText = editMode ? '수정' : '등록')
 @let(redirectTo = editMode ? `/admin/posts/${post?.id}/edit` : '/admin/posts/new')
 
-<form 
-  action="{{action}}" 
-  method="{{method}}" 
-  data-controller="editor"
-  data-action="submit->editor#handleSubmit" 
-  class="flex justify-between gap-4 h-full relative">
+<form action="{{action}}"
+      method="{{method}}"
+      class="flex justify-between gap-4 relative">
 
-  <div class="">
-    <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+  <input type="hidden"
+         name="_csrf"
+         value="{{csrfToken}}" />
+
+
+
+  <div class="grow flex flex-col p-4 gap-4">
+    @!uikit.flash()
+    <textarea id="tinymceEditor"
+              name="post[content]">{{post?.content || ''}}</textarea>
   </div>
 
-  <div class="flex flex-col w-full border-r border-base-300">
+  <div class="min-w-sm flex flex-col justify-between h-screen sticky top-0 border-l border-base-300 p-4">
     <div>
-      <input 
-        type="text" 
-        name="post[title]" 
-        class="px-6 h-[60px] w-full text-4xl font-bold focus:outline-none"
-        placeholder="제목을 입력해 주세요..." 
-        value="{{post?.title || ''}}">
-    </div>
-
-    <div class="grow prose prose-base w-full min-w-3xl mt-6">
-      <div id="editorjs" class=""></div>
-      <input 
-        type="hidden" 
-        name="post[content]" 
-        data-editor-target="content"
-        data-initial-content="{{post?.content || '{}'}}">
-      <input 
-        type="hidden" 
-        name="post[contentHtml]" 
-        data-editor-target="contentHtml">
-    </div>
-  </div>
-
-  <div class="min-w-sm flex flex-col justify-between h-full">
-    <div class="w-full">
+      {{-- --}}
       @!partials.thumbnailUploader({
-        'data-image-validate-size-min-width': '600',
-        'data-image-validate-size-min-height': '400',
-        sizeGuideText: 'w: 600 이상, h: 400 이상 사이로 등록 가능',
-        post: post || null,
+      'data-image-validate-size-min-width': '600',
+      'data-image-validate-size-min-height': '400',
+      sizeGuideText: 'w: 600 이상, h: 400 이상 사이로 등록 가능',
+      post: post || null,
       })
 
       <br />
 
-      @!component('pages/admin/posts/_form/_tag_input', {  
-        tags: post?.tags || []
+      @!component('pages/admin/posts/_form/_tag_input', {
+      tags: post?.tags || []
       })
     </div>
 
-    <!-- submit button -->
-    <button type="submit" class="btn btn-soft btn-primary" data-turbo-submits-with="저장 중...">{{submitText}}</button>
+    <div class="flex justify-between gap-4">
+      {{-- 작업 취소 버튼 --}}
+      <a href="/admin/posts"
+         data-turbo="false"
+         class="flex-1/2 btn btn-soft btn-warning">
+        작업 취소
+      </a>
+      {{-- 서브밋 버튼 --}}
+      <button type="submit"
+              class="flex-1/2 btn btn-primary"
+              data-turbo-submits-with="저장 중...">
+        {{submitText}}
+      </button>
+    </div>
   </div>
 </form>

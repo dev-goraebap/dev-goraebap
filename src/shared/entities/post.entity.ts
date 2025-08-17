@@ -29,9 +29,6 @@ export class PostEntity extends BaseEntityWithAttachments {
   readonly content: string;
 
   @Column()
-  readonly contentHtml: string;
-
-  @Column()
   readonly isPublished: boolean;
 
   @Column()

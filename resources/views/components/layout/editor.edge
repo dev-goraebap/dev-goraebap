@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko"
+      data-theme="{{currentTheme() || 'cupcake'}}">
+
+<head>
+  @!partials.head({ title, description })
+  @if ($slots.meta)
+  {{{ await $slots.meta() }}}
+  @endif
+  @if(!flash)
+  <meta name="turbo-visit-control"
+        content="reload">
+  @endif
+
+</head>
+
+<body class="bg-base-100">
+  <div class="container min-w-6xl max-w-6xl mx-auto">
+
+    {{{ await $slots.main() }}}
+  </div>
+
+  <!-- marked.js 라이브러리 추가 -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- TinyMCE 라이브러리 -->
+  <script src="/public/tinymce/tinymce.min.js"></script>
+  <script>
+
+    document.addEventListener('turbo:load', function () {
+
+      tinymce.init({
+        selector: '#tinymceEditor',
+        license_key: 'gpl',
+
+        // 페이지 이탈 시 확인 메시지
+        autosave_ask_before_unload: true,  // 이미 설정되어 있음
+
+        // 변경사항이 있을 때만 확인 메시지
+        onbeforeunload_confirm: "작업 중인 내용이 저장되지 않을 수 있습니다. 정말 페이지를 떠나시겠습니까?",
+
+        // 높이 설정
+        height: '100%',
+
+        // 실제 존재하는 무료 플러그인만 포함
+        plugins: [
+          'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+          'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+          'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
+          'codesample', 'pagebreak', 'nonbreaking', 'save',
+          'autosave', 'directionality'
+        ],
+
+        // 풀 툴바 구성 (존재하는 기능만)
+        toolbar1: 'undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify',
+        toolbar2: 'outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save',
+        toolbar3: 'insertfile image media link anchor codesample | visualblocks code | ltr rtl | searchreplace | help',
+
+        // 메뉴바 활성화
+        menubar: 'file edit view insert format tools table help',
+
+        // 상세 메뉴 구성 (존재하는 기능만)
+        menu: {
+          file: { title: 'File', items: 'newdocument restoredraft | preview | print' },
+          edit: { title: 'Edit', items: 'undo redo | cut copy paste pastetext | selectall | searchreplace' },
+          view: { title: 'View', items: 'code | visualaid visualchars visualblocks | preview fullscreen' },
+          insert: { title: 'Insert', items: 'image link media codesample inserttable | charmap emoticons | pagebreak nonbreaking anchor | insertdatetime' },
+          format: { title: 'Format', items: 'bold italic underline strikethrough superscript subscript codeformat | blocks fontfamily fontsize align lineheight | forecolor backcolor | removeformat' },
+          tools: { title: 'Tools', items: 'code wordcount' },
+          table: { title: 'Table', items: 'inserttable | cell row column | tableprops deletetable' },
+          help: { title: 'Help', items: 'help' }
+        },
+
+        // 이미지 업로드 설정 (TinyMCE v6 Promise 방식)
+        images_upload_handler: (blobInfo, progress) => new Promise((resolve, reject) => {
+          const formData = new FormData();
+          formData.append('file', blobInfo.blob(), blobInfo.filename());
+
+          const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
+
+          fetch('/api/admin/file-upload', {
+            method: 'POST',
+            body: formData,
+            headers: {
+              'X-CSRF-Token': csrfToken || ''
+            }
+          })
+            .then(response => {
+              if (!response.ok) {
+                throw new Error('이미지 업로드에 실패했습니다.');
+              }
+              return response.json();
+            })
+            .then(data => {
+              console.log('업로드 응답:', data);
+
+              // 서버 응답 내부의 status 확인
+              if (data.status && data.status >= 400) {
+                throw new Error(data.message || '서버 오류가 발생했습니다.');
+              }
+
+              // Promise resolve로 URL 반환
+              resolve(data.url);
+            })
+            .catch(error => {
+              console.error('이미지 업로드 오류:', error);
+              // Promise reject로 오류 반환 + 업로드 실패 시 이미지 자동 제거
+              reject({
+                message: '이미지 업로드에 실패했습니다: ' + error.message,
+                remove: true
+              });
+            });
+        }),
+
+        // 이미지 업로드 관련 설정
+        automatic_uploads: true,
+        paste_data_images: true,
+
+        // 자동저장 설정
+        autosave_ask_before_unload: true,
+        autosave_interval: '30s',
+        autosave_prefix: '{path}{query}-{id}-',
+        autosave_restore_when_empty: false,
+        autosave_retention: '2m',
+
+        // 코드 샘플 언어 설정
+        codesample_languages: [
+          { text: 'HTML/XML', value: 'markup' },
+          { text: 'TypeScript', value: 'typescript' },
+          { text: 'JavaScript', value: 'javascript' },
+          { text: 'CSS', value: 'css' },
+          { text: 'PHP', value: 'php' },
+          { text: 'Ruby', value: 'ruby' },
+          { text: 'Python', value: 'python' },
+          { text: 'Java', value: 'java' },
+          { text: 'C', value: 'c' },
+          { text: 'C#', value: 'csharp' },
+          { text: 'C++', value: 'cpp' },
+          { text: 'SQL', value: 'sql' },
+          { text: 'JSON', value: 'json' },
+          { text: 'Bash', value: 'bash' },
+          { text: 'Go', value: 'go' },
+          { text: 'Rust', value: 'rust' },
+        ],
+
+        // 폰트 설정
+        font_family_formats: 'Arial=arial,helvetica,sans-serif; Helvetica=helvetica; Times New Roman=times new roman,times; Courier New=courier new,courier',
+        font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt',
+
+        // 테이블 기본 설정
+        table_default_attributes: {
+          border: '1'
+        },
+        table_default_styles: {
+          'border-collapse': 'collapse'
+        },
+
+        // 고급 설정
+        paste_data_images: true, // 이미지 붙여넣기 허용
+        paste_as_text: false, // 텍스트로만 붙여넣기 비활성화
+        browser_spellcheck: true, // 브라우저 맞춤법 검사
+        contextmenu: 'link image table', // 우클릭 메뉴
+
+        // 콘텐츠 스타일 (에디터 내부 스타일)
+        content_style: `
+        body {
+            font-size: 14px; 
+            line-height: 1.6; 
+        }
+        pre { 
+            background-color: #f4f4f4; 
+            padding: 10px; 
+            border-radius: 4px; 
+        }
+      `,
+
+        // 단축키 설정
+        setup: function (editor) {
+          // Ctrl+S로 저장
+          editor.addShortcut('ctrl+s', 'Save content', function () {
+            editor.execCommand('mceSave');
+          });
+
+          // Ctrl+Shift+C로 코드 샘플 삽입
+          editor.addShortcut('ctrl+shift+c', 'Insert code sample', function () {
+            editor.execCommand('mceCodeSample');
+          });
+        }
+      });
+
+    });
+
+  </script>
+</body>
+
+</html>
