@@ -24,6 +24,7 @@
     <script src="/public/tinymce/tinymce.min.js">
       
     </script>
+
     <script>
       document.addEventListener("turbo:load", function() {
         tinymce.init({
@@ -40,7 +41,7 @@
           plugins: [ "advlist", "autolink", "lists", "link", "image", "charmap", "preview", "anchor", "searchreplace", "visualblocks", "code", "fullscreen", "insertdatetime", "media", "table", "help", "wordcount", "emoticons", "codesample", "pagebreak", "nonbreaking", "save", "autosave", "directionality" ],
           // 풀 툴바 구성 (존재하는 기능만)
           toolbar1: "undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify",
-          toolbar2: "outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen preview save",
+          toolbar2: "outdent indent | numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | importmd | fullscreen preview save",
           toolbar3: "insertfile image media link anchor codesample | visualblocks code | ltr rtl | searchreplace | help",
           // 메뉴바 활성화
           menubar: "file edit view insert format tools table help",
@@ -192,18 +193,52 @@
           // 우클릭 메뉴
           // 콘텐츠 스타일 (에디터 내부 스타일)
           content_style: `
-                                                  body {
-                                                      font-size: 14px; 
-                                                      line-height: 1.6; 
-                                                  }
-                                                  pre { 
-                                                      background-color: #f4f4f4; 
-                                                      padding: 10px; 
-                                                      border-radius: 4px; 
-                                                  }
-                                                `,
+                                    body {
+                                        font-size: 14px; 
+                                        line-height: 1.6; 
+                                    }
+                                    pre { 
+                                        background-color: #f4f4f4; 
+                                        padding: 10px; 
+                                        border-radius: 4px; 
+                                    }
+                                  `,
           // 단축키 설정
           setup: function(editor) {
+            // Import Markdown 버튼 추가
+            editor.ui.registry.addButton("importmd", {
+              text: "Import MD",
+              tooltip: "Import Markdown file",
+              onAction: function() {
+                const input = document.createElement("input");
+                input.type = "file";
+                input.accept = ".md,.markdown";
+                input.style.display = "none";
+                input.onchange = function(e) {
+                  const file = e.target.files[0];
+                  if (!file) return;
+                  // 파일 크기 제한 (1MB)
+                  if (file.size > 1024 * 1024) {
+                    alert("파일 크기가 1MB를 초과합니다.");
+                    return;
+                  }
+                  const reader = new FileReader();
+                  reader.onload = function(e) {
+                    try {
+                      const markdown = e.target.result;
+                      const html = marked.parse(markdown);
+                      editor.insertContent(html);
+                    } catch (error) {
+                      alert("마크다운 변환 중 오류가 발생했습니다.");
+                    }
+                  };
+                  reader.readAsText(file);
+                };
+                document.body.appendChild(input);
+                input.click();
+                document.body.removeChild(input);
+              }
+            });
             // Ctrl+S로 저장
             editor.addShortcut("ctrl+s", "Save content", function() {
               editor.execCommand("mceSave");
