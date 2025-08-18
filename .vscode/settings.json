@@ -4,9 +4,9 @@
     "edge": "html"
   },
   // Edge 템플릿 디스크 설정 (자동완성과 Go-To 링크 지원)
-  "edge.disks": {
-    "default": "resources/views"
-  },
+  // "edge.disks": {
+  //   "default": "resources/views"
+  // },
   // // edge 파일을 HTML로 인식하도록 설정
   // "files.associations": {
   //   "*.edge": "html"
