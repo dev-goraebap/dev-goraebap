@@ -1,20 +1,44 @@
-<div data-controller="file-upload" class="relative">
-  <!-- prettier-ignore-start -->
-  <fieldset class="fieldset">
-    <legend class="fieldset-legend">
-      썸네일 이미지
-    </legend>
-    <input
-      type="file"
-      class="filepond"
-      multiple
-      data-file-upload-target="fileInput"
-      {{ $props.merge({ 
+<div
+  data-controller="thumbnail-uploader-toggle"
+  data-thumbnail-uploader-toggle-mode-value="{{ item?.getImage('thumbnail') ? 'update' : 'create' }}"
+>
+  <div data-thumbnail-uploader-toggle-target="render">
+  </div>
+  <template data-thumbnail-uploader-toggle-target="previewTemplate">
+    <div class="flex flex-col gap-2">
+      <p class="text-xs font-semibold">
+        썸네일 이미지
+      </p>
+      <div class="h-52 max-h-52 flex justify-center items-center overflow-hidden bg-base-200 rounded-xl">
+        @!uikit.image({
+          url: cloudImageUrl(item?.getImage('thumbnail')?.url),
+          dominantColor: item?.getImage('thumbnail')?.dominantColor,
+          width: 'auto',
+          height: 'h-full'
+        })
+      </div>
+      <div class="text-end">
+        <button type="button" data-action="thumbnail-uploader-toggle#onReUpload" class="text-sm text-primary-content cursor-pointer">다시 업로드</button>
+      </div>
+    </div>
+  </template>
+  <template data-thumbnail-uploader-toggle-target="uploadTemplate">
+    <div data-controller="file-upload" class="relative">
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">
+          썸네일 이미지
+        </legend>
+        <input
+          type="file"
+          class="filepond"
+          multiple
+          data-file-upload-target="fileInput"
+          {{ $props.merge({ 
             'data-allow-reorder': 'true', 
             'data-max-file-size': '3MB', 
             'data-max-files': '1' 
-        })
-       .only([ 
+          })
+         .only([ 
             'data-allow-reorder', 
             'data-max-file-size', 
             'data-max-files', 
@@ -22,14 +46,14 @@
             'data-image-validate-size-max-width', 
             'data-image-validate-size-min-height', 
             'data-image-validate-size-max-height'
-        ]).toAttrs() }}
-    />
-    {{-- skip-format-end --}}
-    <!-- FilePond 업로드 완료 시 blobId 저장용 -->
-    <input type="hidden" name="{{ blobIdName || 'post[thumbnailBlobId]' }}" data-file-upload-target="filePondBlobIds" />
-    <p class="label">
-      {{ sizeGuideText || 'w: 400~420, h: 600~620 사이로 등록 가능' }}
-    </p>
-  </fieldset>
-  <!-- prettier-ignore-end -->
+          ]).toAttrs() }}
+        />
+        {{-- FilePond 업로드 완료 시 blobId 저장용 --}}
+        <input type="hidden" name="{{ blobIdName || 'post[thumbnailBlobId]' }}" data-file-upload-target="filePondBlobIds" />
+        <p class="label">
+          {{ sizeGuideText || 'w: 400~420, h: 600~620 사이로 등록 가능' }}
+        </p>
+      </fieldset>
+    </div>
+  </template>
 </div>
