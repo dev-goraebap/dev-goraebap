@@ -14,6 +14,7 @@ export class SeriesService {
 
   async getSeriesList(dto: GetSeriesDto) {
     const qb = this.seriesRepository.createQueryBuilder('series');
+    qb.leftJoinAndSelect('series.posts', 'post');
     AttachmentQueryHelper.withAttachments(qb, 'series');
 
     if (dto.search) {
