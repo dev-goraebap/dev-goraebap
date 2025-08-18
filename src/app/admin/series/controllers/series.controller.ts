@@ -24,12 +24,12 @@ import {
   CreateSeriesSchema,
   UpdateSeriesDto,
   UpdateSeriesSchema,
-} from './dto/create-or-update-series.dto';
-import { GetSeriesDto, GetSeriesSchema } from './dto/get-series.dto';
-import { SeriesService } from './series.service';
-import { CreateSeriesUseCase } from './use-cases/create-series.use-case';
-import { DestroySeriesUseCase } from './use-cases/destroy-series.use-case';
-import { UpdateSeriesUseCase } from './use-cases/update-series.use-case';
+} from '../dto/create-or-update-series.dto';
+import { GetSeriesDto, GetSeriesSchema } from '../dto/get-series.dto';
+import { SeriesService } from '../services/series.service';
+import { CreateSeriesUseCase } from '../use-cases/create-series.use-case';
+import { DestroySeriesUseCase } from '../use-cases/destroy-series.use-case';
+import { UpdateSeriesUseCase } from '../use-cases/update-series.use-case';
 
 @Controller({ path: '/admin/series' })
 @UseGuards(AdminAuthGuard)

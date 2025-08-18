@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { AttachmentQueryHelper, SeriesEntity } from 'src/shared';
-import { GetSeriesDto } from './dto/get-series.dto';
+import { GetSeriesDto } from '../dto/get-series.dto';
 
 @Injectable()
 export class SeriesService {
@@ -14,7 +14,7 @@ export class SeriesService {
 
   async getSeriesList(dto: GetSeriesDto) {
     const qb = this.seriesRepository.createQueryBuilder('series');
-    qb.leftJoinAndSelect('series.posts', 'post');
+    qb.leftJoinAndSelect('series.seriesPosts', 'post');
     AttachmentQueryHelper.withAttachments(qb, 'series');
 
     if (dto.search) {

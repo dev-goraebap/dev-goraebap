@@ -24,6 +24,9 @@ export class TagsService {
       order: {
         [dto.orderKey]: dto.orderBy,
       },
+      relations: {
+        posts: true,
+      },
     });
   }
 

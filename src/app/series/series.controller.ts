@@ -12,7 +12,7 @@ export class SeriesController {
     const series = await this.seriesService.getSeries();
 
     return req.view.render('pages/series/index', {
-      series
+      series,
     });
   }
 
@@ -20,15 +20,15 @@ export class SeriesController {
   async show(@Param('id') id: string, @Req() req: NestMvcReq) {
     // 실제 데이터 가져오기
     const seriesData = await this.seriesService.getSeriesWithPosts(id);
-    
+
     if (!seriesData) {
       // 404 처리 또는 기본 페이지로 리다이렉트
       return req.view.render('pages/errors/404');
     }
-    
+
     return req.view.render('pages/series/show', {
       series: seriesData,
-      posts: seriesData.posts || []
+      posts: [], // seriesData.posts || []
     });
   }
 }
