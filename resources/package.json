@@ -25,6 +25,7 @@
     "filepond-plugin-image-validate-size": "^1.2.7",
     "marked": "^16.1.2",
     "prismjs": "^1.30.0",
+    "sortablejs": "^1.15.6",
     "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
