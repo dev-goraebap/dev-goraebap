@@ -16,7 +16,48 @@
     </div>
 
     <turbo-frame id="seriesPostsFrame">
-      hello world
+      <ul
+        data-controller="sortable"
+        data-sortable-target="container"
+        data-sortable-order-api-value="/admin/series/{{ series?.id }}/posts/orders?_csrf={{ csrfToken }}"
+        data-sortable-redirect-url-value="/admin/series/{{ series?.id }}/posts"
+      >
+        @each(seriesPost in series.seriesPosts)
+          @let(post = seriesPost?.post)
+          <li
+            data-id="{{ seriesPost?.id }}"
+            data-sortable-target="handle"
+            class="flex justify-between items-center p-4 border-b border-base-300"
+          >
+            <div class="flex gap-4">
+              <div class="w-[100px] h-[60px] overflow-hidden">
+                @!uikit.image({
+                  url: cloudImageUrl(post?.getImage('thumbnail')?.url),
+                  dominantColor: post?.getImage('thumbnail')?.dominantColor
+                })
+              </div>
+              <div class="flex flex-col gap-1">
+                <h2 class="text-xl">
+                  {{ post?.title }}
+                </h2>
+                <span class="text-xs text-base-content/70">
+                  {{ post?.isPublished ? '공개' : '비공개' }}
+                </span>
+              </div>
+            </div>
+            <div>
+              <a
+                href="/admin/series/{{ series?.id }}/posts/{{ post?.id }}"
+                data-turbo-method="delete"
+                data-turbo-confirm="정말 제거하시겠어요?"
+                class="btn btn-sm"
+              >
+                시리즈에서 제거
+              </a>
+            </div>
+          </li>
+        @end
+      </ul>
     </turbo-frame>
   </div>
 @end
