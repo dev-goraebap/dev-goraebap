@@ -19,7 +19,7 @@
           </p>
 
           <div class="flex justify-between items-center mt-2 w-full">
-            <span class="text-xs text-base-content/70">{{ seriesItem?.relatedPostCount }}개의 게시물</span>
+            <span class="text-xs text-base-content/70">{{ seriesItem?.posts?.length }}개의 게시물</span>
             <div class="flex">
               {{-- 수정 버튼 --}}
               <button class="p-1 cursor-pointer" data-action="modal#onOpen" data-content-url="/admin/series/{{ seriesItem?.id }}/edit">
