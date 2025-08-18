@@ -8,6 +8,7 @@ import {
   BlobEntity,
   PostEntity,
   SeriesEntity,
+  SeriesPostEntity,
   TagEntity,
   UserEntity,
 } from 'src/shared';
@@ -39,6 +40,7 @@ export class TypeOrmOptionsImpl implements TypeOrmOptionsFactory {
         AttachmentEntity,
         PostEntity,
         SeriesEntity,
+        SeriesPostEntity,
         TagEntity,
       ],
       namingStrategy: new SnakeNamingStrategy(),

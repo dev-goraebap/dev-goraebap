@@ -5,12 +5,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from 'typeorm';
 
 import { BaseEntityWithAttachments } from './_/base-entity-with-attachments';
-import { SeriesEntity } from './series.entity';
+import { SeriesPostEntity } from './series-post.entity';
 import { TagEntity } from './tag.entity';
 import { UserEntity } from './user.entity';
 
@@ -43,15 +44,13 @@ export class PostEntity extends BaseEntityWithAttachments {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @ManyToOne(() => UserEntity, e => e.posts, { onDelete: 'CASCADE' })
+  @ManyToOne(() => UserEntity, (e) => e.posts, { onDelete: 'CASCADE' })
   readonly user: UserEntity;
 
-  @ManyToOne(() => SeriesEntity, (e) => e.posts, {
-    nullable: true,
-  })
-  readonly series: SeriesEntity;
+  @OneToMany(() => SeriesPostEntity, (e) => e.post)
+  readonly seriesPosts: SeriesPostEntity[];
 
-  @ManyToMany(() => TagEntity, (tag) => tag.posts)
+  @ManyToMany(() => TagEntity, (e) => e.posts)
   @JoinTable({
     name: 'post_tags',
     joinColumn: {

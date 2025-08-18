@@ -9,6 +9,7 @@ import {
   BlobEntity,
   PostEntity,
   SeriesEntity,
+  SeriesPostEntity,
   TagEntity,
   UserEntity,
 } from 'src/shared';
@@ -28,6 +29,7 @@ import { TypeOrmOptionsImpl } from './typeorm.options';
       PostEntity,
       TagEntity,
       SeriesEntity,
+      SeriesPostEntity,
       BlobEntity,
       AttachmentEntity,
     ]),

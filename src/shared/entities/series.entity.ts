@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { BaseEntityWithAttachments } from './_/base-entity-with-attachments';
-import { PostEntity } from './post.entity';
+import { SeriesPostEntity } from './series-post.entity';
 import { UserEntity } from './user.entity';
 
 @Entity({ name: 'series' })
@@ -35,6 +35,6 @@ export class SeriesEntity extends BaseEntityWithAttachments {
   @ManyToOne(() => UserEntity, (e) => e.seriesList, { onDelete: 'CASCADE' })
   readonly user: UserEntity;
 
-  @OneToMany(() => PostEntity, (e) => e.series)
-  posts: PostEntity[];
+  @OneToMany(() => SeriesPostEntity, (e) => e.series)
+  readonly seriesPosts: SeriesPostEntity[];
 }
