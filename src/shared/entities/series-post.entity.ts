@@ -4,12 +4,12 @@ import { PostEntity } from './post.entity';
 import { SeriesEntity } from './series.entity';
 
 @Entity({ name: 'series_posts' })
-@Index(['series', 'order'], { unique: true })
+@Index(['series', 'post'], { unique: true })
 export class SeriesPostEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column()
+  @Column({ default: 999 })
   readonly order: number;
 
   @CreateDateColumn()
