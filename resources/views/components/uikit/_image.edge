@@ -1,7 +1,18 @@
+{{--
+[Properties]
+url: required
+alt: optional
+dominantColor: optional
+width: optional
+height: optional
+--}}
 <div
   data-controller="image-loader"
   data-image-loader-target="container"
-  class="relative overflow-hidden transition-colors duration-700 flex items-center justify-center {{ width ?? 'w-full' }} {{ height ?? 'h-full' }}"
+  class="
+    {{ width ?? 'w-full' }} {{ height ?? 'h-full' }}
+    flex items-center justify-center
+    relative overflow-hidden transition-colors duration-700"
   style="background-color: {{ dominantColor !== undefined ? dominantColor : '#f0f0f0' }};"
 >
   <img
