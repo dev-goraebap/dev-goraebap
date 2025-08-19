@@ -1,4 +1,4 @@
-import { Controller, Get, Req } from '@nestjs/common';
+import { Controller, Get, Param, Req } from '@nestjs/common';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 import { PostsService } from './posts.service';
 
@@ -20,5 +20,11 @@ export class PostsController {
       tags,
       activities
     });
+  }
+
+  @Get(':id')
+  async show(@Param('id') id: number, @Req() req: NestMvcReq) {
+    const post = await this.postsService.getPost(id);
+    return req.view.render('pages/posts/show', { post });
   }
 }

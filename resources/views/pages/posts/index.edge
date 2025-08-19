@@ -37,32 +37,27 @@
                 <article
                   class="group card bg-base-100/70 backdrop-blur-sm p-6 border border-base-300/50 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer {{ $index === 0 ? 'animate-scale-in' : '' }}"
                 >
-                  <div class="flex items-start gap-6">
+                  <a href="/posts/{{ post?.id }}" class="flex items-start gap-6">
                     <div class="flex-1 min-w-0">
-                      <h3
+                      <h2
                         class="text-lg font-semibold text-base-content group-hover:text-primary transition-colors duration-300 mb-2 line-clamp-2"
                       >
                         {{ post.title }}
-                      </h3>
+                      </h2>
                       <p class="text-base-content/70 text-sm mb-3 line-clamp-2">
                         {{ post.summary }}
                       </p>
                       <div class="flex items-center gap-4 text-xs text-base-content/60">
-                        <time>{{ post.publishedAt?.toLocaleDateString('ko-KR') || post.createdAt?.toLocaleDateString('ko-KR') }}</time>
-                        @if(post.tags && post.tags.length > 0)
-                          <span class="badge badge-outline">{{ post.tags[0].name }}</span>
-                        @endif
+                        <time>{{ post.createdAt?.toLocaleDateString('ko-KR') }}</time>
                         <span class="flex items-center gap-1">
                           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 616 0z" />
-
                             <path
                               stroke-linecap="round"
                               stroke-linejoin="round"
                               stroke-width="2"
                               d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                             />
-
                           </svg>
                           {{ post.viewCount.toLocaleString() }}
                         </span>
@@ -76,7 +71,7 @@
                         dominantColor: post?.getImage('thumbnail')?.dominantColor
                       })
                     </div>
-                  </div>
+                  </a>
                 </article>
               @end
             </div>
@@ -101,7 +96,6 @@
               <button class="btn btn-outline btn-disabled" disabled>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-
                 </svg>
               </button>
 

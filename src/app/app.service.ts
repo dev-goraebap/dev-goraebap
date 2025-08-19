@@ -1,12 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  AttachmentQueryHelper,
-  PostEntity,
-  SeriesEntity,
-  UserEntity,
-} from 'src/shared';
+import { AttachmentQueryHelper, PostEntity, SeriesEntity, UserEntity } from 'src/shared';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -30,10 +25,9 @@ export class AppService implements OnModuleInit {
   }
 
   async getPosts() {
-    const qb = this.postRepository
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.tags', 'tag');
+    const qb = this.postRepository.createQueryBuilder('post').leftJoinAndSelect('post.tags', 'tag');
     AttachmentQueryHelper.withAttachments(qb, 'post');
+    qb.where('post.isPublished = :isPublished', { isPublished: true });
     qb.orderBy(`post.createdAt`, 'DESC');
     qb.take(6);
     return await qb.getMany();
