@@ -21,14 +21,13 @@ export const nestMvcOptions: NestMvcOptions = {
     },
     globals: {
       formatDate: (date: Date | string | number) => formatDate(date, '/'),
-      formatDateTime: (date: Date | string | number) =>
-        formatDateTime(date, '/'),
+      formatDateTime: (date: Date | string | number) => formatDateTime(date, '/'),
     },
     globalsInjects: [ConfigService],
     globalsFactory: (configService: ConfigService) => ({
       cloudImageUrl: (url: string) => {
-        // URL이 없을 경우 기본 이미지 표시
-        if (!url) return '/public/images/post-default.jpg';
+        // URL이 없을 경우 null 반환
+        if (!url) return null;
         return `${configService.get('R2_DEV_ENDPOINT')}/${url}`;
       },
     }),
