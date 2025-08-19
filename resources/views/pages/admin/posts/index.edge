@@ -26,13 +26,13 @@
   </div>
 
   @if(posts?.length > 0)
-    <ul class="list bg-base-100">
-      <li class="pb-2 text-xs opacity-60 tracking-wide mt-6">
-        My Posts / total 78
-      </li>
+    <div class="mt-6">
+      <div class="pb-2 text-xs opacity-60 tracking-wide">
+        My Posts / total {{ posts?.length }}
+      </div>
 
       @!component('pages/admin/posts/_list', { posts })
-    </ul>
+    </div>
   @else
     <div class="w-full flex justify-center p-10">
       <p class="text-3xl">
