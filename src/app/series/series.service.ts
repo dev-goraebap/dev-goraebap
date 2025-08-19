@@ -25,38 +25,32 @@ export class SeriesService {
   async getSeriesWithPosts(id: string) {
     const series = await this.seriesRepository
       .createQueryBuilder('series')
-      .leftJoinAndSelect('series.posts', 'post', 'post.isPublished = :isPublished', { isPublished: true })
+      .leftJoinAndSelect('series.seriesPosts', 'seriesPost')
+      .leftJoinAndSelect('seriesPost.post', 'post', 'post.isPublished = :isPublished', { isPublished: true })
       .leftJoinAndSelect('post.tags', 'tag')
       .where('series.id = :id', { id })
+      .orderBy('seriesPost.order', 'ASC')
       .getOne();
 
     if (!series) {
       return null;
     }
 
-    // // posts에 대한 attachment 정보도 가져오기
-    // if (series.posts && series.posts.length > 0) {
-    //   const postsWithAttachments = await this.postRepository
-    //     .createQueryBuilder('post')
-    //     .leftJoinAndSelect('post.tags', 'tag')
-    //     .whereInIds(series.posts.map(p => p.id))
-    //     .orderBy('post.publishedAt', 'DESC')
-    //     .getMany();
-
-    //   // AttachmentQueryHelper로 각 포스트의 attachment 가져오기
-    //   for (const post of postsWithAttachments) {
-    //     const qb = this.postRepository
-    //       .createQueryBuilder('post')
-    //       .where('post.id = :id', { id: post.id });
-    //     AttachmentQueryHelper.withAttachments(qb, 'post');
-    //     const postWithAttachment = await qb.getOne();
-    //     if (postWithAttachment) {
-    //       Object.assign(post, postWithAttachment);
-    //     }
-    //   }
-
-    //   series.posts = postsWithAttachments;
-    // }
+    // 포스트에 대한 attachment 정보 가져오기
+    if (series.seriesPosts && series.seriesPosts.length > 0) {
+      for (const seriesPost of series.seriesPosts) {
+        if (seriesPost.post) {
+          const qb = this.postRepository
+            .createQueryBuilder('post')
+            .where('post.id = :id', { id: seriesPost.post.id });
+          AttachmentQueryHelper.withAttachments(qb, 'post');
+          const postWithAttachment = await qb.getOne();
+          if (postWithAttachment) {
+            Object.assign(seriesPost.post, postWithAttachment);
+          }
+        }
+      }
+    }
 
     // series의 attachment 정보 가져오기
     const qb = this.seriesRepository.createQueryBuilder('series').where('series.id = :id', { id });

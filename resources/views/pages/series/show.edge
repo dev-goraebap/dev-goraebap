@@ -19,13 +19,13 @@
           </div>
         @end
         <div class="badge badge-outline">
-          {{ series.episodes }}개 포스트
+          {{ series.seriesPosts ? series.seriesPosts.length : 0 }}개 포스트
         </div>
       </div>
 
       <!-- 시리즈 제목 -->
       <h1 class="text-3xl lg:text-4xl font-bold text-base-content mb-6">
-        {{ series.title }}
+        {{ series.name }}
       </h1>
 
       <!-- 시리즈 설명 -->
@@ -57,52 +57,91 @@
         <!-- 포스트 리스트 (왼쪽, 2/3) -->
         <div class="lg:col-span-2">
           <div class="space-y-6">
-            @each(post in posts)
-              <article
-                class="group card bg-base-100/70 backdrop-blur-sm p-6 border border-base-300/50 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer"
-              >
-                <div class="flex items-start gap-6">
-                  <div class="flex-1 min-w-0">
-                    <h3
-                      class="text-lg font-semibold text-base-content group-hover:text-primary transition-colors duration-300 mb-2 line-clamp-2"
+            @each(seriesPost in series.seriesPosts)
+              @if(seriesPost.post)
+                <a
+                  href="/posts/{{ seriesPost.post.id }}"
+                  class="group card bg-base-100/70 backdrop-blur-sm p-6 border border-base-300/50 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 cursor-pointer block"
+                >
+                  <div class="flex items-start gap-6">
+                    <div class="flex-1 min-w-0">
+                      <h3
+                        class="text-lg font-semibold text-base-content group-hover:text-primary transition-colors duration-300 mb-2 line-clamp-2"
+                      >
+                        {{ seriesPost.post.title }}
+                      </h3>
+                      <p class="text-base-content/70 text-sm mb-3 line-clamp-2">
+                        {{ seriesPost.post.summary }}
+                      </p>
+                      <div class="flex items-center gap-4 text-xs text-base-content/60">
+                        <time>{{ formatDateTime(seriesPost.post.createdAt) }}</time>
+                        @if(seriesPost.post.tags && seriesPost.post.tags.length > 0)
+                          @each(tag in seriesPost.post.tags)
+                            <span class="badge badge-primary badge-outline">{{ tag.name }}</span>
+                          @end
+                        @endif
+                        <span class="flex items-center gap-1">
+                          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 0116 0z" />
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                            />
+                          </svg>
+                          {{ seriesPost.post.viewCount || 0 }}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div
+                      class="flex-shrink-0 w-24 h-16 lg:w-32 lg:h-20 rounded-xl overflow-hidden bg-base-200 group-hover:scale-105 transition-transform duration-300"
                     >
-                      {{ post.title }}
-                    </h3>
-                    <p class="text-base-content/70 text-sm mb-3 line-clamp-2">
-                      {{ post.content }}
-                    </p>
-                    <div class="flex items-center gap-4 text-xs text-base-content/60">
-                      <time>{{ post.date }}</time>
-                      <span class="badge badge-{{ post.tagColor }} badge-outline">{{ post.tag }}</span>
-                      <span class="flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 616 0z" />
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          />
-                        </svg>
-                        {{ post.views.toLocaleString() }}
-                      </span>
+                      @if(seriesPost.post.getImage && seriesPost.post.getImage('thumbnail'))
+                        @!uikit.image({
+                          url: cloudImageUrl(seriesPost.post.getImage('thumbnail').url),
+                          dominantColor: seriesPost.post.getImage('thumbnail').dominantColor
+                        })
+                      @else
+                        <div class="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/10 flex items-center justify-center">
+                          <svg class="w-8 h-8 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </div>
+                      @endif
                     </div>
                   </div>
-
-                  <div
-                    class="flex-shrink-0 w-24 h-16 lg:w-32 lg:h-20 rounded-xl overflow-hidden bg-gradient-to-br from-{{ post.tagColor }}/20 to-{{ post.tagColor }}/10 group-hover:scale-105 transition-transform duration-300"
-                  >
-                    <img src="{{ post.thumbnail }}" alt="썸네일" class="w-full h-full object-cover" />
-                  </div>
-                </div>
-              </article>
+                </a>
+              @endif
             @end
           </div>
 
-          <!-- 더보기 버튼 -->
-          <div class="mt-12 text-center">
-            <button class="btn btn-outline btn-wide">더 많은 포스트 보기</button>
-          </div>
+          @if(series.seriesPosts && series.seriesPosts.length === 0)
+            <div class="text-center py-12">
+              <div class="text-base-content/60">
+                <svg class="w-16 h-16 mx-auto mb-4 text-base-content/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                <p class="text-lg font-medium mb-2">
+                  아직 포스트가 없습니다
+                </p>
+                <p class="text-sm">
+                  곧 새로운 포스트가 업데이트될 예정입니다.
+                </p>
+              </div>
+            </div>
+          @endif
         </div>
 
         <!-- 사이드바 (오른쪽, 1/3) -->
@@ -120,7 +159,7 @@
               <div class="space-y-3 text-sm">
                 <div class="flex justify-between">
                   <span class="text-base-content/70">총 포스트</span>
-                  <span class="font-medium">{{ series.episodes }}개</span>
+                  <span class="font-medium">{{ series.seriesPosts ? series.seriesPosts.length : 0 }}개</span>
                 </div>
                 <div class="flex justify-between">
                   <span class="text-base-content/70">상태</span>
