@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { InjectRepository } from '@nestjs/typeorm';
 import { AttachmentQueryHelper, PostEntity } from 'src/shared';
 import { GetPostsDTO } from './dto/get-posts.dto';
+import { UpdatePostPublishDto } from './dto/update-publish.dto';
 
 @Injectable()
 export class PostsService {
@@ -13,9 +14,7 @@ export class PostsService {
   ) {}
 
   async getPosts(dto: GetPostsDTO) {
-    const qb = this.postRepository
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.tags', 'tag');
+    const qb = this.postRepository.createQueryBuilder('post').leftJoinAndSelect('post.tags', 'tag');
     AttachmentQueryHelper.withAttachments(qb, 'post');
 
     // 검색 조건 추가
@@ -32,9 +31,7 @@ export class PostsService {
   }
 
   async getPost(id: number) {
-    const qb = this.postRepository
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.tags', 'tag');
+    const qb = this.postRepository.createQueryBuilder('post').leftJoinAndSelect('post.tags', 'tag');
     AttachmentQueryHelper.withAttachments(qb, 'post');
     qb.where('post.id = :id', { id });
     const post = await qb.getOne();
@@ -43,5 +40,21 @@ export class PostsService {
       throw new BadRequestException('게시물을 찾을 수 없습니다.');
     }
     return post;
+  }
+
+  async updatePublish(id: number, dto: UpdatePostPublishDto) {
+    const post = await this.postRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!post) {
+      throw new BadRequestException('게시물을 찾을 수 없습니다.');
+    }
+    const updatedPost = this.postRepository.create({
+      ...post,
+      isPublished: dto.isPublished,
+    });
+    await this.postRepository.save(updatedPost);
   }
 }

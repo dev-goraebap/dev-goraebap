@@ -21,6 +21,7 @@ import { UserEntity } from 'src/shared';
 import { CreatePostDto, CreatePostSchema } from './dto/create-post.dto';
 import { GetPostsDTO, GetPostsSchema } from './dto/get-posts.dto';
 import { UpdatePostDto, UpdatePostSchema } from './dto/update-post.dto';
+import { UpdatePostPublishDto, UpdatePostPublishSchema } from './dto/update-publish.dto';
 import { PostsService } from './posts.service';
 import { CreatePostUseCase } from './use-cases/create-post.use-case';
 import { DestroyPostUseCase } from './use-cases/destroy-post.use-case';
@@ -40,7 +41,6 @@ export class PostsController {
   @UsePipes(new ZodValidationPipe(GetPostsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetPostsDTO) {
     const posts = await this.postsService.getPosts(dto);
-    console.debug(posts);
 
     if (req.headers['turbo-frame']) {
       return req.view.render('pages/admin/posts/_list', { posts });
@@ -59,7 +59,6 @@ export class PostsController {
   @Get(':id')
   async show(@Req() req: NestMvcReq, @Param('id', ParseIntPipe) id: number) {
     const post = await this.postsService.getPost(id);
-    console.debug(post);
     return req.view.render('pages/admin/posts/show', { post });
   }
 
@@ -71,7 +70,6 @@ export class PostsController {
     @Body('post') dto: CreatePostDto,
     @CurrentUser() user: UserEntity,
   ) {
-    console.debug(dto);
     await this.createPostUseCase.execute(user, dto);
     req.flash.success('게시물 저장 완료');
     return res.redirect('/admin/posts');
@@ -91,18 +89,26 @@ export class PostsController {
     @Body('post') dto: UpdatePostDto,
     @Res() res: Response,
   ) {
-    console.debug(dto);
     await this.updatePostUseCase.execute(id, dto);
     req.flash.success('게시물 변경 완료');
     return res.redirect(303, '/admin/posts');
   }
 
-  @Delete(':id')
-  async destroy(
-    @Param('id') id: number,
+  @Put(':id/publish')
+  @UsePipes(new ZodValidationPipe(UpdatePostPublishSchema))
+  async updatePublish(
     @Req() req: NestMvcReq,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdatePostPublishDto,
     @Res() res: Response,
   ) {
+    await this.postsService.updatePublish(id, dto);
+    req.flash.success('게시물 변경 완료');
+    return res.redirect(303, '/admin/posts');
+  }
+
+  @Delete(':id')
+  async destroy(@Param('id') id: number, @Req() req: NestMvcReq, @Res() res: Response) {
     await this.destroyPostUseCase.execute(id);
     req.flash.success('게시물을 성공적으로 삭제하였습니다.');
     return res.redirect(303, '/admin/posts');
