@@ -4,34 +4,26 @@ import { AttachmentQueryHelper, PostEntity } from 'src/shared';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class PostsService {
+export class ChangelogsService {
   constructor(
     @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  async getPostsExcludeBy(slug: string) {
-    const qb = this.postRepository.createQueryBuilder('post').leftJoinAndSelect('post.tags', 'tag');
-
+  async getChangelogsExcludeBy(slug: string) {
+    const qb = this.postRepository.createQueryBuilder('post');
     AttachmentQueryHelper.withAttachments(qb, 'post');
-    qb.where('post.isPublished = :isPublished', { isPublished: true }).andWhere('post.slug != :slug', {
-      slug,
-    });
+    qb.where('post.postType = :postType', { postType: 'changelog' }).andWhere('post.slug != :slug', { slug: slug });
     qb.orderBy('post.createdAt', 'DESC');
-    qb.take(10);
-
     return await qb.getMany();
   }
 
-  async getPost(slug: string) {
-    const qb = this.postRepository
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.tags', 'tag')
-      .where('post.slug = :slug', { slug });
+  async getChangelog(slug: string) {
+    const qb = this.postRepository.createQueryBuilder('post').where('post.slug = :slug', { slug: slug });
     AttachmentQueryHelper.withAttachments(qb, 'post');
     const result = await qb.getOne();
     if (!result) {
-      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+      throw new NotFoundException('체인지로그를 찾을 수 없습니다.');
     }
     return result;
   }

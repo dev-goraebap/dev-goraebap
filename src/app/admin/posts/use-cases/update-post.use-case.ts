@@ -32,41 +32,57 @@ export class UpdatePostUseCase {
         throw new BadRequestException('게시물을 찾을 수 없습니다.');
       }
 
-      // 태그 처리 (생성과 동일한 로직)
-      const existingTags = await this.tagRepository.find({
-        where: { name: In(dto.tags) },
-      });
-
-      const existingTagNames = existingTags.map((tag) => tag.name);
-      const newTagNames = dto.tags.filter(
-        (name) => !existingTagNames.includes(name),
-      );
-
-      // 새로운 태그들 생성
-      let newTags: TagEntity[] = [];
-      if (newTagNames.length > 0) {
-        const tagsToCreate = newTagNames.map((name) =>
-          this.tagRepository.create({
-            name,
-            description: '',
-          }),
-        );
-        newTags = await this.entityManager.save(tagsToCreate);
-      }
-
-      // 전체 태그 목록
-      const allTags = [...existingTags, ...newTags];
-
-      // 게시물 업데이트 (태그 관계도 함께)
+      // 게시물 먼저 업데이트 (태그 없이)
       const updatedPost = this.postRepository.create({
         ...post,
+        slug: dto.slug,
         title: dto.title,
         summary: dto.summary,
         content: dto.content,
-        tags: allTags, // 새로운 태그 관계로 완전 교체
       });
 
       await this.entityManager.save(updatedPost);
+
+      // 태그가 있는 경우 태그 처리 후 연결
+      if (dto.tags && dto.tags.length > 0) {
+        const existingTags = await this.tagRepository.find({
+          where: { name: In(dto.tags) },
+        });
+
+        const existingTagNames = existingTags.map((tag) => tag.name);
+        const newTagNames = dto.tags.filter(
+          (name) => !existingTagNames.includes(name),
+        );
+
+        // 새로운 태그들 생성
+        let newTags: TagEntity[] = [];
+        if (newTagNames.length > 0) {
+          const tagsToCreate = newTagNames.map((name) =>
+            this.tagRepository.create({
+              name,
+              description: '',
+            }),
+          );
+          newTags = await this.entityManager.save(tagsToCreate);
+        }
+
+        // 전체 태그 목록
+        const allTags = [...existingTags, ...newTags];
+        
+        // 태그와 함께 게시물 다시 생성하여 업데이트
+        const postWithTags = this.postRepository.create({
+          ...updatedPost,
+          tags: allTags,
+        });
+        await this.entityManager.save(postWithTags);
+      } else {
+        // 태그가 없는 경우 기존 태그 모두 제거
+        const postWithoutTags = this.postRepository.create({
+          ...updatedPost,
+          tags: [],
+        });
+        await this.entityManager.save(postWithoutTags);
+      }
 
       // 썸네일이 변경된 경우
       if (dto.thumbnailBlobId) {

@@ -9,6 +9,7 @@
     @if(!flash)
       <meta name="turbo-visit-control" content="reload" />
     @endif
+    <link href="https://cdn.jsdelivr.net/npm/tinymce@8.0.2/skins/ui/oxide/content.min.css" rel="stylesheet" />
   </head>
 
   <body class="bg-base-100">
@@ -20,12 +21,10 @@
       @!uikit.flash()
     @end
     
-    <!-- marked.js 라이브러리 추가 -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@8.0.2/tinymce.min.js">
       
     </script>
-    <!-- TinyMCE 라이브러리 -->
-    <script src="/public/tinymce/tinymce.min.js">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js">
       
     </script>
 
@@ -197,16 +196,16 @@
           // 우클릭 메뉴
           // 콘텐츠 스타일 (에디터 내부 스타일)
           content_style: `
-                                          body {
-                                              font-size: 14px; 
-                                              line-height: 1.6; 
-                                          }
-                                          pre { 
-                                              background-color: #f4f4f4; 
-                                              padding: 10px; 
-                                              border-radius: 4px; 
-                                          }
-                                        `,
+                                                                                          body {
+                                                                                              font-size: 14px; 
+                                                                                              line-height: 1.6; 
+                                                                                          }
+                                                                                          pre { 
+                                                                                              background-color: #f4f4f4; 
+                                                                                              padding: 10px; 
+                                                                                              border-radius: 4px; 
+                                                                                          }
+                                                                                        `,
           // 단축키 설정
           setup: function(editor) {
             // Import Markdown 버튼 추가

@@ -44,15 +44,6 @@
             </div>
             {{ formatDate(post?.createdAt) }}
           </div>
-
-          {{-- 태그 박스 --}}
-          <div class="card-actions text-xs hidden sm:flex">
-            @each(tag in post?.tags)
-              <div class="badge badge-ghost">
-                #{{tag?.name}}
-              </div>
-            @end
-          </div>
         </div>
 
         <div class="prose min-w-full">
@@ -67,21 +58,31 @@
           {{-- 관련 포스트 --}}
           <div>
             <h2 class="card-title mb-4 text-lg font-bold">
-              다른 포스트
+              👾 다른 체인지로그
             </h2>
 
-            {{-- 태크 뉴스 목록 --}}
+            {{-- 다른 체인지로그들 --}}
             <div class="space-y-3">
-              @each(post in relatedPosts)
-                <div class="border-b border-base-200 pb-3 last:border-b-0 last:pb-0">
-                  <a href="{{ post.id }}" class="block group">
+              @each(post in latestPosts)
+                <div class="card">
+                  <a href="/changelogs/{{ post?.slug }}" class="block group">
+                    @if(post && post.getImage && post.getImage('thumbnail'))
+                      <div class="mb-3 h-32 overflow-hidden rounded-lg">
+                        @!uikit.image({
+                        url: cloudImageUrl(post.getImage('thumbnail').url),
+                        dominantColor: post.getImage('thumbnail').dominantColor,
+                        width: 'w-full',
+                        height: 'h-full object-cover'
+                        })
+                      </div>
+                    @endif
                     <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
                       {{ post.title }}
                     </h3>
                     <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
                       {{ post.summary }}
                     </p>
-                    <div class="flex justify-between items-center text-xs text-base-content/50">
+                    <div class="flex justify-end items-center text-xs text-base-content/50">
                       <span>{{ formatDate(post.createdAt) }}</span>
                     </div>
                   </a>

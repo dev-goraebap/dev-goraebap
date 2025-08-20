@@ -1,6 +1,6 @@
 <div
   data-controller="thumbnail-uploader-toggle"
-  data-thumbnail-uploader-toggle-mode-value="{{ item?.getImage('thumbnail') ? 'update' : 'create' }}"
+  data-thumbnail-uploader-toggle-mode-value="{{ (item && item.getImage && item.getImage('thumbnail')) ? 'update' : 'create' }}"
 >
   <div data-thumbnail-uploader-toggle-target="render">
   </div>
@@ -11,8 +11,8 @@
       </p>
       <div class="h-52 max-h-52 flex justify-center items-center overflow-hidden bg-base-200 rounded-xl">
         @!uikit.image({
-          url: cloudImageUrl(item?.getImage('thumbnail')?.url),
-          dominantColor: item?.getImage('thumbnail')?.dominantColor,
+          url: cloudImageUrl(item && item.getImage ? item.getImage('thumbnail')?.url : null),
+          dominantColor: item && item.getImage ? item.getImage('thumbnail')?.dominantColor : null,
           width: 'auto',
           height: 'h-full'
         })

@@ -1,26 +1,30 @@
+import { randomUUID } from 'crypto';
 import { z } from 'zod';
 import { validateAndExtractContent } from '../utils/extract-html-content';
 
 export const CreatePostSchema = z
   .object({
     content: z.string().min(1, '내용을 입력해 주세요.'),
+    slug: z.string().optional(),
     thumbnailBlobId: z.string().optional(),
+    postType: z.string().default('post'),
     tags: z.preprocess(
       (val) => (val === undefined ? [] : val),
-      z.array(z.string()).min(1, '한개 이상의 태그를 포함해주세요.'),
+      z.array(z.string()).optional().default([]),
     ),
   })
   .transform((x) => {
     const contentValidation = validateAndExtractContent(x.content);
-    
+
     if (!contentValidation.isValid) {
       throw new Error(contentValidation.errors.join(', '));
     }
 
     return {
-      content: x.content,
+      ...x,
       title: contentValidation.title,
       summary: contentValidation.summary,
+      slug: x.slug || randomUUID(),
       thumbnailBlobId: x.thumbnailBlobId ? Number(x.thumbnailBlobId) : null,
       tags: x.tags,
     };

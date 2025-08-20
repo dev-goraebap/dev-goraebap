@@ -21,6 +21,9 @@ export class PostEntity extends BaseEntityWithAttachments {
   readonly id: number;
 
   @Column({ unique: true })
+  readonly slug: string;
+
+  @Column({ unique: true })
   readonly title: string;
 
   @Column()

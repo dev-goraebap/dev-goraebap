@@ -13,7 +13,7 @@
   </div>
 
   <div class="min-w-sm flex flex-col justify-between h-screen sticky top-0 border-l border-base-300 p-4">
-    <div>
+    <div class="flex flex-col gap-2">
       @!partials.thumbnailUploader({
         'data-image-validate-size-min-width': '600',
         'data-image-validate-size-min-height': '400',
@@ -21,11 +21,37 @@
         item: post ?? null
       })
 
-      <br />
-
       @!component('pages/admin/posts/_form/_tag_input', {
         tags: post?.tags || []
       })
+
+      {{-- 슬러그 --}}
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">
+          슬러그
+        </legend>
+        <input type="text" name="post[slug]" value="{{ post?.slug || '' }}" class="input w-full" placeholder="슬러그를 입력해주세요" />
+        <span class="label">입력하지않으면 임의의 randomUUID가 부여됩니다.</span>
+      </fieldset>
+
+      {{-- 게시물 타입 --}}
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">
+          포스트 타입
+        </legend>
+        <select class="select w-full" name="post[postType]">
+          <option value="post" {{ post?.postType === 'post' && 'selected' }}>
+            게시물
+          </option>
+          <option value="changelog" {{ post?.postType === 'changelog' && 'selected' }}>
+            체인지로그
+          </option>
+          <option value="news" {{ post?.postType === 'news' && 'selected' }}>
+            뉴스
+          </option>
+        </select>
+        <span class="label">기본값은 post 입니다.</span>
+      </fieldset>
     </div>
 
     <div class="flex justify-between gap-4">

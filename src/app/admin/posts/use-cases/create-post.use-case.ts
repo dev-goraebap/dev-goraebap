@@ -22,40 +22,50 @@ export class CreatePostUseCase {
 
   async execute(user: UserEntity, dto: CreatePostDto) {
     await this.entityManager.transaction(async () => {
-      // 태그 처리 (포스트 생성 전에)
-      const existingTags = await this.tagRepository.find({
-        where: { name: In(dto.tags) },
-      });
-
-      const existingTagNames = existingTags.map((tag) => tag.name);
-      const newTagNames = dto.tags.filter((name) => !existingTagNames.includes(name));
-
-      // 새로운 태그들 생성
-      let newTags: TagEntity[] = [];
-      if (newTagNames.length > 0) {
-        const tagsToCreate = newTagNames.map((name) =>
-          this.tagRepository.create({
-            name,
-            description: '', // 기본값 설정
-          }),
-        );
-        newTags = await this.entityManager.save(tagsToCreate);
-      }
-
-      // 전체 태그 목록
-      const allTags = [...existingTags, ...newTags];
-
-      // 게시물 생성 (태그와 함께)
+      // 게시물 먼저 생성 (태그 없이)
       const newPost = this.postRepository.create({
         user,
+        slug: dto.slug,
         title: dto.title,
         content: dto.content,
         summary: dto.summary,
         isPublished: false,
-        tags: allTags, // 태그 관계 설정
+        postType: dto.postType,
       });
 
       await this.entityManager.save(newPost);
+
+      // 태그가 있는 경우 태그 처리 후 연결
+      if (dto.tags && dto.tags.length > 0) {
+        const existingTags = await this.tagRepository.find({
+          where: { name: In(dto.tags) },
+        });
+
+        const existingTagNames = existingTags.map((tag) => tag.name);
+        const newTagNames = dto.tags.filter((name) => !existingTagNames.includes(name));
+
+        // 새로운 태그들 생성
+        let newTags: TagEntity[] = [];
+        if (newTagNames.length > 0) {
+          const tagsToCreate = newTagNames.map((name) =>
+            this.tagRepository.create({
+              name,
+              description: '', // 기본값 설정
+            }),
+          );
+          newTags = await this.entityManager.save(tagsToCreate);
+        }
+
+        // 전체 태그 목록
+        const allTags = [...existingTags, ...newTags];
+        
+        // 태그와 함께 게시물 다시 생성하여 업데이트
+        const postWithTags = this.postRepository.create({
+          ...newPost,
+          tags: allTags,
+        });
+        await this.entityManager.save(postWithTags);
+      }
 
       // 썸네일이 있는 경우 첨부 생성
       if (dto.thumbnailBlobId) {
