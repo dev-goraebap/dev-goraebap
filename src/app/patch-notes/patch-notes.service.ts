@@ -1,24 +1,33 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AttachmentQueryHelper, PostEntity } from 'src/shared';
 import { Repository } from 'typeorm';
 
+import { AttachmentQueryHelper, PostEntity } from 'src/shared';
+
 @Injectable()
-export class ChangelogsService {
+export class PatchNotesService {
   constructor(
     @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  async getChangelogsExcludeBy(slug: string) {
+  async getPatchNotes() {
     const qb = this.postRepository.createQueryBuilder('post');
     AttachmentQueryHelper.withAttachments(qb, 'post');
-    qb.where('post.postType = :postType', { postType: 'changelog' }).andWhere('post.slug != :slug', { slug: slug });
-    qb.orderBy('post.createdAt', 'DESC');
+    qb.where('post.postType = :postType', { postType: 'patch-note' });
+    qb.orderBy('post.publishedAt', 'DESC');
     return await qb.getMany();
   }
 
-  async getChangelog(slug: string) {
+  async getPatchNotesExcludeBy(slug: string) {
+    const qb = this.postRepository.createQueryBuilder('post');
+    AttachmentQueryHelper.withAttachments(qb, 'post');
+    qb.where('post.postType = :postType', { postType: 'patch-note' }).andWhere('post.slug != :slug', { slug: slug });
+    qb.orderBy('post.publishedAt', 'DESC');
+    return await qb.getMany();
+  }
+
+  async getPatchNote(slug: string) {
     const qb = this.postRepository.createQueryBuilder('post').where('post.slug = :slug', { slug: slug });
     AttachmentQueryHelper.withAttachments(qb, 'post');
     const result = await qb.getOne();

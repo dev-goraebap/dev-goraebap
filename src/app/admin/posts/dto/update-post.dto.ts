@@ -8,6 +8,7 @@ export const UpdatePostSchema = z
     slug: z.string().optional(),
     thumbnailBlobId: z.string().optional(),
     publishedAt: z.string().optional(),
+    postType: z.string(),
     tags: z.preprocess(
       (val) => (val === undefined ? [] : val),
       z.array(z.string()).optional().default([]),
@@ -24,6 +25,7 @@ export const UpdatePostSchema = z
     const isPublished = !!x.publishedAt;
 
     return {
+      ...x,
       content: x.content,
       title: contentValidation.title,
       summary: contentValidation.summary,

@@ -39,6 +39,7 @@ export class UpdatePostUseCase {
         title: dto.title,
         summary: dto.summary,
         content: dto.content,
+        postType: dto.postType,
         isPublished: dto.isPublished,
         publishedAt: dto.publishedAt,
       });

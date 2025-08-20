@@ -7,6 +7,9 @@
             썸네일
           </th>
           <th>
+            타입
+          </th>
+          <th>
             제목
           </th>
           <th>
@@ -39,6 +42,9 @@
                   dominantColor: post?.getImage('thumbnail')?.dominantColor
                 })
               </div>
+            </td>
+            <td>
+              <span class="badge badge-primary badge-xs">{{post?.postType}}</span>
             </td>
             <td>
               <div class="max-w-xs">
