@@ -19,6 +19,9 @@
             조회수
           </th>
           <th>
+            발행일
+          </th>
+          <th>
             생성일
           </th>
           <th>
@@ -79,6 +82,11 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                 </svg>
                 <span class="text-sm">{{ post?.viewCount }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="text-sm">
+                {{ formatDateTime(post?.publishedAt) }}
               </div>
             </td>
             <td>

@@ -29,7 +29,8 @@ export class CreatePostUseCase {
         title: dto.title,
         content: dto.content,
         summary: dto.summary,
-        isPublished: false,
+        isPublished: dto.isPublished,
+        publishedAt: dto.publishedAt,
         postType: dto.postType,
       });
 

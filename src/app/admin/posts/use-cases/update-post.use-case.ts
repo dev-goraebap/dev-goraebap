@@ -39,6 +39,8 @@ export class UpdatePostUseCase {
         title: dto.title,
         summary: dto.summary,
         content: dto.content,
+        isPublished: dto.isPublished,
+        publishedAt: dto.publishedAt,
       });
 
       await this.entityManager.save(updatedPost);

@@ -54,6 +54,7 @@ export class PostsService {
     const updatedPost = this.postRepository.create({
       ...post,
       isPublished: dto.isPublished,
+      ...(dto.isPublished && { publishedAt: new Date() }),
     });
     await this.postRepository.save(updatedPost);
   }

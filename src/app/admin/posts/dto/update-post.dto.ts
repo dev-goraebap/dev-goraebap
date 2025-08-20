@@ -7,6 +7,7 @@ export const UpdatePostSchema = z
     content: z.string().min(1, '내용을 입력해 주세요.'),
     slug: z.string().optional(),
     thumbnailBlobId: z.string().optional(),
+    publishedAt: z.string().optional(),
     tags: z.preprocess(
       (val) => (val === undefined ? [] : val),
       z.array(z.string()).optional().default([]),
@@ -19,12 +20,17 @@ export const UpdatePostSchema = z
       throw new Error(contentValidation.errors.join(', '));
     }
 
+    const publishedAt = x.publishedAt ? new Date(x.publishedAt) : new Date();
+    const isPublished = !!x.publishedAt;
+
     return {
       content: x.content,
       title: contentValidation.title,
       summary: contentValidation.summary,
       slug: x.slug || randomUUID(),
       thumbnailBlobId: x.thumbnailBlobId ? Number(x.thumbnailBlobId) : null,
+      publishedAt,
+      isPublished,
       tags: x.tags,
     };
   });

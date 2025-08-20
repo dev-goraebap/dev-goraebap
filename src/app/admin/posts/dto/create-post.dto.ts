@@ -8,6 +8,7 @@ export const CreatePostSchema = z
     slug: z.string().optional(),
     thumbnailBlobId: z.string().optional(),
     postType: z.string().default('post'),
+    publishedAt: z.string().optional(),
     tags: z.preprocess(
       (val) => (val === undefined ? [] : val),
       z.array(z.string()).optional().default([]),
@@ -20,12 +21,17 @@ export const CreatePostSchema = z
       throw new Error(contentValidation.errors.join(', '));
     }
 
+    const publishedAt = x.publishedAt ? new Date(x.publishedAt) : new Date();
+    const isPublished = !!x.publishedAt;
+
     return {
       ...x,
       title: contentValidation.title,
       summary: contentValidation.summary,
       slug: x.slug || randomUUID(),
       thumbnailBlobId: x.thumbnailBlobId ? Number(x.thumbnailBlobId) : null,
+      publishedAt,
+      isPublished,
       tags: x.tags,
     };
   });

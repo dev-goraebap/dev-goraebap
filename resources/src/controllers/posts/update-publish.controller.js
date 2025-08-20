@@ -13,7 +13,12 @@ export class UpdatePublishController extends Controller {
     event.preventDefault();
 
     const checked = event.target.checked;
-    console.log(checked);
+
+    const result = window.confirm(`발행여부를 ${checked ? '활성화' : '비활성화'} 하시겠어요?`);
+    if (!result) {
+      event.target.checked = !checked;
+      return;
+    }
 
     const input = document.createElement('input');
     input.type = 'hidden';

@@ -47,6 +47,9 @@ export class PostEntity extends BaseEntityWithAttachments {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  readonly publishedAt: Date;
+
   @ManyToOne(() => UserEntity, (e) => e.posts, { onDelete: 'CASCADE' })
   readonly user: UserEntity;
 

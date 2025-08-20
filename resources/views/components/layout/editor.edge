@@ -13,6 +13,7 @@
   </head>
 
   <body class="bg-base-100">
+    {{ inspect(flash)}}
     <div class="container min-w-6xl max-w-6xl mx-auto">
       {{{ await $slots.main() }}}
     </div>

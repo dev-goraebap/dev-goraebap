@@ -52,6 +52,15 @@
         </select>
         <span class="label">기본값은 post 입니다.</span>
       </fieldset>
+
+      {{-- 퍼블리싱 날짜 --}}
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend">
+          발행일
+        </legend>
+        <input type="datetime-local" name="post[publishedAt]" value="{{ post?.publishedAt || '' }}" class="input w-full" />
+        <span class="label">입력하지않으면 현재 날짜가 적용됩니다.</span>
+      </fieldset>
     </div>
 
     <div class="flex justify-between gap-4">

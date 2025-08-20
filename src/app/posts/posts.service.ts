@@ -7,16 +7,18 @@ import { Repository } from 'typeorm';
 export class PostsService {
   constructor(
     @InjectRepository(PostEntity)
-    private readonly postRepository: Repository<PostEntity>,
+    private readonly postRepository: Repository<PostEntity>
   ) {}
 
   async getPostsExcludeBy(slug: string) {
     const qb = this.postRepository.createQueryBuilder('post').leftJoinAndSelect('post.tags', 'tag');
 
     AttachmentQueryHelper.withAttachments(qb, 'post');
-    qb.where('post.isPublished = :isPublished', { isPublished: true }).andWhere('post.slug != :slug', {
-      slug,
-    });
+    qb.where('post.isPublished = :isPublished', { isPublished: true })
+      .andWhere('post.slug != :slug', {
+        slug,
+      })
+      .andWhere('post.postType = :postType', { postType: 'post' });
     qb.orderBy('post.createdAt', 'DESC');
     qb.take(10);
 
