@@ -1,23 +1,96 @@
 @layout.app({ title: 'dev.goraebap | '+post?.title })
+  <section class="container max-w-6xl mx-auto my-10">
+    <div class="flex sm:gap-6">
+      {{-- 왼쪽 영역 --}}
+      <div class="flex-1 w-full sm:min-w-2xl sm:w-3xl px-4">
 
-  <div class="max-w-4xl mx-auto p-6">
-    <!-- 게시물 헤더 -->
-    <div class="mb-8">
-      <div class="flex items-center gap-4 text-sm text-gray-600 mb-6">
-        <span>작성일: {{ post.createdAt.toLocaleDateString('ko-KR') }}</span>
-        <span>수정일: {{ post.updatedAt.toLocaleDateString('ko-KR') }}</span>
+        {{-- 게시물 썸네일 --}}
+        @if(post?.getImage('thumbnail'))
+          <figure class="shrink-0 mb-10">
+            <div class="h-[300px] flex items-center justify-center overflow-hidden shadow-xl">
+              <div class="w-full aspect-[5/3] overflow-hidden">
+                @!uikit.image({
+                  url: cloudImageUrl(post?.getImage('thumbnail')?.url),
+                  dominantColor: post?.getImage('thumbnail')?.dominantColor
+                })
+              </div>
+            </div>
+          </figure>
+        @end
+        
+        <div class="flex justify-between items-center my-4 sm:my-6">
+          {{-- 조회수, 시간 박스 --}}
+          <div class="card-actions text-xs">
+            <div class="flex gap-1 items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              </svg>
+              {{ post?.viewCount }} reads
+            </div>
+            <div>
+              ·
+            </div>
+            {{ formatDate(post?.createdAt) }}
+          </div>
+
+          {{-- 태그 박스 --}}
+          <div class="card-actions text-xs hidden sm:flex">
+            @each(tag in post?.tags)
+              <div class="badge badge-ghost">
+                #{{tag?.name}}
+              </div>
+            @end
+          </div>
+        </div>
+
+        <div class="prose min-w-full">
+          {{{ post?.content }}}
+        </div>
       </div>
 
-      <!-- 썸네일 이미지 -->
-      @!uikit.image({
-        url: cloudImageUrl(post?.getImage('thumbnail')?.url),
-        dominantColor: post?.getImage('thumbnail')?.dominantColor
-      })
-    </div>
+      {{-- 오른쪽 컨텐츠 영역 (Desktop에서 노출됨) --}}
+      <div class="hidden sm:block w-[300px] min-w-[300px] shrink-0 p-4">
+        <div class="sticky top-[var(--header-height)]">
 
-    <!-- 게시물 내용 -->
-    <div class="prose prose-base max-w-none" data-controller="syntax-highlighter">
-      {{{ post.content }}}
+          {{-- 관련 포스트 --}}
+          <div>
+            <h2 class="card-title mb-4 text-lg font-bold">
+              다른 포스트
+            </h2>
+
+            {{-- 태크 뉴스 목록 --}}
+            <div class="space-y-3">
+              @each(post in relatedPosts)
+                <div class="border-b border-base-200 pb-3 last:border-b-0 last:pb-0">
+                  <a href="{{ post.id }}" class="block group">
+                    <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
+                      {{ post.title }}
+                    </h3>
+                    <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
+                      {{ post.summary }}
+                    </p>
+                    <div class="flex justify-between items-center text-xs text-base-content/50">
+                      <span>{{ formatDate(post.createdAt) }}</span>
+                    </div>
+                  </a>
+                </div>
+              @end
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 @end

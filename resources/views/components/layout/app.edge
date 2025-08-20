@@ -9,12 +9,16 @@
   </head>
 
   <body>
-    <div class="flex flex-col h-screen">
+    <div class="flex flex-col min-h-screen">
       @!layout.app.header()
-      <div class="grow">
+      <div class="grow relative">
+        {{-- 헤더가 fixed 상태이기 때문에 헤더 영역만큼 높이 가져오기 --}}
+        <div class="h-[var(--header-height-sm)] sm:h-[var(--header-height)]">
+        </div>
+
         {{{ await $slots.main() }}}
       </div>
-      <div class="bg-secondary/10">
+      <div class="bg-base-200 border-t border-base-300">
         @!layout.app.footer()
       </div>
     </div>

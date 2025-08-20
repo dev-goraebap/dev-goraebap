@@ -21,7 +21,7 @@
       data-image-loader-target="image"
       src="{{ url }}"
       loading="lazy"
-      class="w-full h-full transition-opacity duration-500 opacity-0"
+      class="w-full h-full transition-opacity duration-500 opacity-0 {{ objectContain && 'object-contain' }}"
       alt="{{ alt ?? '' }}"
     />
   </div>

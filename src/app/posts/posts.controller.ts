@@ -10,21 +10,20 @@ export class PostsController {
   async index(@Req() req: NestMvcReq) {
     // 실제 데이터 가져오기
     const posts = await this.postsService.getPosts();
-    const popularPosts = await this.postsService.getPopularPosts();
     const tags = await this.postsService.getTags();
-    const activities = await this.postsService.getRecentActivities();
+    const techNews = await this.postsService.getTechNews();
 
-    return req.view.render('pages/posts/index', {
+    return req.view.render('pages/feed/index', {
       posts,
-      popularPosts,
       tags,
-      activities
+      techNews,
     });
   }
 
   @Get(':id')
   async show(@Param('id') id: number, @Req() req: NestMvcReq) {
     const post = await this.postsService.getPost(id);
-    return req.view.render('pages/posts/show', { post });
+    const relatedPosts = await this.postsService.getPosts();
+    return req.view.render('pages/posts/show', { post, relatedPosts });
   }
 }

@@ -29,11 +29,11 @@ export class PostEntity extends BaseEntityWithAttachments {
   @Column()
   readonly content: string;
 
-  @Column()
+  @Column({ default: false })
   readonly isPublished: boolean;
 
-  @Column()
-  readonly publishedAt: Date;
+  @Column({ default: 'post' })
+  readonly postType: string; // post, changelog, news
 
   @Column({ default: 0 })
   readonly viewCount: number;

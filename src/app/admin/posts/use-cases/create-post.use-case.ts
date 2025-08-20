@@ -2,13 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, In, Repository } from 'typeorm';
 
-import {
-  AttachmentEntity,
-  BlobEntity,
-  PostEntity,
-  TagEntity,
-  UserEntity,
-} from 'src/shared';
+import { AttachmentEntity, BlobEntity, PostEntity, TagEntity, UserEntity } from 'src/shared';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { extractImageUrls } from '../utils/extract-html-content';
 
@@ -34,9 +28,7 @@ export class CreatePostUseCase {
       });
 
       const existingTagNames = existingTags.map((tag) => tag.name);
-      const newTagNames = dto.tags.filter(
-        (name) => !existingTagNames.includes(name),
-      );
+      const newTagNames = dto.tags.filter((name) => !existingTagNames.includes(name));
 
       // 새로운 태그들 생성
       let newTags: TagEntity[] = [];
@@ -60,7 +52,6 @@ export class CreatePostUseCase {
         content: dto.content,
         summary: dto.summary,
         isPublished: false,
-        publishedAt: new Date(),
         tags: allTags, // 태그 관계 설정
       });
 
