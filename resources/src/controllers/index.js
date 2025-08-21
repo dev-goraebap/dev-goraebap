@@ -1,5 +1,6 @@
 import { application } from './application';
 
+import { FeedQueryController } from './feed/feed-query.controller';
 import { FileUploadController } from './file-upload.controller';
 import { ImageLoaderController } from './image-loader.controller';
 import { ModalController } from './modal.controller';
@@ -26,3 +27,4 @@ application.register('sortable', SortableController);
 application.register('tag-input', TagInputController);
 application.register('series-select-post', SeriesSelectPostController);
 application.register('update-publish', UpdatePublishController);
+application.register('feed-query', FeedQueryController);
