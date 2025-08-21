@@ -52,10 +52,14 @@
                   {{-- 카드 컨텐츠 - 모바일:col, 데스크탑:row --}}
                   <div class="flex flex-col gap-3 sm:flex-row justify-between">
                     <div class="flex flex-col sm:gap-2">
-                      <a href="/patch-notes/{{ post?.slug }}" class="card-title text-[clamp(1rem,6vw,1.5rem)] hover:text-primary transition-all">
+                      <a
+                        href="/patch-notes/{{ post?.slug }}"
+                        data-turbo-prefetch="false"
+                        class="card-title text-[clamp(1rem,6vw,1.5rem)] hover:text-primary transition-all"
+                      >
                         {{ post?.title }}
                       </a>
-                      <a href="/patch-notes/{{ post?.slug }}" class="line-clamp-2 text-[clamp(0.7rem,4vw,1rem)]">
+                      <a href="/patch-notes/{{ post?.slug }}" data-turbo-prefetch="false" class="line-clamp-2 text-[clamp(0.7rem,4vw,1rem)]">
                         {{ post?.summary }}
                       </a>
                     </div>

@@ -1,0 +1,22 @@
+<turbo-stream action="append" target="feedPostsList">
+  <template>
+    @each((post, index) in postsData.items)
+      <li class="border-t border-base-300 sm:hidden">
+      </li>
+      @!component('pages/feed/posts/_list_item', { post })
+    @end
+  </template>
+</turbo-stream>
+
+@if(postsData?.hasMore)
+  <turbo-stream action="replace" target="moreButton">
+    <template>
+      <div class="w-full flex justify-center">
+        <button id="moreButton" class="btn btn-primary" data-cursor="{{ postsData?.nextCursor }}" data-action="feed-query#onMore">더보기</button>
+      </div>
+    </template>
+  </turbo-stream>
+@else
+  <turbo-stream action="remove" target="moreButton">
+  </turbo-stream>
+@end

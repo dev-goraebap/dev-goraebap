@@ -6,8 +6,8 @@
 
         {{-- 게시물 썸네일 --}}
         @if(post?.getImage('thumbnail'))
-          <figure class="shrink-0 mb-10">
-            <div class="h-[300px] flex items-center justify-center overflow-hidden shadow-xl">
+          <figure class="shrink-0">
+            <div class="h-[150px] sm:h-[300px] flex items-center justify-center overflow-hidden sm:shadow-xl">
               <div class="w-full aspect-[5/3] overflow-hidden">
                 @!uikit.image({
                   url: cloudImageUrl(post?.getImage('thumbnail')?.url),

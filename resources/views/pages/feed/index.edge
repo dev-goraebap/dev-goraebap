@@ -1,11 +1,12 @@
 @layout.app({ title: 'devgoraebap | 게시물' })
   <section class="container max-w-6xl mx-auto my-10">
-    <div class="flex sm:gap-6">
+    <div class="flex sm:gap-6" data-controller="feed-query">
       {{-- 왼쪽 컨텐츠 영영 --}}
       <div class="flex-1 w-full sm:min-w-2xl sm:w-3xl px-4">
         {{-- 상단 정렬, 필터 영역 --}}
-        <div>
-          <button class="btn btn-primary">
+        <form action="/" data-turbo-stream="true" data-feed-query-target="queryForm">
+          <input type="hidden" name="cursor" />
+          <label class="btn has-[:checked]:btn-primary">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -20,9 +21,17 @@
                 d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"
               />
             </svg>
-            Hot
-          </button>
-          <button class="btn btn-primary btn-ghost">
+            인기
+            <input
+              type="radio"
+              name="orderType"
+              class="hidden"
+              value="traffic"
+              data-action="feed-query#onSubmit"
+              {{ (!query('orderType') || query('orderType') === 'traffic')  && 'checked' }}
+            />
+          </label>
+          <label class="btn has-[:checked]:btn-primary">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -33,85 +42,21 @@
             >
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
             </svg>
-            Latest
-          </button>
-        </div>
+            최근
+            <input
+              type="radio"
+              name="orderType"
+              class="hidden"
+              value="latest"
+              data-action="feed-query#onSubmit"
+              {{ query('orderType') === 'latest' && 'checked' }}
+            />
+          </label>
+        </form>
 
         {{-- 하단 게시물 리스트 영역 --}}
-        <div class="mt-4 w-full">
-          <ul class="flex flex-col gap-4">
-            @each((post, index) in posts)
-              <li class="group">
-                {{-- 첫번째 게시물을 제외한 게시물들은 모바일 환경에서 구분선 보이기 --}}
-                @if(index !== 0)
-                  <div class="border-t border-base-300 my-4 sm:hidden">
-                  </div>
-                @end
-                {{-- 게시물 카드 --}}
-                <div class="card sm:border sm:border-dashed sm:border-base-300 sm:p-6 group-hover:shadow-lg transition-all">
-                  {{-- 카드 컨텐츠 - 모바일:col, 데스크탑:row --}}
-                  <div class="flex flex-col gap-3 sm:flex-row justify-between">
-                    <div class="flex flex-col sm:gap-2">
-                      <a href="/posts/{{ post?.slug }}" class="card-title text-[clamp(1rem,6vw,1.5rem)] hover:text-primary transition-all">
-                        {{ post?.title }}
-                      </a>
-                      <a href="/posts/{{ post?.slug }}" class="line-clamp-2 text-[clamp(0.7rem,4vw,1rem)]">
-                        {{ post?.summary }}
-                      </a>
-                    </div>
-                    @if(post?.getImage('thumbnail'))
-                      <figure class="shrink-0">
-                        <div class="w-full sm:w-[200px] aspect-[5/3] rounded-xl overflow-hidden">
-                          @!uikit.image({
-                          url: cloudImageUrl(post?.getImage('thumbnail')?.url),
-                          dominantColor: post?.getImage('thumbnail')?.dominantColor
-                          })
-                        </div>
-                      </figure>
-                    @end
-                  </div>
-
-                  {{-- 하단 액션 박스 --}}
-                  <div class="flex justify-between items-center mt-4 sm:mt-6">
-                    {{-- 조회수, 시간 박스 --}}
-                    <div class="card-actions text-xs">
-                      <div class="flex gap-1 items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke-width="1.5"
-                          stroke="currentColor"
-                          class="size-4"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                          />
-                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        </svg>
-                        {{ post?.viewCount }} reads
-                      </div>
-                      <div>
-                        ·
-                      </div>
-                      {{ formatDate(post?.publishedAt) }}
-                    </div>
-
-                    {{-- 태그 박스 --}}
-                    <div class="card-actions text-xs hidden sm:flex">
-                      @each(tag in post?.tags)
-                        <div class="badge badge-ghost">
-                          #{{tag?.name}}
-                        </div>
-                      @end
-                    </div>
-                  </div>
-                </div>
-              </li>
-            @end
-          </ul>
+        <div id="feedPostsFrame">
+          @!component('pages/feed/posts/_list', { postsData })
         </div>
       </div>
 
@@ -125,7 +70,7 @@
               👾 최근 패치노트
             </div>
             <div>
-              <a href="/patch-notes/{{ patchNote?.slug }}" class="block group">
+              <a href="/patch-notes/{{ patchNote?.slug }}" data-turbo-prefetch="false" class="block group">
                 @if(patchNote && patchNote.getImage && patchNote.getImage('thumbnail'))
                   <div class="mb-3 h-32 overflow-hidden rounded-lg">
                     @!uikit.image({
@@ -159,7 +104,7 @@
             <div class="space-y-3">
               @each(newsPost in newsPosts)
                 <div class="border-b border-base-200 pb-3 last:border-b-0 last:pb-0">
-                  <a href="/posts/{{ newsPost?.slug }}" class="block group">
+                  <a href="/posts/{{ newsPost?.slug }}" data-turbo-prefetch="false" class="block group">
                     <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
                       {{ newsPost.title }}
                     </h3>
