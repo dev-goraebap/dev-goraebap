@@ -26,7 +26,8 @@
     "marked": "^16.1.2",
     "prismjs": "^1.30.0",
     "sortablejs": "^1.15.6",
-    "tailwindcss": "^4.1.10"
+    "tailwindcss": "^4.1.10",
+    "turbo_power": "^0.7.1"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
