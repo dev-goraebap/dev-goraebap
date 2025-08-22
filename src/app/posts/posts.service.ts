@@ -7,20 +7,24 @@ import { Repository } from 'typeorm';
 export class PostsService {
   constructor(
     @InjectRepository(PostEntity)
-    private readonly postRepository: Repository<PostEntity>
+    private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  async getPostsExcludeBy(slug: string) {
-    const qb = this.postRepository.createQueryBuilder('post').leftJoinAndSelect('post.tags', 'tag');
+  async getRandomSuggestedPosts(excludeSlug: string) {
+    const posts = await this.postRepository
+      .createQueryBuilder('post')
+      .where('post.isPublished = :isPublished', { isPublished: true })
+      .andWhere('post.slug != :slug', { slug: excludeSlug })
+      .andWhere('post.postType = :postType', { postType: 'post' })
+      .getMany();
 
+    const shuffled = posts.sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, 3);
+
+    const qb = this.postRepository.createQueryBuilder('post');
+    qb.leftJoinAndSelect('post.tags', 'tag');
     AttachmentQueryHelper.withAttachments(qb, 'post');
-    qb.where('post.isPublished = :isPublished', { isPublished: true })
-      .andWhere('post.slug != :slug', {
-        slug,
-      })
-      .andWhere('post.postType = :postType', { postType: 'post' });
-    qb.orderBy('post.createdAt', 'DESC');
-    qb.take(10);
+    qb.whereInIds(selected.map((p) => p.id));
 
     return await qb.getMany();
   }

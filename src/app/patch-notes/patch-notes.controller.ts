@@ -27,7 +27,7 @@ export class PatchNotesController {
     await this.postsSharedService.updateViewCount(slug);
 
     const post = await this.patchNotesService.getPatchNote(slug);
-    const latestPosts = await this.patchNotesService.getPatchNotesExcludeBy(slug);
-    return req.view.render('pages/patch-notes/show', { post, latestPosts });
+    const otherPosts = await this.patchNotesService.getOtherPatchNotes(slug);
+    return req.view.render('pages/patch-notes/show', { post, otherPosts });
   }
 }

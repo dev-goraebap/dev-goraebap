@@ -13,9 +13,9 @@ export class PostsController {
   @Get(':slug')
   async show(@Param('slug') slug: string, @Req() req: NestMvcReq) {
     await this.postsSharedService.updateViewCount(slug);
-    
+
     const post = await this.postsService.getPost(slug);
-    const relatedPosts = await this.postsService.getPostsExcludeBy(slug);
-    return req.view.render('pages/posts/show', { post, relatedPosts });
+    const suggestedPosts = await this.postsService.getRandomSuggestedPosts(slug);
+    return req.view.render('pages/posts/show', { post, suggestedPosts });
   }
 }

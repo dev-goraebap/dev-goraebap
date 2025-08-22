@@ -1,6 +1,18 @@
 @layout.app({ title: 'devgoraebap | 시리즈' })
   <section class="container max-w-6xl px-4 flex-1 mx-auto my-10">
     <!-- 시리즈 플렉스박스 - 데스크톱: 3개씩 한 줄, 모바일: 횡스크롤 -->
+
+    <div>
+      <pre class="text-xs">
+    .___                                               ___.                  
+  __| _/_______  __     ____   ________________    ____\_ |__ _____  ______  
+ / __ |/ __ \  \/ /    / ___\ /  _ \_  __ \__  \ _/ __ \| __ \\__  \ \____ \ 
+/ /_/ \  ___/\   /    / /_/  >  <_> )  | \// __ \\  ___/| \_\ \/ __ \|  |_> >
+\____ |\___  >\_/ /\  \___  / \____/|__|  (____  /\___  >___  (____  /   __/ 
+     \/    \/     \/ /_____/                   \/     \/    \/     \/|__|    
+      </pre>
+    </div>
+
     @if(series.length > 0)
       <div class="flex flex-nowrap gap-8 md:flex-wrap overflow-x-auto md:overflow-x-visible">
         @each(item in series)

@@ -19,10 +19,12 @@ export class PatchNotesService {
     return await qb.getMany();
   }
 
-  async getPatchNotesExcludeBy(slug: string) {
+  async getOtherPatchNotes(excludeSlug: string) {
     const qb = this.postRepository.createQueryBuilder('post');
     AttachmentQueryHelper.withAttachments(qb, 'post');
-    qb.where('post.postType = :postType', { postType: 'patch-note' }).andWhere('post.slug != :slug', { slug: slug });
+    qb.where('post.postType = :postType', { postType: 'patch-note' }).andWhere('post.slug != :slug', {
+      slug: excludeSlug,
+    });
     qb.orderBy('post.publishedAt', 'DESC');
     return await qb.getMany();
   }

@@ -1,10 +1,24 @@
-@layout.app({ title: 'dev.goraebap | '+post?.title })
+@layout.app({ title: 'devgoraebap | '+post?.title })
   <section class="container max-w-6xl mx-auto my-10">
     <div class="flex sm:gap-6">
-      {{-- 왼쪽 영역 --}}
+      {{-- 왼쪽 컨텐츠 영영 --}}
       <div class="flex-1 w-full sm:min-w-2xl sm:w-3xl px-4">
 
-        {{-- 게시물 썸네일 --}}
+        <a href="/" class="text-sm mb-4 flex items-center gap-2 sm:text-base">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-4 sm:size-5"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+          </svg>
+
+          피드로 돌아가기
+        </a>
+
         @if(post?.getImage('thumbnail'))
           <figure class="shrink-0">
             <div class="h-[150px] sm:h-[300px] flex items-center justify-center overflow-hidden sm:shadow-xl">
@@ -61,33 +75,57 @@
       </div>
 
       {{-- 오른쪽 컨텐츠 영역 (Desktop에서 노출됨) --}}
-      <div class="hidden sm:block w-[300px] min-w-[300px] shrink-0 px-4">
-        <div class="sticky top-[var(--header-height)]">
-
-          {{-- 관련 포스트 --}}
-          <div>
-            <h2 class="card-title mb-4 text-lg font-bold">
-              다른 포스트
-            </h2>
-
-            {{-- 태크 뉴스 목록 --}}
-            <div class="space-y-3">
-              @each(post in relatedPosts)
-                <div class="border-b border-base-200 pb-3 last:border-b-0 last:pb-0">
-                  <a href="{{ post.id }}" class="block group">
-                    <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
-                      {{ post.title }}
-                    </h3>
-                    <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
-                      {{ post.summary }}
-                    </p>
-                    <div class="flex justify-between items-center text-xs text-base-content/50">
-                      <span>{{ formatDate(post.createdAt) }}</span>
-                    </div>
-                  </a>
-                </div>
-              @end
+      <div class="hidden sm:block w-[300px] min-w-[300px] shrink-0">
+        <div class="sticky top-[calc(var(--header-height)+1rem)] space-y-6">
+          {{-- 패치노트 --}}
+          <div class="flex flex-col gap-4">
+            <div class="space-y-2">
+              <h2 class="text-lg font-bold">
+                📑 다른 포스트
+              </h2>
+              <p class="text-xs text-base-content/80">무작위 포스트가 추천됩니다.</p>
             </div>
+            @if(suggestedPosts?.length > 0)
+              <ul>
+                @each((post, index) in suggestedPosts)
+                  @if(index !== 0)
+                    <li class="border-t border-base-300 border-dashed my-4">
+                    </li>
+                  @endif
+                  <li>
+                    <a href="/posts/{{ post?.slug }}" data-turbo-prefetch="false" class="block group">
+                      @if(post && post.getImage && post.getImage('thumbnail'))
+                        <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
+                          @!uikit.image({
+                            url: cloudImageUrl(post.getImage('thumbnail').url),
+                            dominantColor: post.getImage('thumbnail').dominantColor,
+                            width: 'w-full',
+                            height: 'h-full object-cover'
+                          })
+                        </div>
+                      @endif
+                      <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
+                        {{ post.title }}
+                      </h3>
+                      <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
+                        {{ post.summary }}
+                      </p>
+                      <div class="flex justify-end items-center text-xs text-base-content/50">
+                        <span>{{ formatDate(post.publishedAt) }}</span>
+                      </div>
+                    </a>
+                  </li>
+                @end
+              </ul>
+            @else
+              <div class="bg-base-200 text-center rounded-xl p-4 text-xs">
+                Not found other posts
+              </div>
+            @endif
+          </div>
+
+          <div class="flex flex-col gap-4">
+
           </div>
         </div>
       </div>
