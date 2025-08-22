@@ -83,20 +83,6 @@ export class FeedService {
     return await qb.getOne();
   }
 
-  async getNewsPosts() {
-    const qb = this.postRepository
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.tags', 'tag')
-      .where('post.isPublished = :isPublished', { isPublished: true })
-      .andWhere('post.postType = :postType', { postType: 'news' });
-
-    AttachmentQueryHelper.withAttachments(qb, 'post');
-    qb.orderBy('post.createdAt', 'DESC');
-    qb.take(3);
-
-    return await qb.getMany();
-  }
-
   async getTags() {
     return await this.tagRepository.find({
       relations: {

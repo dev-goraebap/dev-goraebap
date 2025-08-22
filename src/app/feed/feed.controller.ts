@@ -1,10 +1,10 @@
 import { Controller, Get, Query, Req, Res, UsePipes } from '@nestjs/common';
+import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { FeedService } from './feed.service';
 import { IsTurboStream, ZodValidationPipe } from 'src/common';
 import { GetPostsDto, GetPostsSchema } from './dto/get-posts.dto';
-import { Response } from 'express';
+import { FeedService } from './feed.service';
 
 @Controller({ path: '' })
 export class FeedController {
@@ -21,15 +21,12 @@ export class FeedController {
     @IsTurboStream() isTurboStream: boolean,
     @Res() res: Response,
   ) {
-    console.log(dto);
-
     const tags = await this.feedService.getTags();
 
+    // 터보 스트림 요청의 경우 일부 화면요소만 업데이트
     if (isTurboStream) {
       const postsData = await this.feedService.getPosts(dto);
-
       res.setHeader('Content-Type', 'text/vnd.turbo-stream.html');
-
       let template: string;
       if (!dto.cursor) {
         template = await req.view.render('pages/feed/posts/_list_replace', {
@@ -49,12 +46,10 @@ export class FeedController {
 
     const postsData = await this.feedService.getPosts(dto);
     const patchNote = await this.feedService.getLatestPatchNote();
-    const newsPosts = await this.feedService.getNewsPosts();
 
     const template = await req.view.render('pages/feed/index', {
       postsData,
       patchNote,
-      newsPosts,
       tags,
     });
     return res.send(template);
