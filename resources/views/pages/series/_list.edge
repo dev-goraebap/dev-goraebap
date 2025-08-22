@@ -1,0 +1,32 @@
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+  @each(seriesItem in series)
+    <a href="/series/{{ seriesItem?.id }}" class="space-y-1">
+      <figure class="shrink-0">
+        <div class=" flex items-center justify-center overflow-hidden sm:shadow-xl">
+          <div class="w-full aspect-[2/3] overflow-hidden">
+            @!uikit.image({
+              url: cloudImageUrl(seriesItem?.getImage('thumbnail')?.url),
+              dominantColor: seriesItem?.getImage('thumbnail')?.dominantColor
+            })
+          </div>
+        </div>
+      </figure>
+      <h3 href="/series/{{ seriesItem?.id }}" class="text-base sm:text-lg font-bold">
+        {{ seriesItem?.name }}
+      </h3>
+      <p href="/series/{{ seriesItem?.id }}" class="line-clamp-1 text-xs text-base-content/70">
+        {{ seriesItem?.description }}
+      </p>
+      <div class="flex justify-between items-center text-xs mt-2">
+        @if(seriesItem?.status === 'PENDING')
+          <span class="badge badge-xs badge-warning">계획중</span>
+        @elseif(seriesItem?.status === 'PROGRESS')
+          <span class="badge badge-xs badge-primary">연재중</span>
+        @else
+          <span class="badge badge-xs badge-success">연재완료</span>
+        @endif
+        <span>{{ seriesItem?.seriesPosts?.length }}개의 게시물</span>
+      </div>
+    </a>
+  @end
+</div>

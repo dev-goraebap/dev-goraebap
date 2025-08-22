@@ -10,10 +10,10 @@
           class="card-title text-[clamp(1rem,6vw,1.5rem)] hover:text-primary transition-all"
         >
           {{ post?.title }}
-                      </a>
+        </a>
         <a href="/posts/{{ post?.slug }}" data-turbo-prefetch="false" class="line-clamp-2 text-[clamp(0.7rem,4vw,1rem)]">
           {{ post?.summary }}
-                      </a>
+        </a>
       </div>
       @if(post?.getImage('thumbnail'))
         <figure class="shrink-0">
