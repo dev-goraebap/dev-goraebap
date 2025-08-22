@@ -48,8 +48,9 @@
 @import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 
 :root {
-  --header-height: 4.5rem;      /* 기본 64px (h-16) */
-  --header-height-sm: 3rem;   /* sm 이상 80px (h-20) */
+  --header-height: 4.5rem;     
+  --header-height-sm: 3rem;   
+  --mobile-nav-height: 4rem;
 }
 
 /* 기본 전환 효과 (크로스페이드) */

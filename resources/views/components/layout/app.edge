@@ -18,9 +18,8 @@
 
         {{{ await $slots.main() }}}
       </div>
-      <div class="bg-base-200 border-t border-base-300">
-        @!layout.app.footer()
-      </div>
+      @!layout.app.footer()
+      @!layout.app.mobileNav()
     </div>
   </body>
 
