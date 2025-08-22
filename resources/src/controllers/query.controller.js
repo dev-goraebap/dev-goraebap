@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { createQuerystring } from '../utils/create-querystring';
 
 export class QueryController extends Controller {
   static values = {
@@ -26,19 +27,7 @@ export class QueryController extends Controller {
   }
 
   navigateWithFormData() {
-    const formData = new FormData(this.element);
-    const params = new URLSearchParams();
-
-    for (const [key, value] of formData.entries()) {
-      if (value && value.toString().trim() !== '') {
-        params.append(key, value.toString());
-      }
-    }
-
-    const currentUrl = new URL(window.location.href);
-    const newUrl = `${currentUrl.pathname}?${params.toString()}`;
-
+    const newUrl = createQuerystring(this.element);
     document.getElementById(this.frameIdValue).src = newUrl;
-    history.replaceState({}, '', newUrl);
   }
 }
