@@ -90,10 +90,6 @@ export class CreatePostUseCase {
       // TinyMCE HTML에서 이미지 URL 추출
       const imageUrls = extractImageUrls(dto.content);
 
-      console.log('=======================');
-      console.log(imageUrls);
-      console.log('=======================');
-
       // 이미지 URL이 있는 경우 blob key로 변환하여 첨부 생성
       if (imageUrls.length > 0) {
         // 이미지 URL에서 blob key 추출 (32자리 hex key)

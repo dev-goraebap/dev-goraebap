@@ -2,12 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { AttachmentQueryHelper, PostEntity } from 'src/shared';
+import { AttachmentQueryHelper, PostEntity, TagEntity } from 'src/shared';
 import { GetPostsDto } from './dto/get-posts.dto';
 
 @Injectable()
 export class FeedService {
   constructor(
+    @InjectRepository(TagEntity)
+    private readonly tagRepository: Repository<TagEntity>,
     @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,
   ) {}
@@ -23,15 +25,19 @@ export class FeedService {
 
     if (dto.cursor) {
       const [publishedAt, viewCount] = dto.cursor.split('_');
-      
+
       if (dto.orderType === 'traffic') {
         qb.andWhere(
           '(post.viewCount < :viewCount OR (post.viewCount = :viewCount AND post.publishedAt < :publishedAt))',
-          { viewCount: parseInt(viewCount), publishedAt }
+          { viewCount: parseInt(viewCount), publishedAt },
         );
       } else {
         qb.andWhere('post.publishedAt < :publishedAt', { publishedAt });
       }
+    }
+
+    if (dto.tag) {
+      qb.andWhere('tag.name = :tag', { tag: dto.tag });
     }
 
     if (dto.orderType === 'traffic') {
@@ -59,7 +65,7 @@ export class FeedService {
     return {
       items,
       nextCursor,
-      hasMore
+      hasMore,
     };
   }
 
@@ -89,5 +95,16 @@ export class FeedService {
     qb.take(3);
 
     return await qb.getMany();
+  }
+
+  async getTags() {
+    return await this.tagRepository.find({
+      relations: {
+        posts: true,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+    });
   }
 }

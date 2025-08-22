@@ -5,3 +5,12 @@
     </div>
   </template>
 </turbo-stream>
+
+<turbo-stream action="replace" target="tagListTurboStreamTarget">
+  <template>
+    @!component('pages/feed/tags/_list', { tags })
+  </template>
+</turbo-stream>
+
+{{-- <turbo-stream action="push_state" url="{{ newUrl }}">
+</turbo-stream> --}}

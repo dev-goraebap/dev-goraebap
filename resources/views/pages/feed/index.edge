@@ -1,74 +1,49 @@
 @layout.app({ title: 'devgoraebap | 게시물' })
-  <section class="container max-w-6xl mx-auto my-10">
-    <div class="flex sm:gap-6" data-controller="feed-query">
+  <section class="container max-w-6xl mx-auto my-10" data-controller="feed-query">
+    <div class="flex sm:gap-6">
       {{-- 왼쪽 컨텐츠 영영 --}}
       <div class="flex-1 w-full sm:min-w-2xl sm:w-3xl px-4">
         {{-- 상단 정렬, 필터 영역 --}}
-        <form action="/" data-turbo-stream="true" data-feed-query-target="queryForm">
-          <input type="hidden" name="cursor" />
-          <label class="btn has-[:checked]:btn-primary">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-4"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"
-              />
-            </svg>
-            인기
-            <input
-              type="radio"
-              name="orderType"
-              class="hidden"
-              value="traffic"
-              data-action="feed-query#onSubmit"
-              {{ (!query('orderType') || query('orderType') === 'traffic')  && 'checked' }}
-            />
-          </label>
-          <label class="btn has-[:checked]:btn-primary">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="size-4"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            최근
-            <input
-              type="radio"
-              name="orderType"
-              class="hidden"
-              value="latest"
-              data-action="feed-query#onSubmit"
-              {{ query('orderType') === 'latest' && 'checked' }}
-            />
-          </label>
-        </form>
+        @!component('pages/feed/posts/_query_form')
 
         {{-- 하단 게시물 리스트 영역 --}}
         <div id="feedPostsFrame">
-          @!component('pages/feed/posts/_list', { postsData })
+          @if(postsData?.items?.length > 0)
+            @!component('pages/feed/posts/_list', { postsData })
+          @else
+            <div class="flex justify-center">
+              <div class="flex flex-col items-center gap-4">
+                <img src="/public/images/empty01.svg" class="w-lg" />
+                <span>아직 게시물이 준비되지 않았어요.</span>
+              </div>
+            </div>
+          @endif
         </div>
       </div>
 
       {{-- 오른쪽 컨텐츠 영역 (Desktop에서 노출됨) --}}
       <div class="hidden sm:block w-[300px] min-w-[300px] shrink-0 p-4 space-y-6">
 
-        {{-- 패치노트 영역 --}}
-        @if(patchNote)
-          <div class="card">
-            <div class="card-title mb-4 text-lg font-bold">
-              👾 최근 패치노트
+        {{-- 태그 클라우드 --}}
+        <div class="flex flex-col gap-4">
+          <h2 class="text-lg font-bold">
+            🏷️ 태그 클라우드
+          </h2>
+          @if(tags?.length > 0)
+            @!component('pages/feed/tags/_list', { tags })
+          @else
+            <div class="bg-base-200 text-center rounded-xl p-4 text-xs">
+              Not found tags
             </div>
+          @endif
+        </div>
+
+        {{-- 패치노트 --}}
+        <div class="flex flex-col gap-4">
+          <h2 class="text-lg font-bold">
+            👾 최근 패치노트
+          </h2>
+          @if(patchNote)
             <div>
               <a href="/patch-notes/{{ patchNote?.slug }}" data-turbo-prefetch="false" class="block group">
                 @if(patchNote && patchNote.getImage && patchNote.getImage('thumbnail'))
@@ -92,35 +67,41 @@
                 </div>
               </a>
             </div>
-          </div>
-        @endif
-        
+          @else
+            <div class="bg-base-200 text-center rounded-xl p-4 text-xs">
+              Not found patch notes
+            </div>
+          @endif
+        </div>
+
         {{-- 뉴스 포스트 영역 --}}
-        @if(newsPosts.length > 0)
-          <div class="card">
-            <div class="card-title mb-4 text-lg font-bold">
-              📰 뉴스
+        <div class="flex flex-col gap-4">
+          <h2 class="text-lg font-bold">
+            📰 최근 IT소식
+          </h2>
+          @if(newsPosts.length > 0)
+            @each(newsPost in newsPosts)
+              <div class="border-b border-base-200 pb-3 last:border-b-0 last:pb-0">
+                <a href="/posts/{{ newsPost?.slug }}" data-turbo-prefetch="false" class="block group">
+                  <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
+                    {{ newsPost.title }}
+                  </h3>
+                  <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
+                    {{ newsPost.summary }}
+                  </p>
+                  <div class="flex justify-between items-center text-xs text-base-content/50">
+                    <span class="font-medium">News</span>
+                    <span>{{ formatDate(newsPost.publishedAt) }}</span>
+                  </div>
+                </a>
+              </div>
+            @end
+          @else
+            <div class="bg-base-200 text-center rounded-xl p-4 text-xs">
+              Not found IT News
             </div>
-            <div class="space-y-3">
-              @each(newsPost in newsPosts)
-                <div class="border-b border-base-200 pb-3 last:border-b-0 last:pb-0">
-                  <a href="/posts/{{ newsPost?.slug }}" data-turbo-prefetch="false" class="block group">
-                    <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
-                      {{ newsPost.title }}
-                    </h3>
-                    <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
-                      {{ newsPost.summary }}
-                    </p>
-                    <div class="flex justify-between items-center text-xs text-base-content/50">
-                      <span class="font-medium">News</span>
-                      <span>{{ formatDate(newsPost.publishedAt) }}</span>
-                    </div>
-                  </a>
-                </div>
-              @end
-            </div>
-          </div>
-        @endif
+          @endif
+        </div>
       </div>
     </div>
   </section>

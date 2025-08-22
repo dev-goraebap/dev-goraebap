@@ -1,0 +1,50 @@
+<form action="/" data-turbo-stream="true" data-feed-query-target="queryForm">
+  <input type="hidden" name="cursor" />
+  <input type="hidden" name="tag" />
+  <label class="btn has-[:checked]:btn-primary">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="size-4"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"
+      />
+    </svg>
+    인기
+            <input
+      type="radio"
+      name="orderType"
+      class="hidden"
+      value="traffic"
+      data-action="feed-query#onSubmit"
+      {{ (!query('orderType') || query('orderType') === 'traffic')  && 'checked' }}
+    />
+  </label>
+  <label class="btn has-[:checked]:btn-primary">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="size-4"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+    최근
+            <input
+      type="radio"
+      name="orderType"
+      class="hidden"
+      value="latest"
+      data-action="feed-query#onSubmit"
+      {{ query('orderType') === 'latest' && 'checked' }}
+    />
+  </label>
+</form>

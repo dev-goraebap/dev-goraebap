@@ -23,21 +23,24 @@ export class FeedController {
   ) {
     console.log(dto);
 
+    const tags = await this.feedService.getTags();
+
     if (isTurboStream) {
       const postsData = await this.feedService.getPosts(dto);
 
       res.setHeader('Content-Type', 'text/vnd.turbo-stream.html');
 
-      let template;
+      let template: string;
       if (!dto.cursor) {
-        console.log('커서 없음');
         template = await req.view.render('pages/feed/posts/_list_replace', {
+          newUrl: req.originalUrl,
           postsData,
+          tags,
         });
       } else {
-        console.log('커서 있음');
         template = await req.view.render('pages/feed/posts/_list_append', {
           postsData,
+          tags,
         });
       }
 
@@ -52,6 +55,7 @@ export class FeedController {
       postsData,
       patchNote,
       newsPosts,
+      tags,
     });
     return res.send(template);
   }

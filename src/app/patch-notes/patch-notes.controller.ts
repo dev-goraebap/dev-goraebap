@@ -1,7 +1,9 @@
-import { Controller, Get, Param, Req } from '@nestjs/common';
+import { Controller, Get, Param, Req, UsePipes } from '@nestjs/common';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
+import { ZodValidationPipe } from 'src/common';
 import { PostsSharedService } from 'src/shared';
+import { GetPostsSchema } from './dto/get-posts.dto';
 import { PatchNotesService } from './patch-notes.service';
 
 @Controller({ path: 'patch-notes' })
@@ -12,9 +14,12 @@ export class PatchNotesController {
   ) {}
 
   @Get()
+  @UsePipes(new ZodValidationPipe(GetPostsSchema))
   async index(@Req() req: NestMvcReq) {
     const posts = await this.patchNotesService.getPatchNotes();
-    return req.view.render('pages/patch-notes/index', { posts });
+    return req.view.render('pages/patch-notes/index', {
+      posts,
+    });
   }
 
   @Get(':slug')
