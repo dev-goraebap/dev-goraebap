@@ -1,7 +1,7 @@
 <div id="tagListTurboStreamTarget" class="flex flex-wrap gap-2">
   @each(tag in tags)
     <button
-      class="badge cursor-pointer {{ query('tag') === tag?.name && 'badge-primary' }}"
+      class="badge cursor-pointer text-xs {{ query('tag') === tag?.name ? 'badge-primary': 'badge-ghost' }}"
       data-action="feed-query#onFilterTag"
       data-value="{{ tag?.name }}"
     >

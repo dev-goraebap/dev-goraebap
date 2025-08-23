@@ -93,7 +93,7 @@
                     </li>
                   @endif
                   <li>
-                    <a href="/posts/{{ post?.slug }}" data-turbo-prefetch="false" class="block group">
+                    <a href="/patch-notes/{{ post?.slug }}" data-turbo-prefetch="false" class="block group">
                       @if(post && post.getImage && post.getImage('thumbnail'))
                         <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
                           @!uikit.image({
@@ -122,10 +122,6 @@
                 Not found other posts
               </div>
             @endif
-          </div>
-
-          <div class="flex flex-col gap-4">
-
           </div>
         </div>
       </div>
