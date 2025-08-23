@@ -77,7 +77,7 @@ export class FeedService {
       .andWhere('post.postType = :postType', { postType: 'patch-note' });
 
     AttachmentQueryHelper.withAttachments(qb, 'post');
-    qb.orderBy('post.createdAt', 'DESC');
+    qb.orderBy('post.publishedAt', 'DESC');
     qb.take(1);
 
     return await qb.getOne();
