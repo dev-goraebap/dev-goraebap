@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { AppExceptionFilter } from 'src/common';
+import { AppExceptionFilter, LoggingInterceptor, RequestIdMiddleware } from 'src/common';
 import { AdminModule } from './admin/admin.module';
 import { FeedModule } from './feed/feed.module';
 import { FeedService } from './feed/feed.service';
@@ -13,6 +13,15 @@ import { SessionModule } from './session/session.module';
 
 @Module({
   imports: [FeedModule, PostsModule, SeriesModule, PatchNotesModule, SessionModule, AdminModule],
-  providers: [{ provide: APP_FILTER, useClass: AppExceptionFilter }, FeedService, InitService],
+  providers: [
+    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
+    { provide: APP_FILTER, useClass: AppExceptionFilter },
+    FeedService,
+    InitService,
+  ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(RequestIdMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
