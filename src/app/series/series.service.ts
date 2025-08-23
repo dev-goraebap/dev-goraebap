@@ -12,7 +12,7 @@ export class SeriesService {
     private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  async getSeries() {
+  async getSeriesList() {
     const qb = this.seriesRepository.createQueryBuilder('series');
     qb.leftJoinAndSelect('series.seriesPosts', 'post');
 
@@ -22,58 +22,25 @@ export class SeriesService {
     return await qb.getMany();
   }
 
-  async getSeriesWithPosts(id: string) {
-    const series = await this.seriesRepository
-      .createQueryBuilder('series')
-      .leftJoinAndSelect('series.seriesPosts', 'seriesPost')
-      .leftJoinAndSelect('seriesPost.post', 'post', 'post.isPublished = :isPublished', { isPublished: true })
-      .leftJoinAndSelect('post.tags', 'tag')
-      .where('series.id = :id', { id })
-      .orderBy('seriesPost.order', 'ASC')
-      .getOne();
-
-    if (!series) {
-      return null;
-    }
-
-    // 포스트에 대한 attachment 정보 가져오기
-    if (series.seriesPosts && series.seriesPosts.length > 0) {
-      for (const seriesPost of series.seriesPosts) {
-        if (seriesPost.post) {
-          const qb = this.postRepository
-            .createQueryBuilder('post')
-            .where('post.id = :id', { id: seriesPost.post.id });
-          AttachmentQueryHelper.withAttachments(qb, 'post');
-          const postWithAttachment = await qb.getOne();
-          if (postWithAttachment) {
-            Object.assign(seriesPost.post, postWithAttachment);
-          }
-        }
-      }
-    }
-
-    // series의 attachment 정보 가져오기
-    const qb = this.seriesRepository.createQueryBuilder('series').where('series.id = :id', { id });
+  async getSeries(id: number) {
+    const qb = this.seriesRepository.createQueryBuilder('series');
     AttachmentQueryHelper.withAttachments(qb, 'series');
-    const seriesWithAttachment = await qb.getOne();
 
-    if (seriesWithAttachment) {
-      Object.assign(series, seriesWithAttachment);
-    }
-
-    return series;
+    qb.where('series.id = :id', { id });
+    return await qb.getOne();
   }
 
-  getStatusText(status: string): string {
-    switch (status) {
-      case 'PLAN':
-        return '준비중';
-      case 'PROGRESS':
-        return '연재중';
-      case 'COMPLETE':
-        return '완료';
-      default:
-        return '준비중';
-    }
+  async getSeriesPosts(seriesId: number) {
+    const qb = this.postRepository.createQueryBuilder('post');
+    qb.leftJoinAndSelect('post.seriesPosts', 'seriesPost');
+    qb.leftJoinAndSelect('seriesPost.series', 'series');
+    AttachmentQueryHelper.withAttachments(qb, 'post');
+
+    qb.where('series.id = :seriesId', { seriesId });
+
+    qb.orderBy('seriesPost.order', 'ASC');
+    qb.addOrderBy('seriesPost.createdAt', 'DESC');
+
+    return await qb.getMany();
   }
 }

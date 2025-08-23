@@ -1,0 +1,9 @@
+<ul class="flex flex-col gap-4">
+  @each((post, index) in posts)
+    @if(index !== 0)
+      <li class="border-t border-base-300 sm:hidden">
+      </li>
+    @end
+    @!component('pages/series/posts/_list_item', { post })
+  @end
+</ul>

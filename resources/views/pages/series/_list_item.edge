@@ -1,0 +1,28 @@
+@let(disableLink = readonly === true)
+
+<a href="/series/{{ seriesItem?.id }}" class="space-y-1">
+  <figure class="shrink-0">
+    <div class=" flex items-center justify-center overflow-hidden sm:shadow-xl">
+      <div class="w-full aspect-[2/3] overflow-hidden">
+        @!uikit.image({
+          url: cloudImageUrl(seriesItem?.getImage('thumbnail')?.url),
+          dominantColor: seriesItem?.getImage('thumbnail')?.dominantColor
+        })
+      </div>
+    </div>
+  </figure>
+  <h3 class="text-base sm:text-lg font-bold">
+    {{ seriesItem?.name }}
+  </h3>
+  <p class="line-clamp-1 text-xs text-base-content/70">
+    {{ seriesItem?.description }}
+  </p>
+  <div class="flex justify-between items-center text-xs mt-2">
+    @!component('pages/series/_status', { seriesItem })
+    
+    {{-- 게시물 개수 --}}
+    @if(seriesItem?.seriesPosts)
+      <span>{{ seriesItem?.seriesPosts?.length }}개의 게시물</span>
+    @endif
+  </div>
+</a>
