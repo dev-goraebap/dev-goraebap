@@ -28,4 +28,12 @@ export class SeriesController {
       posts,
     });
   }
+
+  @Get(':seriesSlug/:postSlug')
+  async showPost(@Req() req: NestMvcReq, @Param('seriesSlug') seriesSlug: string, @Param('postSlug') postSlug: string) {
+    const result = await this.seriesService.getSeriesPost(postSlug, seriesSlug);
+    return req.view.render('pages/series/posts/show', {
+      ...result,
+    });
+  }
 }
