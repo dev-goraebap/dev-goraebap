@@ -53,7 +53,7 @@ export class CreateSeriesUseCase {
         blob: blobEntity,
         name: 'thumbnail',
         recordType: 'series',
-        recordId: newSeriesEntity.id.toString(),
+        recordId: newSeriesEntity.id.toString()
       });
       await this.entityManager.save(newAttachmentEntity);
     });

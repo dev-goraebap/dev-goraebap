@@ -20,10 +20,14 @@ export class SeriesEntity extends BaseEntityWithAttachments {
   @Column({ unique: true })
   readonly name: string;
 
-  @Column()
+  @Column({ unique: true })
+  readonly slug: string;
+
+  @Column({ nullable: true })
   readonly description: string;
 
-  @Column({ default: 'PENDING' })
+
+  @Column({ default: 'PLAN' })
   readonly status: string; // PLAN, PROGRESS, COMPLETE
 
   @CreateDateColumn()

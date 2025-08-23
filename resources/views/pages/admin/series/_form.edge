@@ -17,6 +17,7 @@
     item: series ?? null
   })
 
+  {{-- 이름 --}}
   <fieldset class="fieldset">
     <legend class="fieldset-legend">
       시리즈 이름
@@ -27,6 +28,7 @@
     </p>
   </fieldset>
 
+  {{-- 설명 --}}
   <fieldset class="fieldset">
     <legend class="fieldset-legend">
       시리즈 설명
@@ -36,6 +38,38 @@
       Optional
     </div>
   </fieldset>
+
+  {{-- 상태 --}}
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">
+      시리즈 상태
+    </legend>
+    <select class="select" name="series[status]">
+      <option value="PLAN" {{ series?.status === 'PLAN' && 'selected' }}>
+        계획중
+      </option>
+      <option value="PROGRESS" {{ series?.status === 'PROGRESS' && 'selected' }}>
+        연재중
+      </option>
+      <option value="COMPLETE" {{ series?.status === 'COMPLETE' && 'selected' }}>
+        연재완료
+      </option>
+    </select>
+    <div class="label">
+      기본 상태는 '계획중' 입니다.
+    </div>
+  </fieldset>
+
+  {{-- 슬러그 --}}
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">
+      슬러그
+    </legend>
+    <input type="text" name="series[slug]" value="{{ series?.slug || '' }}" class="input" placeholder="슬러그를 입력해주세요" />
+    <span class="label">입력하지않으면 임의의 randomUUID가 부여됩니다.</span>
+  </fieldset>
+
+  <br />
 
   <button class="btn">{{ submitText }}</button>
 </form>
