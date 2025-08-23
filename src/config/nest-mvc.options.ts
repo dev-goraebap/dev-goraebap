@@ -4,6 +4,7 @@ import {
   currentThemeHelper,
   formatDate,
   formatDateTime,
+  formatDateTimeLocal,
   isCurrentRouteHelper,
   queryHelper,
 } from './nest-mvc-view-helpers';
@@ -22,6 +23,7 @@ export const nestMvcOptions: NestMvcOptions = {
     globals: {
       formatDate: (date: Date | string | number) => formatDate(date, '/'),
       formatDateTime: (date: Date | string | number) => formatDateTime(date, '/'),
+      formatDateTimeLocal: (date: Date | string | number) => formatDateTimeLocal(date)
     },
     globalsInjects: [ConfigService],
     globalsFactory: (configService: ConfigService) => ({
