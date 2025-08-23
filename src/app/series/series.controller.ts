@@ -16,12 +16,12 @@ export class SeriesController {
     });
   }
 
-  @Get(':id')
-  async show(@Param('id') id: number, @Req() req: NestMvcReq) {
+  @Get(':slug')
+  async show(@Param('slug') slug: string, @Req() req: NestMvcReq) {
     await this.seriesService.getSeriesList();
     // 실제 데이터 가져오기
-    const seriesItem = await this.seriesService.getSeries(id);
-    const posts = await this.seriesService.getSeriesPosts(id);
+    const seriesItem = await this.seriesService.getSeries(slug);
+    const posts = await this.seriesService.getSeriesPosts(slug);
 
     return req.view.render('pages/series/show', {
       seriesItem,

@@ -22,21 +22,21 @@ export class SeriesService {
     return await qb.getMany();
   }
 
-  async getSeries(id: number) {
+  async getSeries(slug: string) {
     const qb = this.seriesRepository.createQueryBuilder('series');
     AttachmentQueryHelper.withAttachments(qb, 'series');
 
-    qb.where('series.id = :id', { id });
+    qb.where('series.slug = :slug', { slug });
     return await qb.getOne();
   }
 
-  async getSeriesPosts(seriesId: number) {
+  async getSeriesPosts(seriesSlug: string) {
     const qb = this.postRepository.createQueryBuilder('post');
     qb.leftJoinAndSelect('post.seriesPosts', 'seriesPost');
     qb.leftJoinAndSelect('seriesPost.series', 'series');
     AttachmentQueryHelper.withAttachments(qb, 'post');
 
-    qb.where('series.id = :seriesId', { seriesId });
+    qb.where('series.slug = :seriesSlug', { seriesSlug });
 
     qb.orderBy('seriesPost.order', 'ASC');
     qb.addOrderBy('seriesPost.createdAt', 'DESC');
