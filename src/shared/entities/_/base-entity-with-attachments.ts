@@ -14,7 +14,7 @@ export abstract class BaseEntityWithAttachments {
    * @param name - attachment의 name (예: 'thumbnail', 'contentImage')
    * @returns attachment 정보 객체 또는 null
    */
-  getImage(name: string): { url: string; dominantColor?: string } | null {
+  getImage(name: string): { url: string; dominantColor?: string, dominantColor2?: string } | null {
     if (!this.attachments || this.attachments.length === 0) {
       return null;
     }
@@ -31,6 +31,7 @@ export abstract class BaseEntityWithAttachments {
     return {
       url: attachment.blob.getFilePath(),
       dominantColor: attachment.blob.metadata?.dominantColor,
+      dominantColor2: attachment.blob.metadata?.dominantColor2,
     };
   }
 
@@ -50,6 +51,7 @@ export abstract class BaseEntityWithAttachments {
       .map((attachment) => ({
         url: attachment.blob.getFilePath(),
         dominantColor: attachment.blob.metadata?.dominantColor,
+        dominantColor2: attachment.blob.metadata?.dominantColor2,
       }));
   }
 }
