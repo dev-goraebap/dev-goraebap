@@ -36,7 +36,7 @@
         @each((post, index) in posts)
           <tr class="hover">
             <td>
-              <div class="w-16 h-12 overflow-hidden bg-base-200">
+              <div class="w-16 h-12 overflow-hidden bg-base-200 border border-base-content/30">
                 @!uikit.image({
                   url: cloudImageUrl(post?.getImage('thumbnail')?.url),
                   dominantColor: post?.getImage('thumbnail')?.dominantColor
@@ -44,7 +44,7 @@
               </div>
             </td>
             <td>
-              <span class="badge badge-primary badge-xs">{{post?.postType}}</span>
+              <span class="badge badge-primary text-xs whitespace-nowrap">{{post?.postType}}</span>
             </td>
             <td>
               <div class="max-w-xs">
