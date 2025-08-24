@@ -30,8 +30,13 @@ export class PatchNotesService {
   }
 
   async getPatchNote(slug: string) {
-    const qb = this.postRepository.createQueryBuilder('post').where('post.slug = :slug', { slug: slug });
+    const qb = this.postRepository.createQueryBuilder('post');
+    qb.leftJoin('post.comments', 'comment');
     AttachmentQueryHelper.withAttachments(qb, 'post');
+
+    qb.where('post.slug = :slug', { slug: slug });
+    qb.orderBy('comment.createdAt', 'DESC');
+
     const result = await qb.getOne();
     if (!result) {
       throw new NotFoundException('체인지로그를 찾을 수 없습니다.');

@@ -3,6 +3,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AppExceptionFilter, LoggingInterceptor, RequestIdMiddleware } from 'src/common';
 import { AdminModule } from './admin/admin.module';
+import { CommentsModule } from './comments/comments.module';
 import { FeedModule } from './feed/feed.module';
 import { FeedService } from './feed/feed.service';
 import { InitService } from './init.service';
@@ -13,7 +14,16 @@ import { SeriesModule } from './series/series.module';
 import { SessionModule } from './session/session.module';
 
 @Module({
-  imports: [FeedModule, PostsModule, SeriesModule, PatchNotesModule, SessionModule, AdminModule, SeoModule],
+  imports: [
+    FeedModule,
+    PostsModule,
+    SeriesModule,
+    PatchNotesModule,
+    SessionModule,
+    AdminModule,
+    SeoModule,
+    CommentsModule,
+  ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     { provide: APP_FILTER, useClass: AppExceptionFilter },

@@ -18,6 +18,7 @@ export class FeedService {
     const qb = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
+      .leftJoinAndSelect('post.comments', 'comment')
       .where('post.isPublished = :isPublished', { isPublished: true })
       .andWhere('post.postType = :postType', { postType: 'post' });
 

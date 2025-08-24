@@ -33,7 +33,9 @@ export class PostsService {
     const qb = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
-      .where('post.slug = :slug', { slug });
+      .leftJoinAndSelect('post.comments', 'comment')
+      .where('post.slug = :slug', { slug })
+      .orderBy('comment.createdAt', 'DESC');
     AttachmentQueryHelper.withAttachments(qb, 'post');
     const result = await qb.getOne();
     if (!result) {
