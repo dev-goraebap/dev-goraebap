@@ -1,6 +1,6 @@
-@layout.app({ 
-  title: 'devgoraebap | '+post?.title, 
-  description: post?.summary, 
+@layout.app({
+  title: 'devgoraebap | '+post?.title,
+  description: post?.summary,
   ogImage: cloudImageUrl(post?.getImage('thumbnail')?.url)
 })
   <section class="container max-w-6xl mx-auto my-10">
@@ -77,6 +77,10 @@
         <div class="prose min-w-full">
           {{{ post?.content }}}
         </div>
+
+        <br />
+        @!partials.comments.form({ postId: post?.id, commentCount: post?.comments?.length })
+        @!partials.comments.list({ comments: post?.comments })
       </div>
 
       {{-- 오른쪽 컨텐츠 영역 (Desktop에서 노출됨) --}}

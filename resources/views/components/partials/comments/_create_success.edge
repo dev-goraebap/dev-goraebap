@@ -1,0 +1,11 @@
+<turbo-stream action="replace" target="replaceCommentFormTurboStreamTarget">
+  <template>
+    @!partials.comments.form({ postId, commentCount: comments?.length })
+  </template>
+</turbo-stream>
+<turbo-stream action="replace" target="replaceCommentListTurboStreamTarget">
+  <template>
+    @!partials.comments.list({ comments })
+  </template>
+</turbo-stream>
+

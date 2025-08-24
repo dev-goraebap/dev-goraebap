@@ -1,0 +1,50 @@
+@if(postId)
+  <div class="space-y-4" id="replaceCommentFormTurboStreamTarget">
+    <div class="flex justify-between items-center">
+      @if(commentCount)
+        <span class="font-bold">댓글 {{ commentCount  }}</span>
+      @endif
+      <span class="text-base-content/70 text-xs">댓글 관련 문의: dev.goraebap
+        @gmail.com
+      </span>
+    </div>
+
+    <form action="/{{ postId }}/comments" method="post" data-controller="comment-form" class="space-y-4">
+
+      <div class="flex gap-2 items-center">
+        <button
+          type="button"
+          class="rounded-full size-10 bg-base-200"
+          data-comment-form-target="avatar"
+          data-action="comment-form#onChangeRandomAvatar"
+        >
+        </button>
+        <input type="hidden" name="comment[avatarNo]" />
+        {{-- 랜덤 닉네임 --}}
+        <label class="input p-2 flex justify-between">
+          <input type="search" name="comment[nickname]" class="grow" placeholder="닉네임 입력.." />
+          <div>
+            <button type="button" class="btn btn-sm" data-action="comment-form#onChangeRandomNickname">랜덤 변경</button>
+          </div>
+        </label>
+      </div>
+
+      {{-- 코맨트 --}}
+      <textarea
+        name="comment[comment]"
+        placeholder="입력한 댓글은 수정하거나 삭제할 수 없어요. 또한 허위사실, 욕설, 사칭 등 댓글은 통보없이 삭제될 수 있습니다."
+        data-action="comment-form#onChangeComment"
+        class="w-full textarea rounded-xl"
+      ></textarea>
+
+      <div class="text-end">
+        <button class="btn btn-primary" name="submitBtn" disabled>댓글 남기기</button>
+      </div>
+    </form>
+  </div>
+@else
+  <div class="p-4 rounded-xl text-center bg-base-200">
+    게시물과의 연결이 필요합니다. 😭
+  </div>
+@endif
+

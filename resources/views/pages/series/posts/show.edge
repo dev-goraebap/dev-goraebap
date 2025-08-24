@@ -1,8 +1,8 @@
 @let(seriesSlug = post?.seriesPosts[0]?.series?.slug)
 
-@layout.app({ 
-  title: 'devgoraebap | '+post?.title, 
-  description: post?.summary, 
+@layout.app({
+  title: 'devgoraebap | '+post?.title,
+  description: post?.summary,
   ogImage: cloudImageUrl(post?.getImage('thumbnail')?.url)
 })
   <section class="container max-w-6xl mx-auto my-10">
@@ -79,6 +79,10 @@
           {{{ post?.content }}}
         </div>
 
+        <br />
+        @!partials.comments.form({ postId: post?.id, commentCount: post?.comments?.length })
+        @!partials.comments.list({ comments: post?.comments })
+
         {{-- 이전 다음 포스트 네비게이션 --}}
         <div class="mt-12 pt-8 border-t border-base-200">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:items-start">
@@ -89,7 +93,14 @@
                 class="btn btn-ghost h-auto min-h-0 p-4 justify-start text-left flex-col items-start gap-2 hover:bg-base-200 transition-colors self-start"
               >
                 <div class="flex items-center gap-2 text-sm text-base-content/70">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-4"
+                  >
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                   </svg>
                   이전 포스트
@@ -99,9 +110,10 @@
                 </div>
               </a>
             @else
-              <div></div>
+              <div>
+              </div>
             @endif
-
+            
             {{-- 다음 포스트 --}}
             @if(nextPost)
               <a
@@ -110,7 +122,14 @@
               >
                 <div class="flex items-center gap-2 text-sm text-base-content/70">
                   다음 포스트
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-4"
+                  >
                     <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                   </svg>
                 </div>
@@ -119,7 +138,8 @@
                 </div>
               </a>
             @else
-              <div></div>
+              <div>
+              </div>
             @endif
           </div>
         </div>
@@ -135,11 +155,7 @@
                 이전 포스트
               </h2>
               <div>
-                <a
-                  href="/series/{{ seriesSlug }}/{{ prevPost?.slug }}"
-                  data-turbo-prefetch="false"
-                  class="block group"
-                >
+                <a href="/series/{{ seriesSlug }}/{{ prevPost?.slug }}" data-turbo-prefetch="false" class="block group">
                   @if(prevPost && prevPost.getImage && prevPost.getImage('thumbnail'))
                     <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
                       @!uikit.image({
@@ -171,11 +187,7 @@
                 다음 포스트
               </h2>
               <div>
-                <a
-                  href="/series/{{ seriesSlug }}/{{ nextPost?.slug }}"
-                  data-turbo-prefetch="false"
-                  class="block group"
-                >
+                <a href="/series/{{ seriesSlug }}/{{ nextPost?.slug }}" data-turbo-prefetch="false" class="block group">
                   @if(nextPost && nextPost.getImage && nextPost.getImage('thumbnail'))
                     <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
                       @!uikit.image({
