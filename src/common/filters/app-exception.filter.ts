@@ -22,7 +22,7 @@ export class AppExceptionFilter extends NestMvcBaseExceptionHandler implements E
     const errorMessage = exception.message;
 
     // 상세 에러 로깅
-    this.logger.error('Exception caught in global filter', {
+    const logData = {
       message: errorMessage,
       statusCode: status,
       method: req.method,
@@ -35,7 +35,13 @@ export class AppExceptionFilter extends NestMvcBaseExceptionHandler implements E
       exceptionType: isHttpException ? 'HttpException' : 'Error',
       responseTime: startTime ? Date.now() - startTime : undefined,
       tags: ['exception', 'global-filter', status >= 500 ? 'server-error' : 'client-error'],
-    });
+    };
+
+    if (status >= 500) {
+      this.logger.error('Exception caught in global filter', logData);
+    } else {
+      this.logger.warn('Exception caught in global filter', logData);
+    }
 
     // 제외된 경로외에는 모두 페이지 처리
     const excludes = ['/.well-known', '/api'];
