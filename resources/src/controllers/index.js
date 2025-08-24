@@ -1,4 +1,6 @@
 import { application } from './application';
+import { CommentFormController } from './comments/comment-form.controller';
+import { CommentItemController } from './comments/comment-item.controller';
 
 import { FeedQueryController } from './feed/feed-query.controller';
 import { FileUploadController } from './file-upload.controller';
@@ -30,3 +32,5 @@ application.register('series-select-post', SeriesSelectPostController);
 application.register('update-publish', UpdatePublishController);
 application.register('feed-query', FeedQueryController);
 application.register('patch-notes-query', PatchNotesQueryController);
+application.register('comment-form', CommentFormController);
+application.register('comment-item', CommentItemController);
