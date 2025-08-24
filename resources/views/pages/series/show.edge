@@ -1,4 +1,9 @@
-@layout.app({ title: 'devgoraebap | '+ seriesItem?.name })
+@layout.app({ 
+  title: 'devgoraebap | '+ seriesItem?.name, 
+  description: seriesItem?.description, 
+  ogImage: cloudImageUrl(seriesItem?.getImage('thumbnail')?.url),
+  twitterCard: 'summary'
+})
   <section class="container max-w-6xl mx-auto my-10">
     <div class="flex sm:gap-6">
       {{-- 왼쪽 컨텐츠 영영 --}}
@@ -10,6 +15,7 @@
               <div class="aspect-2/3 h-[200px] sm:h-[250px] drop-shadow-2xl">
                 @!uikit.image({
                   url: cloudImageUrl(seriesItem?.getImage('thumbnail')?.url),
+                  alt: seriesItem?.name + ' 시리즈 - 썸네일',
                   dominantColor: seriesItem?.getImage('thumbnail')?.dominantColor
                 })
               </div>
