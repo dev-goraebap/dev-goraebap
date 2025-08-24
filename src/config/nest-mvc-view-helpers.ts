@@ -20,7 +20,7 @@ export const isCurrentRouteHelper: ViewHelperFactory = (req: Request) => {
  */
 export const currentThemeHelper: ViewHelperFactory = (req: Request) => {
   return () => {
-    const defaultTheme = 'light';
+    const defaultTheme = 'cupcake';
     const cookies = req.cookies as Record<string, string>;
     if (!cookies) {
       console.debug('쿠키가 활성화되지 않았습니다.');
