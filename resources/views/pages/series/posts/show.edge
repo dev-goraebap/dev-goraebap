@@ -80,8 +80,8 @@
         </div>
 
         <br />
-        @!partials.comments.form({ postId: post?.id, commentCount: post?.comments?.length })
-        @!partials.comments.list({ comments: post?.comments })
+        @!partials.comments.form({ postSlug: post?.slug, commentCount: comments?.length })
+        @!partials.comments.list({ comments })
 
         {{-- 이전 다음 포스트 네비게이션 --}}
         <div class="mt-12 pt-8 border-t border-base-200">

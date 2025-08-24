@@ -79,8 +79,8 @@
         </div>
 
         <br />
-        @!partials.comments.form({ postId: post?.id, commentCount: post?.comments?.length })
-        @!partials.comments.list({ comments: post?.comments })
+        @!partials.comments.form({ postSlug: post?.slug, commentCount: comments?.length })
+        @!partials.comments.list({ comments })
       </div>
 
       {{-- 오른쪽 컨텐츠 영역 (Desktop에서 노출됨) --}}

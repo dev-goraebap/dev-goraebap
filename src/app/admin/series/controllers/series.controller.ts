@@ -66,7 +66,6 @@ export class SeriesController {
     @Body('series') dto: CreateSeriesDto,
     @CurrentUser() user: UserEntity
   ) {
-    console.debug(dto);
     await this.createSeriesUseCase.execute(user, dto);
     req.flash.success('시리즈를 성공적으로 등록하였습니다.');
     return req.view.render('pages/admin/series/_success');
@@ -74,7 +73,6 @@ export class SeriesController {
 
   @Get(':id/edit')
   async edit(@Param('id') id: number, @Req() req: NestMvcReq) {
-    console.debug(id);
     const series = await this.seriesService.getSeriesItem(id);
     return req.view.render('pages/admin/series/edit', {
       series,
@@ -89,8 +87,6 @@ export class SeriesController {
     @UploadedFile() imageFile: Express.Multer.File,
     @Body('series') dto: UpdateSeriesDto,
   ) {
-    console.debug(imageFile);
-    console.debug(dto);
     await this.updateSeriesUseCase.execute(id, dto);
     req.flash.success('시리즈를 성공적으로 변경하였습니다.');
     return req.view.render('pages/admin/series/_success');

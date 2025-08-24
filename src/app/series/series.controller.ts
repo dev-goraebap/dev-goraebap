@@ -1,10 +1,15 @@
 import { Controller, Get, Param, Req } from '@nestjs/common';
 import { NestMvcReq } from 'nestjs-mvc-tools';
+
+import { CommentsSharedService } from 'src/shared';
 import { SeriesService } from './series.service';
 
 @Controller({ path: 'series' })
 export class SeriesController {
-  constructor(private readonly seriesService: SeriesService) {}
+  constructor(
+    private readonly seriesService: SeriesService,
+    private readonly commentsSharedService: CommentsSharedService,
+  ) {}
 
   @Get()
   async index(@Req() req: NestMvcReq) {
@@ -32,8 +37,10 @@ export class SeriesController {
   @Get(':seriesSlug/:postSlug')
   async showPost(@Req() req: NestMvcReq, @Param('seriesSlug') seriesSlug: string, @Param('postSlug') postSlug: string) {
     const result = await this.seriesService.getSeriesPost(postSlug, seriesSlug);
+    const comments = await this.commentsSharedService.getComments(postSlug);
     return req.view.render('pages/series/posts/show', {
       ...result,
+      comments,
     });
   }
 }

@@ -24,7 +24,7 @@ export abstract class BaseEntityWithAttachments {
       return null;
     }
 
-    if (!attachment.blob.isImage()) {
+    if (!attachment.blob || !attachment.blob.isImage()) {
       return null;
     }
 
@@ -47,7 +47,7 @@ export abstract class BaseEntityWithAttachments {
     }
 
     return this.attachments
-      .filter((a) => a.name === name && a.blob.isImage())
+      .filter((a) => a.name === name && a.blob && a.blob.isImage())
       .map((attachment) => ({
         url: attachment.blob.getFilePath(),
         dominantColor: attachment.blob.metadata?.dominantColor,

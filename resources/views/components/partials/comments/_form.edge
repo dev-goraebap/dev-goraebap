@@ -1,4 +1,4 @@
-@if(postId)
+@if(postSlug)
   <div class="space-y-4" id="replaceCommentFormTurboStreamTarget">
     <div class="flex justify-between items-center">
       @if(commentCount)
@@ -9,7 +9,7 @@
       </span>
     </div>
 
-    <form action="/{{ postId }}/comments" method="post" data-controller="comment-form" class="space-y-4">
+    <form action="/{{ postSlug }}/comments" method="post" data-controller="comment-form" class="space-y-4">
 
       <div class="flex gap-2 items-center">
         <button

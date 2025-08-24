@@ -16,7 +16,6 @@ export class SeriesPostsService {
   ) {}
 
   async getPostsExcludeBy(seriesId: number, postTitle: string = '') {
-    console.log(postTitle);
     // 특정 시리즈에 속하지 않은 모든 포스트(다른 시리즈에 속한 포스트 + 어떤 시리즈에도 속하지 않은 포스트)를 반환
     const qb = this.postRepository.createQueryBuilder('post');
     qb.where(
@@ -69,8 +68,6 @@ export class SeriesPostsService {
   async updateOrders(idAndOrders: { id: number; order: number }[]) {
     const idAndOrderMap = new Map(idAndOrders.map(({ id, order }) => [id, order]));
     const ids = Array.from(idAndOrderMap.keys());
-
-    console.log(ids);
 
     const seriesPosts = await this.seriesPostRepository.find({
       where: { id: In(ids) },

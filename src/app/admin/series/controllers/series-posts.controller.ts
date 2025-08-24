@@ -24,7 +24,6 @@ export class SeriesPostsController {
   @Get('new')
   async new(@Param('seriesId') seriesId: number, @Query('postTitle') postTitle: string, @Req() req: NestMvcReq) {
     const posts = await this.seriesPostsService.getPostsExcludeBy(seriesId, postTitle);
-    console.log(posts);
     return req.view.render('pages/admin/series/posts/new', {
       seriesId,
       posts,
@@ -34,7 +33,6 @@ export class SeriesPostsController {
   @Post()
   @UsePipes(new ZodValidationPipe(CreateSeriesPostSchema))
   async create(@Param('seriesId') seriesId: number, @Req() req: NestMvcReq, @Body() dto: CreateSeriesPostDto) {
-    console.log(dto);
     await this.seriesPostsService.create(seriesId, dto.postId);
     return req.view.render('pages/admin/series/posts/_success', {
       seriesId,

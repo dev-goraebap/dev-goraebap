@@ -1,20 +1,24 @@
 import { Body, Controller, Get, Param, Post, Req, Res, UsePipes } from '@nestjs/common';
 
-import { RequestId, ZodValidationPipe } from 'src/common';
-import { CommentsService } from './comments.service';
-import { CreateCommentDto, CreateCommentSchema } from './dto/create-comment.dto';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
+import { RequestId, ZodValidationPipe } from 'src/common';
+import { CommentsSharedService } from 'src/shared';
+import { CommentsService } from './comments.service';
+import { CreateCommentDto, CreateCommentSchema } from './dto/create-comment.dto';
 
-@Controller({ path: ':postId/comments' })
+@Controller({ path: ':postSlug/comments' })
 export class CommentsController {
-  constructor(private readonly commentsService: CommentsService) {}
+  constructor(
+    private readonly commentsSharedService: CommentsSharedService,
+    private readonly commentsService: CommentsService,
+  ) {}
 
   @Get()
-  async index(@Req() req: NestMvcReq, @Res() res: Response, @Param('postId') postId: number) {
-    const comments = await this.commentsService.getComments(postId);
+  async index(@Req() req: NestMvcReq, @Res() res: Response, @Param('postSlug') postSlug: string) {
+    const comments = await this.commentsSharedService.getComments(postSlug);
     const template = await req.view.render('components/partials/comments/_create_success', {
-      postId,
+      postSlug,
       comments,
     });
     res.setHeader('Content-Type', 'text/vnd.turbo-stream.html');
@@ -27,11 +31,11 @@ export class CommentsController {
     @Req() req: NestMvcReq,
     @Res() res: Response,
     @RequestId() requestId: string,
-    @Param('postId') postId: number,
+    @Param('postSlug') postSlug: string,
     @Body('comment') dto: CreateCommentDto,
   ) {
     req.flash.success('댓글 달아주셔서 감사합니다 🤩');
-    await this.commentsService.create(requestId, postId, dto);
-    res.redirect(`/${postId}/comments`);
+    await this.commentsService.create(requestId, postSlug, dto);
+    res.redirect(`/${postSlug}/comments`);
   }
 }

@@ -50,15 +50,12 @@ export class SeriesService {
     const qb = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
-      .leftJoinAndSelect('post.comments', 'comment')
       .leftJoinAndSelect('post.seriesPosts', 'seriesPost')
       .leftJoinAndSelect('seriesPost.series', 'series');
 
     AttachmentQueryHelper.withAttachments(qb, 'post');
 
-    qb.where('post.slug = :postSlug', { postSlug })
-      .andWhere('series.slug = :seriesSlug', { seriesSlug })
-      .orderBy('comment.createdAt', 'DESC');
+    qb.where('post.slug = :postSlug', { postSlug }).andWhere('series.slug = :seriesSlug', { seriesSlug });
 
     const result = await qb.getOne();
     if (!result) {

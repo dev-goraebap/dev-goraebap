@@ -1,6 +1,6 @@
 <turbo-stream action="replace" target="replaceCommentFormTurboStreamTarget">
   <template>
-    @!partials.comments.form({ postId, commentCount: comments?.length })
+    @!partials.comments.form({ postSlug, commentCount: comments?.length })
   </template>
 </turbo-stream>
 <turbo-stream action="replace" target="replaceCommentListTurboStreamTarget">

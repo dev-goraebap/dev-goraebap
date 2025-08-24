@@ -31,11 +31,9 @@ export class PatchNotesService {
 
   async getPatchNote(slug: string) {
     const qb = this.postRepository.createQueryBuilder('post');
-    qb.leftJoin('post.comments', 'comment');
     AttachmentQueryHelper.withAttachments(qb, 'post');
 
     qb.where('post.slug = :slug', { slug: slug });
-    qb.orderBy('comment.createdAt', 'DESC');
 
     const result = await qb.getOne();
     if (!result) {

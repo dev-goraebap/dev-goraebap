@@ -2,7 +2,7 @@ import { Controller, Get, Param, Req, UsePipes } from '@nestjs/common';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { ZodValidationPipe } from 'src/common';
-import { PostsSharedService } from 'src/shared';
+import { CommentsSharedService, PostsSharedService } from 'src/shared';
 import { GetPostsSchema } from './dto/get-posts.dto';
 import { PatchNotesService } from './patch-notes.service';
 
@@ -11,6 +11,7 @@ export class PatchNotesController {
   constructor(
     private readonly postsSharedService: PostsSharedService,
     private readonly patchNotesService: PatchNotesService,
+    private readonly commentsSharedService: CommentsSharedService,
   ) {}
 
   @Get()
@@ -27,7 +28,8 @@ export class PatchNotesController {
     await this.postsSharedService.updateViewCount(slug);
 
     const post = await this.patchNotesService.getPatchNote(slug);
+    const comments = await this.commentsSharedService.getComments(slug);
     const otherPosts = await this.patchNotesService.getOtherPatchNotes(slug);
-    return req.view.render('pages/patch-notes/show', { post, otherPosts });
+    return req.view.render('pages/patch-notes/show', { post, comments, otherPosts });
   }
 }

@@ -14,22 +14,9 @@ export class CommentsService {
     private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  async getComments(postId: number) {
-    return await this.commentRepository.find({
-      where: {
-        post: {
-          id: postId,
-        },
-      },
-      order: {
-        createdAt: 'DESC',
-      },
-    });
-  }
-
-  async create(requestId: string, postId: number, dto: CreateCommentDto) {
+  async create(requestId: string, postSlug: string, dto: CreateCommentDto) {
     const post = await this.postRepository.findOne({
-      where: { id: postId },
+      where: { slug: postSlug },
     });
     if (!post) {
       throw new BadRequestException('게시물을 찾을 수 없습니다.');

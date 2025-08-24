@@ -65,7 +65,6 @@ export class UpdateSeriesUseCase {
         },
       });
       if (seriesAttachments.length !== 0) {
-        console.debug(`${seriesAttachments.length}개의 첨부 이미지 제거`);
         await this.entityManager.remove(seriesAttachments);
       }
 
