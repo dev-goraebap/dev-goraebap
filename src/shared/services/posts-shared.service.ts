@@ -16,4 +16,12 @@ export class PostsSharedService {
       throw new BadRequestException('조회수 업데이트에 실패하였습니다.');
     }
   }
+
+  async getPublishedPosts(): Promise<PostEntity[]> {
+    return this.postRepository.find({
+      where: { isPublished: true },
+      select: ['slug', 'updatedAt', 'publishedAt'],
+      order: { publishedAt: 'DESC' },
+    });
+  }
 }

@@ -6,6 +6,7 @@
       <div class="w-full aspect-[2/3] overflow-hidden">
         @!uikit.image({
           url: cloudImageUrl(seriesItem?.getImage('thumbnail')?.url),
+          alt: seriesItem?.name + ' 시리즈 - 썸네일',
           dominantColor: seriesItem?.getImage('thumbnail')?.dominantColor
         })
       </div>

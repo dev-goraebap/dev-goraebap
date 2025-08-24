@@ -34,6 +34,14 @@ export const currentThemeHelper: ViewHelperFactory = (req: Request) => {
   };
 };
 
+export const originalUrlHelper: ViewHelperFactory = (req: Request) => {
+  return (): string => {
+    const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const host = req.get('host') || req.host;
+    return `${protocol}://${host}${req.originalUrl}`;
+  };
+};
+
 export const queryHelper: ViewHelperFactory = (req: Request) => {
   return (name: string, value?: any): any => {
     if (req.query[name]) {

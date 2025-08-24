@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://dev.goraebap.xyz/sitemap.xml
+
+# Disallow admin pages
+Disallow: /admin/
+
+# Disallow session pages
+Disallow: /auth/

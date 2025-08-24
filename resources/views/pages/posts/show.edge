@@ -1,4 +1,8 @@
-@layout.app({ title: 'devgoraebap | '+post?.title })
+@layout.app({ 
+  title: 'devgoraebap | '+post?.title, 
+  description: post?.summary, 
+  ogImage: cloudImageUrl(post?.getImage('thumbnail')?.url)
+})
   <section class="container max-w-6xl mx-auto my-10">
     <div class="flex sm:gap-6">
       {{-- 왼쪽 컨텐츠 영영 --}}
@@ -25,6 +29,7 @@
               <div class="w-full aspect-[5/3] overflow-hidden">
                 @!uikit.image({
                   url: cloudImageUrl(post?.getImage('thumbnail')?.url),
+                  alt: post?.title + ' - 썸네일',
                   dominantColor: post?.getImage('thumbnail')?.dominantColor
                 })
               </div>
@@ -83,7 +88,9 @@
               <h2 class="text-lg font-bold">
                 📑 다른 포스트
               </h2>
-              <p class="text-xs text-base-content/80">무작위 포스트가 추천됩니다.</p>
+              <p class="text-xs text-base-content/80">
+                무작위 포스트가 추천됩니다.
+              </p>
             </div>
             @if(suggestedPosts?.length > 0)
               <ul>
@@ -98,6 +105,7 @@
                         <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
                           @!uikit.image({
                             url: cloudImageUrl(post.getImage('thumbnail').url),
+                            alt: post.title + ' - 썸네일',
                             dominantColor: post.getImage('thumbnail').dominantColor,
                             width: 'w-full',
                             height: 'h-full object-cover'

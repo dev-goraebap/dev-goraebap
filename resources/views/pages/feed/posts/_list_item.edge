@@ -20,6 +20,7 @@
           <div class="w-full sm:w-[200px] aspect-[5/3] rounded-xl overflow-hidden">
             @!uikit.image({
               url: cloudImageUrl(post?.getImage('thumbnail')?.url),
+              alt: post?.title + ' - 썸네일',
               dominantColor: post?.getImage('thumbnail')?.dominantColor
             })
           </div>
