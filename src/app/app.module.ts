@@ -8,11 +8,12 @@ import { FeedService } from './feed/feed.service';
 import { InitService } from './init.service';
 import { PatchNotesModule } from './patch-notes/patch-notes.module';
 import { PostsModule } from './posts/posts.module';
+import { SeoModule } from './seo/seo.module';
 import { SeriesModule } from './series/series.module';
 import { SessionModule } from './session/session.module';
 
 @Module({
-  imports: [FeedModule, PostsModule, SeriesModule, PatchNotesModule, SessionModule, AdminModule],
+  imports: [FeedModule, PostsModule, SeriesModule, PatchNotesModule, SessionModule, AdminModule, SeoModule],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     { provide: APP_FILTER, useClass: AppExceptionFilter },
