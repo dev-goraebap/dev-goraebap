@@ -7,6 +7,7 @@ import { join } from 'path';
 import {
   AttachmentEntity,
   BlobEntity,
+  CommentEntity,
   PostEntity,
   SeriesEntity,
   SeriesPostEntity,
@@ -32,6 +33,7 @@ import { TypeOrmOptionsImpl } from './typeorm.options';
       SeriesPostEntity,
       BlobEntity,
       AttachmentEntity,
+      CommentEntity,
     ]),
     NestMvcModule.forRoot(nestMvcOptions),
   ],

@@ -5,3 +5,4 @@ export * from './series-post.entity';
 export * from './series.entity';
 export * from './tag.entity';
 export * from './user.entity';
+export * from './comment.entity';

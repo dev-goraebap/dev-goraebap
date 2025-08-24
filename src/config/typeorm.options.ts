@@ -6,6 +6,7 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import {
   AttachmentEntity,
   BlobEntity,
+  CommentEntity,
   PostEntity,
   SeriesEntity,
   SeriesPostEntity,
@@ -42,6 +43,7 @@ export class TypeOrmOptionsImpl implements TypeOrmOptionsFactory {
         SeriesEntity,
         SeriesPostEntity,
         TagEntity,
+        CommentEntity
       ],
       namingStrategy: new SnakeNamingStrategy(),
     };

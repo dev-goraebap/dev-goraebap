@@ -14,6 +14,7 @@ import { BaseEntityWithAttachments } from './_/base-entity-with-attachments';
 import { SeriesPostEntity } from './series-post.entity';
 import { TagEntity } from './tag.entity';
 import { UserEntity } from './user.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity({ name: 'posts' })
 export class PostEntity extends BaseEntityWithAttachments {
@@ -55,6 +56,9 @@ export class PostEntity extends BaseEntityWithAttachments {
 
   @OneToMany(() => SeriesPostEntity, (e) => e.post)
   readonly seriesPosts: SeriesPostEntity[];
+
+  @OneToMany(() => CommentEntity, (e) => e.post)
+  readonly comments: CommentEntity[];
 
   @ManyToMany(() => TagEntity, (e) => e.posts)
   @JoinTable({
