@@ -6,6 +6,7 @@ import {
   formatDateTime,
   formatDateTimeLocal,
   isCurrentRouteHelper,
+  originalUrlHelper,
   queryHelper,
 } from './nest-mvc-view-helpers';
 
@@ -19,6 +20,7 @@ export const nestMvcOptions: NestMvcOptions = {
       isCurrentRoute: isCurrentRouteHelper,
       currentTheme: currentThemeHelper,
       query: queryHelper,
+      originalUrl: originalUrlHelper,
     },
     globals: {
       formatDate: (date: Date | string | number) => formatDate(date, '/'),
