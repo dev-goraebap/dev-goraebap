@@ -53,9 +53,6 @@ export class FeedQueryController extends Controller {
     // 기존에 선택된 태그를 한번 더 누르는 경우 태그 초기화
     // 다른 태그 선택 시 태그 변경
 
-    console.log(tagInput);
-    console.log(value);
-
     if (tagInput.value === value) {
       tagInput.value = '';
     } else {
