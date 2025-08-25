@@ -11,9 +11,6 @@ export class FeedQueryController extends Controller {
 
   async onSubmit(event) {
     event.preventDefault();
-
-    this.queryFormTarget.elements['cursor'].value = '';
-
     this.queryFormTarget.requestSubmit();
   }
 
@@ -27,27 +24,38 @@ export class FeedQueryController extends Controller {
     }
 
     // 버튼 UI 변경
-    button.disable = true;
+    button.disabled = true;
     button.innerText = '';
     button.classList.add('btn-disabled');
     const span = document.createElement('span');
     span.classList.add('loading', 'loading-spinner');
     button.appendChild(span);
 
-    this.queryFormTarget.elements['cursor'].value = cursor;
-    this.queryFormTarget.requestSubmit();
+    const formData = new FormData(this.queryFormTarget);
+    formData.append('cursor', cursor);
+
+    const params = new URLSearchParams(formData);
+    fetch(`/?${params.toString()}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'text/vnd.turbo-stream.html',
+      },
+    })
+      .then((response) => response.text())
+      .then((stream) => Turbo.renderStreamMessage(stream));
   }
 
   onFilterTag(event) {
     const button = event.currentTarget;
     const value = button.dataset?.value;
 
-    // 커서 초기화
-    this.queryFormTarget.elements['cursor'].value = '';
-
     const tagInput = this.queryFormTarget.elements['tag'];
     // 기존에 선택된 태그를 한번 더 누르는 경우 태그 초기화
     // 다른 태그 선택 시 태그 변경
+
+    console.log(tagInput);
+    console.log(value);
+
     if (tagInput.value === value) {
       tagInput.value = '';
     } else {

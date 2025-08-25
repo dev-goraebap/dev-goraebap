@@ -18,35 +18,24 @@ export class FeedController {
   async index(
     @Req() req: NestMvcReq,
     @Query() dto: GetPostsDto,
-    @IsTurboStream() isTurboStream: boolean,
     @Res() res: Response,
+    @IsTurboStream() isTurboStream: boolean,
   ) {
+    const postsData = await this.feedService.getPosts(dto);
     const tags = await this.feedService.getTags();
 
-    // 터보 스트림 요청의 경우 일부 화면요소만 업데이트
-    if (isTurboStream) {
-      const postsData = await this.feedService.getPosts(dto);
+    // 커서가 있는 경우(더보기)의 경우 터보 스트림 응답
+    // 페이지 교체가 아니라 데이터를 아래 쌓아야하기 때문
+    if (isTurboStream && dto.cursor) {
       res.setHeader('Content-Type', 'text/vnd.turbo-stream.html');
-      let template: string;
-      if (!dto.cursor) {
-        template = await req.view.render('pages/feed/posts/_list_replace', {
-          newUrl: req.originalUrl,
-          postsData,
-          tags,
-        });
-      } else {
-        template = await req.view.render('pages/feed/posts/_list_append', {
-          postsData,
-          tags,
-        });
-      }
-
+      const template = await req.view.render('pages/feed/posts/_list_append', {
+        postsData,
+        tags,
+      });
       return res.send(template);
     }
 
-    const postsData = await this.feedService.getPosts(dto);
     const patchNote = await this.feedService.getLatestPatchNote();
-
     const template = await req.view.render('pages/feed/index', {
       postsData,
       patchNote,

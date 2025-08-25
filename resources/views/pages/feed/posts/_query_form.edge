@@ -1,6 +1,5 @@
-<form action="/" data-turbo-stream="true" data-feed-query-target="queryForm">
-  <input type="hidden" name="cursor" />
-  <input type="hidden" name="tag" />
+<form action="/" data-feed-query-target="queryForm">
+  <input type="hidden" name="tag" value="{{ query('tag') }}" />
   <label class="btn has-[:checked]:btn-primary">
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -17,7 +16,7 @@
       />
     </svg>
     인기
-            <input
+    <input
       type="radio"
       name="orderType"
       class="hidden"
@@ -38,7 +37,7 @@
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
     </svg>
     최근
-            <input
+    <input
       type="radio"
       name="orderType"
       class="hidden"
