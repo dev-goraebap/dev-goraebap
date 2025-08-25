@@ -34,6 +34,7 @@ export class SeriesService {
 
   async getSeriesPosts(seriesSlug: string) {
     const qb = this.postRepository.createQueryBuilder('post');
+    qb.leftJoinAndSelect('post.comments', 'comment');
     qb.leftJoinAndSelect('post.seriesPosts', 'seriesPost');
     qb.leftJoinAndSelect('seriesPost.series', 'series');
     AttachmentQueryHelper.withAttachments(qb, 'post');

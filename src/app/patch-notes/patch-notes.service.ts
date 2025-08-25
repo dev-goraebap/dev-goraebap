@@ -13,6 +13,7 @@ export class PatchNotesService {
 
   async getPatchNotes() {
     const qb = this.postRepository.createQueryBuilder('post');
+    qb.leftJoinAndSelect('post.comments', 'comment');
     AttachmentQueryHelper.withAttachments(qb, 'post');
     qb.where('post.postType = :postType', { postType: 'patch-note' });
     qb.orderBy('post.publishedAt', 'DESC');
