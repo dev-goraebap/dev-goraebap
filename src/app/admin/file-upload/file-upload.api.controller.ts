@@ -11,12 +11,12 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AdminAuthGuard, CurrentUser } from 'src/common';
 import { UserEntity } from 'src/shared';
 import { FileUploadResponseDto } from './dto/file-upload-response.dto';
-import { FileUploadService } from './services/file-upload.service';
+import { FileUploadApplicationService } from './file-upload-application.service';
 
 @Controller({ path: 'api/admin/file-upload' })
 @UseGuards(AdminAuthGuard)
 export class FileUploadApiController {
-  constructor(private readonly fileUploadService: FileUploadService) {}
+  constructor(private readonly fileUploadService: FileUploadApplicationService) {}
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
