@@ -5,150 +5,143 @@
   description: post?.summary,
   ogImage: cloudImageUrl(post?.getImage('thumbnail')?.url)
 })
-  <section class="container max-w-6xl mx-auto my-10" data-controller="syntax-highlighter">
-    <div class="flex sm:gap-6">
-      {{-- 왼쪽 컨텐츠 영영 --}}
-      <div class="flex-1 w-full sm:min-w-2xl sm:w-3xl px-4">
 
-        <a href="/series/{{ seriesSlug }}" class="text-sm mb-4 flex items-center gap-2 sm:text-base">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="size-4 sm:size-5"
-          >
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-          </svg>
+  <a href="/series/{{ seriesSlug }}" class="text-sm mb-4 flex items-center gap-2 sm:text-base">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="size-4 sm:size-5"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+    </svg>
 
-          시리즈로 돌아가기
+    시리즈로 돌아가기
         </a>
 
-        @if(post?.getImage('thumbnail'))
-          <figure class="shrink-0">
-            <div class="h-[150px] sm:h-[300px] flex items-center justify-center overflow-hidden sm:shadow-xl">
-              <div class="w-full aspect-[5/3] overflow-hidden">
-                @!uikit.image({
+  @if(post?.getImage('thumbnail'))
+    <figure class="shrink-0">
+      <div class="h-[150px] sm:h-[300px] flex items-center justify-center overflow-hidden sm:shadow-xl">
+        <div class="w-full aspect-[5/3] overflow-hidden">
+          @!uikit.image({
                   url: cloudImageUrl(post?.getImage('thumbnail')?.url),
                   dominantColor: post?.getImage('thumbnail')?.dominantColor
-                })
-              </div>
-            </div>
-          </figure>
-        @end
-        
-        <div class="flex justify-between items-center my-4 sm:my-6">
-          {{-- 조회수, 시간 박스 --}}
-          <div class="card-actions text-xs">
-            <div class="flex gap-1 items-center">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-4"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
-                />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-              </svg>
-              {{ post?.viewCount }} reads
-            </div>
-            <div>
-              ·
-            </div>
-            {{ formatDateTime(post?.publishedAt) }}
-          </div>
-
-          {{-- 태그 박스 --}}
-          <div class="card-actions text-xs hidden sm:flex">
-            @each(tag in post?.tags)
-              <div class="badge badge-ghost">
-                #{{tag?.name}}
-              </div>
-            @end
-          </div>
-        </div>
-
-        <div class="prose min-w-full">
-          {{{ post?.content }}}
-        </div>
-
-        <br />
-        @!partials.comments.form({ postSlug: post?.slug, commentCount: comments?.length })
-        @!partials.comments.list({ comments })
-
-        {{-- 이전 다음 포스트 네비게이션 --}}
-        <div class="mt-12 pt-8 border-t border-base-200">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:items-start">
-            {{-- 이전 포스트 --}}
-            @if(prevPost)
-              <a
-                href="/series/{{ seriesSlug }}/{{ prevPost?.slug }}"
-                class="btn btn-ghost h-auto min-h-0 p-4 justify-start text-left flex-col items-start gap-2 hover:bg-base-200 transition-colors self-start"
-              >
-                <div class="flex items-center gap-2 text-sm text-base-content/70">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="size-4"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                  </svg>
-                  이전 포스트
-                </div>
-                <div class="font-semibold text-base leading-snug line-clamp-2">
-                  {{ prevPost.title }}
-                </div>
-              </a>
-            @else
-              <div>
-              </div>
-            @endif
-            
-            {{-- 다음 포스트 --}}
-            @if(nextPost)
-              <a
-                href="/series/{{ seriesSlug }}/{{ nextPost?.slug }}"
-                class="btn btn-ghost h-auto min-h-0 p-4 justify-end text-right flex-col items-end gap-2 hover:bg-base-200 transition-colors self-start"
-              >
-                <div class="flex items-center gap-2 text-sm text-base-content/70">
-                  다음 포스트
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="size-4"
-                  >
-                    <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                  </svg>
-                </div>
-                <div class="font-semibold text-base leading-snug line-clamp-2 text-right">
-                  {{ nextPost.title }}
-                </div>
-              </a>
-            @else
-              <div>
-              </div>
-            @endif
-          </div>
+          })
         </div>
       </div>
+    </figure>
+  @end
+        
+  <div class="flex justify-between items-center my-4 sm:my-6">
+    {{-- 조회수, 시간 박스 --}}
+    <div class="card-actions text-xs">
+      <div class="flex gap-1 items-center">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-4"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+          />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        </svg>
+        {{ post?.viewCount }} reads
+      </div>
+      <div>
+        ·
+      </div>
+      {{ formatDateTime(post?.publishedAt) }}
+    </div>
 
-      {{-- 오른쪽 컨텐츠 영역 (Desktop에서 노출됨) --}}
-      <div class="hidden sm:block w-[300px] min-w-[300px] shrink-0">
-        <div class="sticky top-[calc(var(--header-height)+1rem)] space-y-6">
-          <pre class="text-xs font-bold">
+    {{-- 태그 박스 --}}
+    <div class="card-actions text-xs hidden sm:flex">
+      @each(tag in post?.tags)
+        <div class="badge badge-ghost">
+          #{{tag?.name}}
+        </div>
+      @end
+    </div>
+  </div>
+
+  <div class="prose min-w-full">
+    {{{ post?.content }}}
+  </div>
+
+  <br />
+  @!partials.comments.form({ postSlug: post?.slug, commentCount: comments?.length })
+  @!partials.comments.list({ comments })
+
+  {{-- 이전 다음 포스트 네비게이션 --}}
+  <div class="mt-12 pt-8 border-t border-base-200">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:items-start">
+      {{-- 이전 포스트 --}}
+      @if(prevPost)
+        <a
+          href="/series/{{ seriesSlug }}/{{ prevPost?.slug }}"
+          class="btn btn-ghost h-auto min-h-0 p-4 justify-start text-left flex-col items-start gap-2 hover:bg-base-200 transition-colors self-start"
+        >
+          <div class="flex items-center gap-2 text-sm text-base-content/70">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-4"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+            </svg>
+            이전 포스트
+          </div>
+          <div class="font-semibold text-base leading-snug line-clamp-2">
+            {{ prevPost.title }}
+          </div>
+        </a>
+      @else
+        <div>
+        </div>
+      @endif
+            
+      {{-- 다음 포스트 --}}
+      @if(nextPost)
+        <a
+          href="/series/{{ seriesSlug }}/{{ nextPost?.slug }}"
+          class="btn btn-ghost h-auto min-h-0 p-4 justify-end text-right flex-col items-end gap-2 hover:bg-base-200 transition-colors self-start"
+        >
+          <div class="flex items-center gap-2 text-sm text-base-content/70">
+            다음 포스트
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-4"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+            </svg>
+          </div>
+          <div class="font-semibold text-base leading-snug line-clamp-2 text-right">
+            {{ nextPost.title }}
+          </div>
+        </a>
+      @else
+        <div>
+        </div>
+      @endif
+    </div>
+  </div>
+
+  @slot('subContent')
+    <pre class="text-xs font-bold">
 .__           .__  .__            
 |  |__   ____ |  | |  |   ____    
 |  |  \_/ __ \|  | |  |  /  _ \   
@@ -161,73 +154,30 @@ __  _  _____________|  |    __| _/
  \     (  <_> )  | \/  |__/ /_/ | 
   \/\_/ \____/|__|  |____/\____ | 
                                \/ 
-          </pre>
-          
-          {{-- 이전 포스트 --}}
-          @if(prevPost)
-            <div class="flex flex-col gap-4">
-              <h2 class="text-lg font-bold">
-                이전 포스트
-              </h2>
-              <div>
-                <a href="/series/{{ seriesSlug }}/{{ prevPost?.slug }}" data-turbo-prefetch="false" class="block group">
-                  @if(prevPost && prevPost.getImage && prevPost.getImage('thumbnail'))
-                    <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
-                      @!uikit.image({
-                        url: cloudImageUrl(prevPost.getImage('thumbnail').url),
-                        dominantColor: prevPost.getImage('thumbnail').dominantColor,
-                        width: 'w-full',
-                        height: 'h-full object-cover'
-                      })
-                    </div>
-                  @endif
-                  <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
-                    {{ prevPost.title }}
-                  </h3>
-                  <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
-                    {{ prevPost.summary }}
-                  </p>
-                  <div class="flex justify-end items-center text-xs text-base-content/50">
-                    <span>{{ formatDate(prevPost.publishedAt) }}</span>
-                  </div>
-                </a>
-              </div>
-            </div>
-          @endif
-          
-          {{-- 다음 포스트 --}}
-          @if(nextPost)
-            <div class="flex flex-col gap-4">
-              <h2 class="text-lg font-bold">
-                다음 포스트
-              </h2>
-              <div>
-                <a href="/series/{{ seriesSlug }}/{{ nextPost?.slug }}" data-turbo-prefetch="false" class="block group">
-                  @if(nextPost && nextPost.getImage && nextPost.getImage('thumbnail'))
-                    <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
-                      @!uikit.image({
-                        url: cloudImageUrl(nextPost.getImage('thumbnail').url),
-                        dominantColor: nextPost.getImage('thumbnail').dominantColor,
-                        width: 'w-full',
-                        height: 'h-full object-cover'
-                      })
-                    </div>
-                  @endif
-                  <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
-                    {{ nextPost.title }}
-                  </h3>
-                  <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
-                    {{ nextPost.summary }}
-                  </p>
-                  <div class="flex justify-end items-center text-xs text-base-content/50">
-                    <span>{{ formatDate(nextPost.publishedAt) }}</span>
-                  </div>
-                </a>
-              </div>
-            </div>
-          @endif
+    </pre>
+
+    {{-- 이전 포스트 --}}
+    @if(prevPost)
+      <div class="flex flex-col gap-4">
+        <h2 class="text-lg font-bold">
+          이전 포스트
+        </h2>
+        <div>
+          @!partials.posts.miniCard({ post: prevPost, collectionUrl: `/series/${ seriesSlug }` })
         </div>
       </div>
-    </div>
-  </section>
+    @endif
+          
+    {{-- 다음 포스트 --}}
+    @if(nextPost)
+      <div class="flex flex-col gap-4">
+        <h2 class="text-lg font-bold">
+          다음 포스트
+        </h2>
+        <div>
+          @!partials.posts.miniCard({ post: nextPost, collectionUrl: `/series/${ seriesSlug }` })
+        </div>
+      </div>
+    @endif
+  @end
 @end

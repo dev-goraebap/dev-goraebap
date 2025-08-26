@@ -4,6 +4,8 @@
       <li class="border-t border-base-300 sm:hidden">
       </li>
     @end
-    @!component('pages/patch-notes/posts/_list_item', { post })
+    <li>
+      @!partials.posts.card({ post, collectionUrl: '/patch-notes' })
+    </li>
   @end
 </ul>

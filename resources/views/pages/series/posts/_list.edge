@@ -4,6 +4,8 @@
       <li class="border-t border-base-300 sm:hidden">
       </li>
     @end
-    @!component('pages/series/posts/_list_item', { post })
+    <li>
+      @!partials.posts.card({ post, collectionUrl: `/series/${ post?.seriesPosts[0]?.series?.slug }` })
+    </li>
   @end
 </ul>

@@ -15,6 +15,7 @@ import { SortableController } from './sortable_controller';
 import { SyntaxHighlighterController } from './syntax-highlighter.controller';
 import { ThemeSwitcherController } from './theme-switcher.controller';
 import { ThumbnailUploaderToggle } from './thumbnail-uploader-toggle';
+import { ToastController } from './toast-controller';
 
 // 재사용성 컨트롤러
 application.register('file-upload', FileUploadController);
@@ -25,6 +26,7 @@ application.register('theme-switcher', ThemeSwitcherController);
 application.register('modal', ModalController);
 application.register('thumbnail-uploader-toggle', ThumbnailUploaderToggle);
 application.register('sortable', SortableController);
+application.register('toast', ToastController);
 
 // 특정 도메인에 종속적인 컨트롤러
 application.register('tag-input', TagInputController);

@@ -3,7 +3,7 @@
     @each((post, index) in postsData.items)
       <li class="border-t border-base-300 sm:hidden">
       </li>
-      @!component('pages/feed/posts/_list_item', { post })
+      @!partials.posts.card({ post, collectionUrl: '/posts' })
     @end
   </template>
 </turbo-stream>

@@ -1,21 +1,30 @@
-<li class="group">
+{{-- 
+  post: PostEntity
+  collectionUrl: /posts, /patch-notes, ...
+--}}
+
+@if(post)
   {{-- 게시물 카드 --}}
   <div class="card sm:border sm:border-dashed sm:border-base-300 sm:p-6 group-hover:shadow-lg">
     {{-- 카드 컨텐츠 - 모바일:col, 데스크탑:row --}}
     <div class="flex flex-col gap-3 sm:flex-row justify-between">
       <div class="flex flex-col sm:gap-2">
         <a
-          href="/posts/{{ post?.slug }}"
+          href="{{ collectionUrl }}/{{ post?.slug }}"
           data-turbo-prefetch="false"
           class="card-title text-[clamp(1rem,6vw,1.5rem)] hover:text-primary transition-all"
         >
           {{ post?.title }}
         </a>
-        <a href="/posts/{{ post?.slug }}" data-turbo-prefetch="false" class="line-clamp-2 text-[clamp(0.7rem,4vw,1rem)]">
+        <a
+          href="{{ collectionUrl }}/{{ post?.slug }}"
+          data-turbo-prefetch="false"
+          class="line-clamp-2 text-[clamp(0.7rem,4vw,1rem)]"
+        >
           {{ post?.summary }}
         </a>
       </div>
-      @if(post?.getImage('thumbnail'))
+      @if(post && post.getImage && post.getImage('thumbnail'))
         <figure class="shrink-0">
           <div class="w-full sm:w-[200px] aspect-[5/3] rounded-xl overflow-hidden">
             @!uikit.image({
@@ -86,4 +95,4 @@
       </div>
     </div>
   </div>
-</li>
+@end

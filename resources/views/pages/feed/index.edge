@@ -1,80 +1,72 @@
-@layout.app({ title: 'devgoraebap | 게시물' })
-  <section class="container max-w-6xl mx-auto my-10" data-controller="feed-query">
-    <div class="flex sm:gap-6">
-      {{-- 왼쪽 컨텐츠 영영 --}}
-      <div class="flex-1 w-full sm:min-w-2xl sm:w-3xl px-4">
-        {{-- 상단 정렬, 필터 영역 --}}
-        @!component('pages/feed/posts/_query_form')
+@layout.app({ title: 'devgoraebap | 게시물', dataController: 'feed-query' })
+  {{-- 상단 정렬, 필터 영역 --}}
+  @!component('pages/feed/posts/_query_form')
 
-        {{-- 하단 게시물 리스트 영역 --}}
-        <div id="feedPostsFrame">
-          @if(postsData?.items?.length > 0)
-            @!component('pages/feed/posts/_list', { postsData })
-          @else
-            <div class="flex justify-center">
-              <div class="flex flex-col items-center gap-4">
-                <img src="/public/images/empty01.svg" class="w-lg" />
-                <span>아직 게시물이 준비되지 않았어요.</span>
-              </div>
-            </div>
-          @endif
+  {{-- 하단 게시물 리스트 영역 --}}
+  <div id="feedPostsFrame">
+    @if(postsData?.items?.length > 0)
+      @!component('pages/feed/posts/_list', { postsData })
+    @else
+      <div class="flex justify-center">
+        <div class="flex flex-col items-center gap-4">
+          <img src="/public/images/empty01.svg" class="w-lg" />
+          <span>아직 게시물이 준비되지 않았어요.</span>
         </div>
       </div>
+    @endif
+  </div>
 
-      {{-- 오른쪽 컨텐츠 영역 (Desktop에서 노출됨) --}}
-      <div class="hidden sm:block w-[300px] min-w-[300px] shrink-0">
-        <div class="sticky top-[calc(var(--header-height)+1rem)] space-y-6">
-          {{-- 태그 클라우드 --}}
-          <div class="flex flex-col gap-4">
-            <h2 class="text-lg font-bold">
-              🏷️ 태그 클라우드
-            </h2>
-            @if(tags?.length > 0)
-              @!component('pages/feed/tags/_list', { tags })
-            @else
-              <div class="bg-base-200 text-center rounded-xl p-4 text-xs">
-                Not found tags
-              </div>
-            @endif
+  @slot('subContent')
+    <div class="space-y-4">
+      {{-- 태그 클라우드 --}}
+      <div class="flex flex-col gap-4">
+        <h2 class="text-lg font-bold">
+          🏷️ 태그 클라우드
+        </h2>
+        @if(tags?.length > 0)
+          @!component('pages/feed/tags/_list', { tags })
+        @else
+          <div class="bg-base-200 text-center rounded-xl p-4 text-xs">
+            Not found tags
           </div>
+        @endif
+      </div>
 
-          {{-- 패치노트 --}}
-          <div class="flex flex-col gap-4">
-            <h2 class="text-lg font-bold">
-              👾 최근 패치노트
-            </h2>
-            @if(patchNote)
-              <div>
-                <a href="/patch-notes/{{ patchNote?.slug }}" data-turbo-prefetch="false" class="block group">
-                  @if(patchNote && patchNote.getImage && patchNote.getImage('thumbnail'))
-                    <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
-                      @!uikit.image({
+      {{-- 패치노트 --}}
+      <div class="flex flex-col gap-4">
+        <h2 class="text-lg font-bold">
+          👾 최근 패치노트
+        </h2>
+        @if(patchNote)
+          <div>
+            <a href="/patch-notes/{{ patchNote?.slug }}" data-turbo-prefetch="false" class="block group">
+              @if(patchNote && patchNote.getImage && patchNote.getImage('thumbnail'))
+                <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
+                  @!uikit.image({
                         url: cloudImageUrl(patchNote.getImage('thumbnail').url),
                         dominantColor: patchNote.getImage('thumbnail').dominantColor,
                         width: 'w-full',
                         height: 'h-full object-cover'
-                      })
-                    </div>
-                  @endif
-                  <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
-                    {{ patchNote.title }}
-                  </h3>
-                  <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
-                    {{ patchNote.summary }}
-                  </p>
-                  <div class="flex justify-end items-center text-xs text-base-content/50">
-                    <span>{{ formatDate(patchNote.publishedAt) }}</span>
-                  </div>
-                </a>
+                  })
+                </div>
+              @endif
+              <h3 class="text-sm font-semibold leading-tight mb-1 group-hover:text-primary transition-colors line-clamp-2">
+                {{ patchNote.title }}
+              </h3>
+              <p class="text-xs text-base-content/70 mb-2 line-clamp-2">
+                {{ patchNote.summary }}
+              </p>
+              <div class="flex justify-end items-center text-xs text-base-content/50">
+                <span>{{ formatDate(patchNote.publishedAt) }}</span>
               </div>
-            @else
-              <div class="bg-base-200 text-center rounded-xl p-4 text-xs">
-                Not found patch notes
-              </div>
-            @endif
+            </a>
           </div>
-        </div>
+        @else
+          <div class="bg-base-200 text-center rounded-xl p-4 text-xs">
+            Not found patch notes
+          </div>
+        @endif
       </div>
     </div>
-  </section>
+  @end
 @end
