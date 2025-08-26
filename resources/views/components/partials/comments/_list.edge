@@ -2,13 +2,17 @@
   @each(comment in comments)
     <li data-controller="comment-item" data-comment-item-avatar-no-value="{{ comment?.avatarNo }}">
       <div class="bg-base-200/70 rounded-xl p-4 space-y-4">
-        <div class="flex gap-2">
-          <div
-            class="rounded-full size-10 bg-base-300 flex justify-center items-center text-xl border border-base-content/30"
-            data-comment-item-target="avatar"
-          >
+        <div class="flex justify-between">
+          <div class="flex gap-2">
+            <div
+              class="rounded-full size-10 bg-base-300 flex justify-center items-center text-xl border border-base-content/30"
+              data-comment-item-target="avatar"
+            >
+            </div>
+            <span class="text-sm font-bold">{{ comment?.nickname }}</span>
           </div>
-          <span class="text-sm font-bold">{{ comment?.nickname }}</span>
+
+          <span class="text-xs text-base-content/70">{{ formatDateTime(comment?.createdAt, '/', true) }}</span>
         </div>
         <p class="text-xs text-base-content/70 break-words">
           {{ comment?.comment }}

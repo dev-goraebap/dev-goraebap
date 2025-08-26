@@ -60,8 +60,18 @@ export const queryHelper: ViewHelperFactory = (req: Request) => {
 // Globals
 // ------------------------------------------------------------------
 
-export const formatDate = (date: Date | string | number, separator: '/' | '-' = '/') => {
-  const d = new Date(date);
+export const formatDateHelper = (
+  date: Date | string | number,
+  separator: '/' | '-' = '/',
+  convertToKorea: boolean = false,
+) => {
+  let d = new Date(date);
+
+  if (convertToKorea) {
+    // 9시간(32400000ms)을 더해서 한국 시간으로 변환
+    d = new Date(d.getTime() + (9 * 60 * 60 * 1000));
+  }
+
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
@@ -69,16 +79,26 @@ export const formatDate = (date: Date | string | number, separator: '/' | '-' = 
   return `${year}${separator}${month}${separator}${day}`;
 };
 
-export const formatDateTime = (date: Date | string | number, separator: '/' | '-' = '/') => {
-  const d = new Date(date);
-  const dateStr = formatDate(d, separator);
+export const formatDateTimeHelper = (
+  date: Date | string | number,
+  separator: '/' | '-' = '/',
+  convertToKorea: boolean = false,
+) => {
+  let d = new Date(date);
+
+  if (convertToKorea) {
+    // 9시간(32400000ms)을 더해서 한국 시간으로 변환
+    d = new Date(d.getTime() + (9 * 60 * 60 * 1000));
+  }
+
+  const dateStr = formatDateHelper(d, separator);
   const hours = String(d.getHours()).padStart(2, '0');
   const minutes = String(d.getMinutes()).padStart(2, '0');
 
   return `${dateStr} ${hours}:${minutes}`;
 };
 
-export const formatDateTimeLocal = (date: Date | string | number) => {
+export const formatDateTimeLocalHelper = (date: Date | string | number) => {
   const d = new Date(date);
   const year = d.getFullYear();
   const month = String(d.getMonth() + 1).padStart(2, '0');

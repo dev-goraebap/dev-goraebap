@@ -2,9 +2,9 @@ import { ConfigService } from '@nestjs/config';
 import { NestMvcOptions } from 'nestjs-mvc-tools';
 import {
   currentThemeHelper,
-  formatDate,
-  formatDateTime,
-  formatDateTimeLocal,
+  formatDateHelper,
+  formatDateTimeHelper,
+  formatDateTimeLocalHelper,
   isCurrentRouteHelper,
   originalUrlHelper,
   queryHelper,
@@ -23,9 +23,9 @@ export const nestMvcOptions: NestMvcOptions = {
       originalUrl: originalUrlHelper,
     },
     globals: {
-      formatDate: (date: Date | string | number) => formatDate(date, '/'),
-      formatDateTime: (date: Date | string | number) => formatDateTime(date, '/'),
-      formatDateTimeLocal: (date: Date | string | number) => formatDateTimeLocal(date)
+      formatDate: formatDateHelper,
+      formatDateTime: formatDateTimeHelper,
+      formatDateTimeLocal: formatDateTimeLocalHelper,
     },
     globalsInjects: [ConfigService],
     globalsFactory: (configService: ConfigService) => ({
