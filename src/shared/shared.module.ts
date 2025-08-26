@@ -13,6 +13,14 @@ import {
 import { AttachmentSharedService, CommentsSharedService, PostsSharedService } from './services';
 import { TagsSharedService } from './services/tags-shared.service';
 
+const services = [
+  // prettier-ignore
+  TagsSharedService,
+  AttachmentSharedService,
+  PostsSharedService,
+  CommentsSharedService,
+];
+
 @Global()
 @Module({
   imports: [
@@ -27,7 +35,7 @@ import { TagsSharedService } from './services/tags-shared.service';
       CommentEntity,
     ]),
   ],
-  providers: [TagsSharedService, AttachmentSharedService, PostsSharedService, CommentsSharedService],
-  exports: [TagsSharedService, AttachmentSharedService, PostsSharedService, CommentsSharedService, TypeOrmModule],
+  providers: [...services],
+  exports: [...services, TypeOrmModule],
 })
 export class SharedModule {}

@@ -5,7 +5,6 @@ import { AppExceptionFilter, LoggingInterceptor, RequestIdMiddleware } from 'src
 import { AdminModule } from './admin/admin.module';
 import { CommentsModule } from './comments/comments.module';
 import { FeedModule } from './feed/feed.module';
-import { FeedService } from './feed/feed.service';
 import { InitService } from './init.service';
 import { PatchNotesModule } from './patch-notes/patch-notes.module';
 import { PostsModule } from './posts/posts.module';
@@ -27,7 +26,6 @@ import { SessionModule } from './session/session.module';
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
     { provide: APP_FILTER, useClass: AppExceptionFilter },
-    FeedService,
     InitService,
   ],
 })

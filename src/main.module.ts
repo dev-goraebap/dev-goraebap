@@ -6,6 +6,12 @@ import { LoggerModule } from './logger';
 import { SharedModule } from './shared';
 
 @Module({
-  imports: [ConfigModule, AppModule, SharedModule, LoggerModule],
+  imports: [
+    // prettier-ignore
+    LoggerModule,
+    ConfigModule,
+    AppModule,
+    SharedModule,
+  ],
 })
 export class MainModule {}
