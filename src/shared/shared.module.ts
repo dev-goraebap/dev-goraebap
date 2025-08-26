@@ -10,8 +10,8 @@ import {
   TagEntity,
   UserEntity,
 } from './entities';
+import { AttachmentSharedService, PostsSharedService } from './services';
 import { TagsSharedService } from './services/tags-shared.service';
-import { AttachmentSharedService } from './services';
 
 @Global()
 @Module({
@@ -27,7 +27,7 @@ import { AttachmentSharedService } from './services';
       CommentEntity,
     ]),
   ],
-  providers: [TagsSharedService, AttachmentSharedService],
-  exports: [TagsSharedService, AttachmentSharedService, TypeOrmModule],
+  providers: [TagsSharedService, AttachmentSharedService, PostsSharedService],
+  exports: [TagsSharedService, AttachmentSharedService, PostsSharedService, TypeOrmModule],
 })
 export class SharedModule {}

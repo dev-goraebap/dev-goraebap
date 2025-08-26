@@ -1,21 +1,12 @@
 import { Module } from '@nestjs/common';
 
-import { SeriesPostsController } from './controllers/series-posts.controller';
-import { SeriesController } from './controllers/series.controller';
-import { SeriesPostsService } from './services/series-posts.service';
-import { SeriesService } from './services/series.service';
-import { CreateSeriesUseCase } from './use-cases/create-series.use-case';
-import { DestroySeriesUseCase } from './use-cases/destroy-series.use-case';
-import { UpdateSeriesUseCase } from './use-cases/update-series.use-case';
+import { SeriesApplicationService } from './series-application.service';
+import { SeriesPostsController } from './series-posts.controller';
+import { SeriesController } from './series.controller';
+import { SeriesService } from './series.service';
 
 @Module({
   controllers: [SeriesController, SeriesPostsController],
-  providers: [
-    SeriesService,
-    SeriesPostsService,
-    CreateSeriesUseCase,
-    UpdateSeriesUseCase,
-    DestroySeriesUseCase
-  ]
+  providers: [SeriesService, SeriesApplicationService],
 })
 export class SeriesModule {}
