@@ -13,13 +13,13 @@ export class AttachmentEntity {
   @PrimaryGeneratedColumn()
   readonly id: number; // 고유한 첨부ID
 
-  @Column()
+  @Column({ length: 100 })
   readonly name: string; // 파일분류이름 image, document 등등, 조회에 관련되어 사용
 
-  @Column({ name: 'record_type' })
+  @Column({ name: 'record_type', length: 100 })
   readonly recordType: string; // 파일을 사용하는 도메인 타입 (user, post, test ...)
 
-  @Column({ name: 'record_id' })
+  @Column({ name: 'record_id', length: 100 })
   readonly recordId: string; // 도메인의 특정 레코드 ID
 
   @Column({ name: 'blob_id' })

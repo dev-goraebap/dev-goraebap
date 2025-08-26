@@ -10,10 +10,10 @@ export class UserEntity extends BaseEntityWithAttachments {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 254 })
   readonly email: string;
 
-  @Column()
+  @Column({ length: 50 })
   readonly nickname: string;
 
   @CreateDateColumn()

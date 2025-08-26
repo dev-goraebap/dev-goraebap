@@ -6,16 +6,16 @@ export class CommentEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 255 })
   readonly requestId: string;
 
   @Column()
   readonly avatarNo: number;
 
-  @Column()
+  @Column({ length: 50 })
   readonly nickname: string;
 
-  @Column()
+  @Column({ length: 1000 })
   readonly comment: string;
 
   @CreateDateColumn()

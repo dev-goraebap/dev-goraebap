@@ -12,25 +12,25 @@ export class BlobEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 255 })
   readonly key: string; // 저장된 파일이름
 
-  @Column()
+  @Column({ length: 255 })
   readonly filename: string; // 원본 파일 이름
 
-  @Column({ name: 'content_type' })
+  @Column({ name: 'content_type', length: 100 })
   readonly contentType: string; // mimetype
 
-  @Column({ name: 'service_name' })
+  @Column({ name: 'service_name', length: 50 })
   readonly serviceName: string; // 파일저장방식: local, gcs, s3 ...
 
   @Column({ name: 'byte_size' })
   readonly byteSize: number; // 파일 바이트 크기
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 255 })
   readonly checksum: string; // md5로 채크한 파일의 고유한 버퍼스트링
 
-  @Column()
+  @Column({ length: 100 })
   readonly createdBy: string; // 생성한 사용자의 식별값
 
   @CreateDateColumn()

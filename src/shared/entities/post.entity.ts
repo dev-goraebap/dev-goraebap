@@ -21,22 +21,22 @@ export class PostEntity extends BaseEntityWithAttachments {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 255 })
   readonly slug: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 255 })
   readonly title: string;
 
-  @Column()
+  @Column({ length: 500 })
   readonly summary: string;
 
-  @Column()
+  @Column({ type: 'text' })
   readonly content: string;
 
   @Column({ default: false })
   readonly isPublished: boolean;
 
-  @Column({ default: 'post' })
+  @Column({ default: 'post', length: 20 })
   readonly postType: string; // post, changelog, news
 
   @Column({ default: 0 })

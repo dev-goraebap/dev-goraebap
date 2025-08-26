@@ -16,10 +16,10 @@ export class TagEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 100 })
   readonly name: string;
 
-  @Column()
+  @Column({ length: 500 })
   readonly description: string;
 
   @CreateDateColumn()
