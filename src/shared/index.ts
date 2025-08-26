@@ -1,4 +1,4 @@
 export * from './entities';
+export * from './services';
+export * from './shared.module';
 export * from './utils';
-export * from './services/posts-shared.service';
-export * from './services/comment-shared.service';

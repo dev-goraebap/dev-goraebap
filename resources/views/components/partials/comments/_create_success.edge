@@ -6,6 +6,10 @@
 <turbo-stream action="replace" target="replaceCommentListTurboStreamTarget">
   <template>
     @!partials.comments.list({ comments })
+
+    @uikit.toast() 
+      @!uikit.flash()
+    @end
   </template>
 </turbo-stream>
 

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ko" data-theme="{{ currentTheme() || 'cupcake' }}">
-
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,32 +33,46 @@
     <link rel="canonical" href="{{ originalUrl() || 'https://dev.goraebap.xyz' }}" />
 
     {{-- Open Graph (Facebook, 카카오톡 등) --}}
-    <meta property="og:title" content="{{ title || "dev.goraebap blog" }}" />
+    <meta property="og:title" content="{{ title || 'dev.goraebap blog' }}" />
     <meta property="og:description" content="{{ description || 'dev.goraebap 블로그 입니다.' }}" />
     <meta property="og:image" content="{{ ogImage || '/public/images/blog-thumbnail.png' }}" />
     <meta property="og:url" content="{{ originalUrl() || 'https://dev.goraebap.xyz' }}" />
     <meta property="og:type" content="article" />
     {{-- Twitter Card --}}
     <meta name="twitter:card" content="{{ twitterCard || 'summary_large_image' }}" />
-    <meta name="twitter:title" content="{{ title || "dev.goraebap blog" }}" />
+    <meta name="twitter:title" content="{{ title || 'dev.goraebap blog' }}" />
     <meta name="twitter:description" content="{{ description || 'dev.goraebap 블로그 입니다.' }}" />
     <meta name="twitter:image" content="{{ ogImage || '/public/images/blog-thumbnail.png' }}" />
-
-    @stack('toastJs')
   </head>
 
   <body>
     <div class="flex flex-col min-h-screen">
-      @!layout.app.header()
+      @!partials.header()
       <div class="grow relative">
         {{-- 헤더가 fixed 상태이기 때문에 헤더 영역만큼 높이 가져오기 --}}
         <div class="h-[var(--header-height-sm)] sm:h-[var(--header-height)]">
         </div>
-        {{{ await $slots.main() }}}
+
+        <section class="container max-w-6xl mx-auto my-10">
+          <div class="flex sm:gap-6" data-controller="{{ dataController || '' }}">
+            {{-- 왼쪽 컨텐츠 영영 --}}
+            <div class="flex-1 w-full sm:min-w-2xl sm:w-3xl px-4">
+              {{{ await $slots.main() }}}
+            </div>
+
+            {{-- 오른쪽 컨텐츠 영역 (Desktop에서 노출됨) --}}
+            <div class="hidden sm:block w-[300px] min-w-[300px] shrink-0 p-4">
+              <div class="sticky top-[calc(var(--header-height)+1rem)]">
+                @if($slots.subContent)
+                  {{{ await $slots.subContent() }}}
+                @end
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-      @!layout.app.footer()
-      @!layout.app.mobileNav()
+      @!partials.footer()
+      @!partials.mobileNav()
     </div>
   </body>
-
 </html>

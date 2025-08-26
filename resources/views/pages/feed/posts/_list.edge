@@ -6,7 +6,9 @@
         <li class="border-t border-base-300 sm:hidden">
         </li>
       @end
-      @!component('pages/feed/posts/_list_item', { post })
+      <li>
+        @!partials.posts.card({ post, collectionUrl: '/posts' })
+      </li>
     @end
   </ul>
 

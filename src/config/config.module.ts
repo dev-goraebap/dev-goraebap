@@ -4,16 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NestMvcModule } from 'nestjs-mvc-tools';
 import { join } from 'path';
 
-import {
-  AttachmentEntity,
-  BlobEntity,
-  CommentEntity,
-  PostEntity,
-  SeriesEntity,
-  SeriesPostEntity,
-  TagEntity,
-  UserEntity,
-} from 'src/shared';
 import { nestMvcOptions } from './nest-mvc.options';
 import { TypeOrmOptionsImpl } from './typeorm.options';
 
@@ -25,16 +15,6 @@ import { TypeOrmOptionsImpl } from './typeorm.options';
       envFilePath: join(process.cwd(), `.env.${process.env.NODE_ENV}.local`),
     }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmOptionsImpl }),
-    TypeOrmModule.forFeature([
-      UserEntity,
-      PostEntity,
-      TagEntity,
-      SeriesEntity,
-      SeriesPostEntity,
-      BlobEntity,
-      AttachmentEntity,
-      CommentEntity,
-    ]),
     NestMvcModule.forRoot(nestMvcOptions),
   ],
   exports: [TypeOrmModule],

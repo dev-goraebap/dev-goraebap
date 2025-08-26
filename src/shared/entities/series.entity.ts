@@ -17,17 +17,17 @@ export class SeriesEntity extends BaseEntityWithAttachments {
   @PrimaryGeneratedColumn()
   readonly id: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 255 })
   readonly name: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 255 })
   readonly slug: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: 1000 })
   readonly description: string;
 
 
-  @Column({ default: 'PLAN' })
+  @Column({ default: 'PLAN', length: 20 })
   readonly status: string; // PLAN, PROGRESS, COMPLETE
 
   @CreateDateColumn()

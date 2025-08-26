@@ -18,29 +18,20 @@ import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { AdminAuthGuard, CurrentUser, ZodValidationPipe } from 'src/common';
 import { UserEntity } from 'src/shared';
-import { CreatePostDto, CreatePostSchema } from './dto/create-post.dto';
+import { CreatePostDto, CreatePostSchema, UpdatePostDto, UpdatePostSchema } from './dto/create-or-update-post.dto';
 import { GetPostsDTO, GetPostsSchema } from './dto/get-posts.dto';
-import { UpdatePostDto, UpdatePostSchema } from './dto/update-post.dto';
 import { UpdatePostPublishDto, UpdatePostPublishSchema } from './dto/update-publish.dto';
-import { PostsService } from './posts.service';
-import { CreatePostUseCase } from './use-cases/create-post.use-case';
-import { DestroyPostUseCase } from './use-cases/destroy-post.use-case';
-import { UpdatePostUseCase } from './use-cases/update-post.use-case';
+import { PostsApplicationService } from './posts-application.service';
 
 @Controller({ path: '/admin/posts' })
 @UseGuards(AdminAuthGuard)
 export class PostsController {
-  constructor(
-    private readonly postsService: PostsService,
-    private readonly createPostUseCase: CreatePostUseCase,
-    private readonly updatePostUseCase: UpdatePostUseCase,
-    private readonly destroyPostUseCase: DestroyPostUseCase,
-  ) {}
+  constructor(private readonly postsAppService: PostsApplicationService) {}
 
   @Get()
   @UsePipes(new ZodValidationPipe(GetPostsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetPostsDTO) {
-    const posts = await this.postsService.getPosts(dto);
+    const posts = await this.postsAppService.getPosts(dto);
 
     if (req.headers['turbo-frame']) {
       return req.view.render('pages/admin/posts/_list', { posts });
@@ -58,7 +49,7 @@ export class PostsController {
 
   @Get(':id')
   async show(@Req() req: NestMvcReq, @Param('id', ParseIntPipe) id: number) {
-    const post = await this.postsService.getPost(id);
+    const post = await this.postsAppService.getPost(id);
     return req.view.render('pages/admin/posts/show', { post });
   }
 
@@ -70,14 +61,14 @@ export class PostsController {
     @Body('post') dto: CreatePostDto,
     @CurrentUser() user: UserEntity,
   ) {
-    await this.createPostUseCase.execute(user, dto);
+    await this.postsAppService.createPost(user, dto);
     req.flash.success('게시물 저장 완료');
     return res.redirect('/admin/posts');
   }
 
   @Get(':id/edit')
   async edit(@Req() req: NestMvcReq, @Param('id', ParseIntPipe) id: number) {
-    const post = await this.postsService.getPost(id);
+    const post = await this.postsAppService.getPost(id);
     return req.view.render('pages/admin/posts/edit', { post });
   }
 
@@ -89,7 +80,7 @@ export class PostsController {
     @Body('post') dto: UpdatePostDto,
     @Res() res: Response,
   ) {
-    await this.updatePostUseCase.execute(id, dto);
+    await this.postsAppService.updatePost(id, dto);
     req.flash.success('게시물 변경 완료');
     return res.redirect(303, '/admin/posts');
   }
@@ -102,14 +93,14 @@ export class PostsController {
     @Body() dto: UpdatePostPublishDto,
     @Res() res: Response,
   ) {
-    await this.postsService.updatePublish(id, dto);
+    await this.postsAppService.updatePublish(id, dto);
     req.flash.success('게시물 변경 완료');
     return res.redirect(303, '/admin/posts');
   }
 
   @Delete(':id')
   async destroy(@Param('id') id: number, @Req() req: NestMvcReq, @Res() res: Response) {
-    await this.destroyPostUseCase.execute(id);
+    await this.postsAppService.destroyPost(id);
     req.flash.success('게시물을 성공적으로 삭제하였습니다.');
     return res.redirect(303, '/admin/posts');
   }
