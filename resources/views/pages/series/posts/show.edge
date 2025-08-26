@@ -5,7 +5,7 @@
   description: post?.summary,
   ogImage: cloudImageUrl(post?.getImage('thumbnail')?.url)
 })
-  <section class="container max-w-6xl mx-auto my-10">
+  <section class="container max-w-6xl mx-auto my-10" data-controller="syntax-highlighter">
     <div class="flex sm:gap-6">
       {{-- 왼쪽 컨텐츠 영영 --}}
       <div class="flex-1 w-full sm:min-w-2xl sm:w-3xl px-4">
@@ -148,6 +148,21 @@
       {{-- 오른쪽 컨텐츠 영역 (Desktop에서 노출됨) --}}
       <div class="hidden sm:block w-[300px] min-w-[300px] shrink-0">
         <div class="sticky top-[calc(var(--header-height)+1rem)] space-y-6">
+          <pre class="text-xs font-bold">
+.__           .__  .__            
+|  |__   ____ |  | |  |   ____    
+|  |  \_/ __ \|  | |  |  /  _ \   
+|   Y  \  ___/|  |_|  |_(  <_> )  
+|___|  /\___  >____/____/\____/   
+     \/     \/                    
+                    .__       .___
+__  _  _____________|  |    __| _/
+\ \/ \/ /  _ \_  __ \  |   / __ | 
+ \     (  <_> )  | \/  |__/ /_/ | 
+  \/\_/ \____/|__|  |____/\____ | 
+                               \/ 
+          </pre>
+          
           {{-- 이전 포스트 --}}
           @if(prevPost)
             <div class="flex flex-col gap-4">
