@@ -10,7 +10,7 @@ import {
   TagEntity,
   UserEntity,
 } from './entities';
-import { AttachmentSharedService, PostsSharedService } from './services';
+import { AttachmentSharedService, CommentsSharedService, PostsSharedService } from './services';
 import { TagsSharedService } from './services/tags-shared.service';
 
 @Global()
@@ -27,7 +27,7 @@ import { TagsSharedService } from './services/tags-shared.service';
       CommentEntity,
     ]),
   ],
-  providers: [TagsSharedService, AttachmentSharedService, PostsSharedService],
-  exports: [TagsSharedService, AttachmentSharedService, PostsSharedService, TypeOrmModule],
+  providers: [TagsSharedService, AttachmentSharedService, PostsSharedService, CommentsSharedService],
+  exports: [TagsSharedService, AttachmentSharedService, PostsSharedService, CommentsSharedService, TypeOrmModule],
 })
 export class SharedModule {}

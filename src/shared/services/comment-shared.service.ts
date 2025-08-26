@@ -18,7 +18,7 @@ export class CommentsSharedService {
         },
       },
       order: {
-        createdAt: 'DESC',
+        createdAt: 'ASC',
       },
     });
   }
