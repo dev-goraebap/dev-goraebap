@@ -2,10 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Not, Repository } from 'typeorm';
 
-import { AttachmentQueryHelper, PostEntity, TagEntity, UserEntity } from 'src/shared';
+import { AttachmentQueryHelper, PostEntity, TagEntity, UpdatePublishDto, UserEntity } from 'src/shared';
 import { CreatePostDto, UpdatePostDto } from './dto/create-or-update-post.dto';
 import { GetPostsDTO } from './dto/get-posts.dto';
-import { UpdatePostPublishDto } from './dto/update-publish.dto';
 
 @Injectable()
 export class PostsService {
@@ -36,10 +35,42 @@ export class PostsService {
       });
     }
 
+    // 게시물 타입 필터링
+    if (dto.postType) {
+      // 기본값이 'post'이므로 다른 값일 때만 조건 추가
+      qb.andWhere('post.postType = :postType', {
+        postType: dto.postType,
+      });
+    }
+
+    // 발행 상태 필터링
+    if (dto.isPublished) {
+      // 빈 문자열이 아닐 때만 조건 추가
+      const isPublished = dto.isPublished === '1';
+      qb.andWhere('post.isPublished = :isPublished', {
+        isPublished,
+      });
+    }
+
     // 정렬 추가
     qb.orderBy(`post.${dto.orderKey}`, dto.orderBy);
 
-    return await qb.getMany();
+    // 페이지네이션 추가
+    const offset = (dto.page - 1) * dto.perPage;
+    qb.skip(offset).take(dto.perPage);
+
+    // 결과 반환 (총 개수와 함께)
+    const [posts, total] = await qb.getManyAndCount();
+
+    return {
+      posts,
+      pagination: {
+        page: dto.page,
+        perPage: dto.perPage,
+        total,
+        totalPages: Math.ceil(total / dto.perPage),
+      },
+    };
   }
 
   async getPost(id: number) {
@@ -106,7 +137,7 @@ export class PostsService {
     return await manager.save(attachTagsPost);
   }
 
-  async updatePublish(id: number, dto: UpdatePostPublishDto) {
+  async updatePublish(id: number, dto: UpdatePublishDto) {
     const post = await this.postRepository.findOne({
       where: {
         id,

@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 
-import { AttachmentSharedService, PostsSharedService, UserEntity } from 'src/shared';
+import { AttachmentSharedService, PostsSharedService, UpdatePublishDto, UserEntity } from 'src/shared';
 import { CreateSeriesDto, UpdateSeriesDto } from './dto/create-or-update-series.dto';
 import { GetSeriesDto } from './dto/get-series.dto';
 import { SeriesService } from './series.service';
@@ -85,6 +85,10 @@ export class SeriesApplicationService {
 
       return updatedSeries;
     });
+  }
+
+  async updatePublish(id: number, dto: UpdatePublishDto) {
+    return this.seriesService.updatePublish(id, dto);
   }
 
   async updatePostOrders(

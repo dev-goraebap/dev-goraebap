@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Like, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { TagEntity, UserEntity } from 'src/shared';
 import { CreateOrUpdateTagDto } from './dto/create-or-update-tag.dto';
@@ -14,20 +14,33 @@ export class TagsService {
   ) {}
 
   async getTags(dto: GetTagsDto) {
-    const where: any = {};
+    const qb = this.tagRepository.createQueryBuilder('tag');
+    qb.leftJoinAndSelect('tag.posts', 'post');
+
     if (dto.search) {
-      where.name = Like(`%${dto.search}%`);
+      qb.where('tag.name LIKE :searchName', {
+        searchName: `%${dto.search}%`,
+      });
     }
 
-    return await this.tagRepository.find({
-      where,
-      order: {
-        [dto.orderKey]: dto.orderBy,
+    qb.orderBy(`tag.${dto.orderKey}`, dto.orderBy);
+
+    // 페이지네이션 추가
+    const offset = (dto.page - 1) * dto.perPage;
+    qb.skip(offset).take(dto.perPage);
+
+    // 결과 반환 (총 개수와 함께)
+    const [tags, total] = await qb.getManyAndCount();
+
+    return {
+      tags,
+      pagination: {
+        page: dto.page,
+        perPage: dto.perPage,
+        total,
+        totalPages: Math.ceil(total / dto.perPage),
       },
-      relations: {
-        posts: true,
-      },
-    });
+    };
   }
 
   async getTag(id: number) {

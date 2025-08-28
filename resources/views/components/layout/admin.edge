@@ -36,8 +36,8 @@
       <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
       <div class="drawer-content flex flex-col min-w-3xl">
 
-        <!-- Navbar -->
-        <header class="bg-base-100/80 backdrop-blur-sm w-full sticky top-0 z-10">
+        {{-- 해더 --}}
+        <header class="flex items-center h-[var(--header-height)] bg-base-100 w-full sticky top-0 z-10 border-b border-base-300">
           <div class="navbar max-w-7xl">
             <div class="flex-none lg:hidden">
               <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
@@ -47,19 +47,37 @@
               </label>
             </div>
             <div class="flex-1 flex items-center gap-4 mx-2 px-2">
-              <h2 class="text-2xl">
-                {{ adminTitle || '데브고래밥 블로그' }}
-              </h2>
+              <figure>
+                <a href="/admin" class="flex items-center gap-1">
+                  <div class="w-12 h-12">
+                    @!uikit.image({ url: '/public/images/logo.png', dominantColor: null })
+                  </div>
+                  <div class="leading-4 font-bold text-sm">
+                    데브고래밥<br />
+                    스튜디오
+                  </div>
+                </a>
+              </figure>
             </div>
-            <div class="hidden flex-none lg:block">
-              @!partials.themeDropbox()
+            <div class="">
+              <ul class="flex gap-4">
+                <li>
+                  @!partials.admin.makeDropbox()
+                </li>
+                <li>
+                  @!partials.themeDropbox()
+                </li>
+              </ul>
             </div>
           </div>
         </header>
-        <!-- Page content here -->
-        <div class="max-w-7xl grow p-6">
-          {{{ await $slots.main() }}}
-        </div>
+
+        {{-- 메인 컨텐츠 --}}
+        <main class="grow">
+          <div class="max-w-7xl border-r border-base-300 h-full">
+            {{{ await $slots.main() }}}
+          </div>
+        </main>
       </div>
       <div class="drawer-side z-20">
         <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>

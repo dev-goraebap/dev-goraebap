@@ -17,10 +17,9 @@ import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { AdminAuthGuard, CurrentUser, ZodValidationPipe } from 'src/common';
-import { UserEntity } from 'src/shared';
+import { UpdatePublishDto, UpdatePublishSchema, UserEntity } from 'src/shared';
 import { CreatePostDto, CreatePostSchema, UpdatePostDto, UpdatePostSchema } from './dto/create-or-update-post.dto';
 import { GetPostsDTO, GetPostsSchema } from './dto/get-posts.dto';
-import { UpdatePostPublishDto, UpdatePostPublishSchema } from './dto/update-publish.dto';
 import { PostsApplicationService } from './posts-application.service';
 
 @Controller({ path: '/admin/posts' })
@@ -31,14 +30,10 @@ export class PostsController {
   @Get()
   @UsePipes(new ZodValidationPipe(GetPostsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetPostsDTO) {
-    const posts = await this.postsAppService.getPosts(dto);
-
-    if (req.headers['turbo-frame']) {
-      return req.view.render('pages/admin/posts/_list', { posts });
-    }
+    const postData = await this.postsAppService.getPosts(dto);
 
     return req.view.render('pages/admin/posts/index', {
-      posts,
+      ...postData,
     });
   }
 
@@ -86,11 +81,11 @@ export class PostsController {
   }
 
   @Put(':id/publish')
-  @UsePipes(new ZodValidationPipe(UpdatePostPublishSchema))
+  @UsePipes(new ZodValidationPipe(UpdatePublishSchema))
   async updatePublish(
     @Req() req: NestMvcReq,
     @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdatePostPublishDto,
+    @Body() dto: UpdatePublishDto,
     @Res() res: Response,
   ) {
     await this.postsAppService.updatePublish(id, dto);

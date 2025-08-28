@@ -2,7 +2,14 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, In, Not, Repository } from 'typeorm';
 
-import { AttachmentQueryHelper, PostEntity, SeriesEntity, SeriesPostEntity, UserEntity } from 'src/shared';
+import {
+  AttachmentQueryHelper,
+  PostEntity,
+  SeriesEntity,
+  SeriesPostEntity,
+  UpdatePublishDto,
+  UserEntity,
+} from 'src/shared';
 import { CreateSeriesDto, UpdateSeriesDto } from './dto/create-or-update-series.dto';
 import { GetSeriesDto } from './dto/get-series.dto';
 
@@ -43,9 +50,41 @@ export class SeriesService {
       });
     }
 
+    // 시리즈 상태 필터링
+    if (dto.status) {
+      // 기본값이 'post'이므로 다른 값일 때만 조건 추가
+      qb.andWhere('series.status = :status', {
+        status: dto.status,
+      });
+    }
+
+    // 발행 상태 필터링
+    if (dto.isPublished) {
+      // 빈 문자열이 아닐 때만 조건 추가
+      const isPublished = dto.isPublished === '1';
+      qb.andWhere('series.isPublished = :isPublished', {
+        isPublished,
+      });
+    }
+
     qb.orderBy(`series.${dto.orderKey}`, dto.orderBy);
 
-    return await qb.getMany();
+    // 페이지네이션 추가
+    const offset = (dto.page - 1) * dto.perPage;
+    qb.skip(offset).take(dto.perPage);
+
+    // 결과 반환 (총 개수와 함께)
+    const [seriesList, total] = await qb.getManyAndCount();
+
+    return {
+      seriesList,
+      pagination: {
+        page: dto.page,
+        perPage: dto.perPage,
+        total,
+        totalPages: Math.ceil(total / dto.perPage),
+      },
+    };
   }
 
   async findSeriesItem(id: number) {
@@ -88,6 +127,23 @@ export class SeriesService {
   async updateSeries(series: SeriesEntity, dto: UpdateSeriesDto, manager: EntityManager) {
     const updatedSeries = this.seriesRepository.create({ ...series, ...dto });
     return await manager.save(updatedSeries);
+  }
+
+  async updatePublish(id: number, dto: UpdatePublishDto) {
+    const series = await this.seriesRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    if (!series) {
+      throw new BadRequestException('시리즈를 찾을 수 없습니다.');
+    }
+    const updatedSeries = this.seriesRepository.create({
+      ...series,
+      isPublished: dto.isPublished,
+      ...(dto.isPublished && { publishedAt: new Date() }),
+    });
+    await this.seriesRepository.save(updatedSeries);
   }
 
   async createRelation(series: SeriesEntity, post: PostEntity) {

@@ -36,6 +36,9 @@ export class PostEntity extends BaseEntityWithAttachments {
   @Column({ default: false })
   readonly isPublished: boolean;
 
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
+  readonly publishedAt: Date;
+
   @Column({ default: 'post', length: 20 })
   readonly postType: string; // post, changelog, news
 
@@ -47,9 +50,6 @@ export class PostEntity extends BaseEntityWithAttachments {
 
   @UpdateDateColumn()
   readonly updatedAt: Date;
-
-  @Column({ default: () => 'CURRENT_TIMESTAMP' })
-  readonly publishedAt: Date;
 
   @ManyToOne(() => UserEntity, (e) => e.posts, { onDelete: 'CASCADE' })
   readonly user: UserEntity;

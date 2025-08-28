@@ -1,38 +1,42 @@
-@layout.admin({ title: 'dev.goraebap admin | 시리즈 관리', adminTitle: '시리즈 관리' })
-  <div class="flex justify-between items-center">
-    @!partials.admin.queryForm({
-      frameId: 'seriesListFrame',
-      placeholder: '시리즈 이름 검색'
-    })
+@layout.admin({ title: 'dev.goraebap admin | 시리즈 관리' })
 
-    <button class="btn" data-action="modal#onOpen" data-content-url="/admin/series/new">
-      시리즈 추가
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke-width="1.5"
-        stroke="currentColor"
-        class="size-4"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"
-        />
-      </svg>
-    </button>
-  </div>
-
-  @if(series?.length > 0)
-    @!component('pages/admin/series/_list', {
-      series
-    })
-  @else
-    <div class="w-full flex justify-center p-10">
-      <p class="text-3xl">
-        시리즈가 텅 비었어요!
-      </p>
-    </div>
+  @layout.admin.tableBoard({
+    currentUrl: '/admin/series',
+    pagination,
+  })
+    @slot('filterForm')
+      <input type="text" name="search" value="{{ query('search') || '' }}" placeholder="제목을 입력해 주세요.." class="text-sm w-[150px]" />
+      <select name="status" class="select select-ghost select-sm max-w-[150px]" data-action="view-query#onChange">
+        <option value="" {{ query('status') === '' && 'selected' }}>
+          전체
+        </option>
+        <option value="PLAN" {{ query('status') === 'PLAN' && 'selected' }}>
+          계획중
+        </option>
+        <option value="PROGRESS" {{ query('status') === 'PROGRESS' && 'selected' }}>
+          연재중
+        </option>
+        <option value="COMPLETE" {{ query('status') === 'COMPLETE' && 'selected' }}>
+          연재완료
+        </option>
+      </select>
+      <select name="isPublished" class="select select-ghost select-sm max-w-[150px]" data-action="view-query#onChange">
+        <option value="" {{ query('isPublished') === '' && 'selected' }}>
+          전체
+        </option>
+        <option value="1" {{ query('isPublished') === '1' && 'selected' }}>
+          공개
+        </option>
+        <option value="2" {{ query('isPublished') === '2' && 'selected' }}>
+          비공개
+        </option>
+      </select>
+    @end
+    
+    @slot('content')
+      @!component('pages/admin/series/_list', {
+        seriesList
+      })
+    @end
   @end
 @end

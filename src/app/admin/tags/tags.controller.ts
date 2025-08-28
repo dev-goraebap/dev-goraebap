@@ -26,20 +26,13 @@ import { TagsService } from './tags.service';
 @Controller({ path: '/admin/tags' })
 @UseGuards(AdminAuthGuard)
 export class TagsController {
-
-  constructor(
-    private readonly tagsService: TagsService
-  ) {}
+  constructor(private readonly tagsService: TagsService) {}
 
   @Get()
   @UsePipes(new ZodValidationPipe(GetTagsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetTagsDto) {
-    const tags = await this.tagsService.getTags(dto);
-
-    if (req.headers['turbo-frame']) {
-      return req.view.render('pages/admin/tags/_list', { tags });
-    }
-    return req.view.render('pages/admin/tags/index', { tags });
+    const tagData = await this.tagsService.getTags(dto);
+    return req.view.render('pages/admin/tags/index', { ...tagData });
   }
 
   @Get('new')
@@ -72,22 +65,14 @@ export class TagsController {
 
   @Put(':id')
   @UsePipes(new ZodValidationPipe(CreateOrUpdateTagSchema))
-  async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Req() req: NestMvcReq,
-    @Body('tag') dto: CreateOrUpdateTagDto,
-  ) {
+  async update(@Param('id', ParseIntPipe) id: number, @Req() req: NestMvcReq, @Body('tag') dto: CreateOrUpdateTagDto) {
     await this.tagsService.update(id, dto);
     req.flash.success('태그를 성공적으로 변경하였습니다.');
     return req.view.render('pages/admin/tags/_success');
   }
 
   @Delete(':id')
-  async destroy(
-    @Param('id', ParseIntPipe) id: number,
-    @Req() req: NestMvcReq,
-    @Res() res: Response,
-  ) {
+  async destroy(@Param('id', ParseIntPipe) id: number, @Req() req: NestMvcReq, @Res() res: Response) {
     await this.tagsService.destroy(id);
     req.flash.success('태그를 성공적으로 제거하였습니다.');
     return res.redirect(303, req.headers.referer || '/admin/tags');

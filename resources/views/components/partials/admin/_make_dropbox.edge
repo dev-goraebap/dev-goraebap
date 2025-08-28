@@ -1,0 +1,35 @@
+<div class="dropdown dropdown-end" data-controller="theme-switcher">
+  <div tabindex="0" role="button" class="btn group btn-sm gap-1.5 px-1.5 btn-ghost" aria-label="Change Theme">
+    <button class="btn w-32 flex gap-2 text-base">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="size-5"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+      </svg>
+      만들기
+    </button>
+  </div>
+  <div
+    tabindex="0"
+    class="dropdown-content bg-base-200 text-base-content rounded-box top-px max-h-[calc(100vh-8.6rem)] overflow-y-auto border border-white/5 shadow-2xl outline-1 outline-black/5 mt-16"
+  >
+    <ul class="menu w-56">
+      <li>
+        <a href="/admin/posts/new">포스트 등록</a>
+      </li>
+
+      <li>
+        <button data-action="modal#onOpen" data-content-url="/admin/series/new">시리즈 등록</button>
+      </li>
+
+      <li>
+        <button data-action="modal#onOpen" data-content-url="/admin/tags/new">태그 등록</button>
+      </li>
+    </ul>
+  </div>
+</div>

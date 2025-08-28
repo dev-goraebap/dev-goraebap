@@ -1,3 +1,4 @@
+import { ViewQueryController } from './admin/view-query.controller';
 import { application } from './application';
 import { CommentFormController } from './comments/comment-form.controller';
 import { CommentItemController } from './comments/comment-item.controller';
@@ -36,3 +37,4 @@ application.register('feed-query', FeedQueryController);
 application.register('patch-notes-query', PatchNotesQueryController);
 application.register('comment-form', CommentFormController);
 application.register('comment-item', CommentItemController);
+application.register('view-query', ViewQueryController);
