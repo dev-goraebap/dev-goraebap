@@ -1,0 +1,19 @@
+@layout.admin({ title: 'dev.goraebap admin | 댓글 관리' })
+
+  @layout.admin.tableBoard({
+    title: '커뮤니티',
+    currentUrl: '/admin/comments',
+    pagination,
+    tabList: [
+      { name: '댓글', url: '/admin/comments' },
+    ]
+  })
+    @slot('filterForm')
+      <input type="text" name="search" value="{{ query('search') || '' }}" placeholder="닉네임 또는 내용 입력" class="text-sm w-[150px]" />
+    @end
+    
+    @slot('content')
+      @!component('pages/admin/comments/_list', { comments })
+    @end
+  @end
+@end

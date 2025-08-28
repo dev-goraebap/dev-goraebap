@@ -5,7 +5,7 @@
     pagination,
   })
     @slot('filterForm')
-      <input type="text" name="search" value="{{ query('search') || '' }}" placeholder="제목을 입력해 주세요.." class="text-sm w-[150px]" />
+      <input type="text" name="search" value="{{ query('search') || '' }}" placeholder="시리즈 이름 입력" class="text-sm w-[150px]" />
       <select name="status" class="select select-ghost select-sm max-w-[150px]" data-action="view-query#onChange">
         <option value="" {{ query('status') === '' && 'selected' }}>
           전체
