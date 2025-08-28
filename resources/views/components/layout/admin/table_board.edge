@@ -43,7 +43,7 @@
     </svg>
 
     <input type="hidden" name="page" value="{{ query('page') || '1' }}" />
-    <input type="hidden" name="perPage" value="{{ query('perPage') || '5' }}" />
+    <input type="hidden" name="perPage" value="{{ query('perPage') || '10' }}" />
 
     @if($slots.filterForm)
       {{{ await $slots.filterForm() }}}
@@ -67,10 +67,7 @@
         페이지당 행 수
       </div>
       <select class="select select-ghost" data-action="view-query#onChangePerPage">
-        <option value="5" {{ (query('perPage') === '5' || query('perPage') === '') && 'selected' }}>
-          5
-        </option>
-        <option value="10" {{ (query('perPage') === '10') && 'selected' }}>
+        <option value="10" {{ (query('perPage') === '10' || query('perPage') === '') && 'selected' }}>
           10
         </option>
         <option value="30" {{ query('perPage') === '30' && 'selected' }}>
