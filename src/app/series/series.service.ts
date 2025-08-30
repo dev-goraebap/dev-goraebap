@@ -17,8 +17,10 @@ export class SeriesService {
   async getSeriesList() {
     const qb = this.seriesRepository.createQueryBuilder('series');
     qb.leftJoinAndSelect('series.seriesPosts', 'post');
-
     AttachmentQueryHelper.withAttachments(qb, 'series');
+
+    qb.where('series.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' });
+
     qb.orderBy('series.createdAt', 'DESC');
 
     return await qb.getMany();
@@ -28,7 +30,8 @@ export class SeriesService {
     const qb = this.seriesRepository.createQueryBuilder('series');
     AttachmentQueryHelper.withAttachments(qb, 'series');
 
-    qb.where('series.slug = :slug', { slug });
+    qb.where('series.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' });
+    qb.andWhere('series.slug = :slug', { slug });
     return await qb.getOne();
   }
 
@@ -39,7 +42,8 @@ export class SeriesService {
     qb.leftJoinAndSelect('seriesPost.series', 'series');
     AttachmentQueryHelper.withAttachments(qb, 'post');
 
-    qb.where('series.slug = :seriesSlug', { seriesSlug });
+    qb.where('series.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' });
+    qb.andWhere('series.slug = :seriesSlug', { seriesSlug });
 
     qb.orderBy('seriesPost.order', 'ASC');
     qb.addOrderBy('seriesPost.createdAt', 'DESC');
@@ -56,7 +60,9 @@ export class SeriesService {
 
     AttachmentQueryHelper.withAttachments(qb, 'post');
 
-    qb.where('post.slug = :postSlug', { postSlug }).andWhere('series.slug = :seriesSlug', { seriesSlug });
+    qb.where("post.isPublishedYn = 'Y'");
+    qb.andWhere('post.slug = :postSlug', { postSlug });
+    qb.andWhere('series.slug = :seriesSlug', { seriesSlug });
 
     const result = await qb.getOne();
     if (!result) {

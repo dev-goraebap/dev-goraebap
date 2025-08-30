@@ -53,11 +53,21 @@
         <span class="label">기본값은 post 입니다.</span>
       </fieldset>
 
-      {{-- 퍼블리싱 날짜 --}}
+      {{-- 발행 옵션 --}}
       <fieldset class="fieldset">
         <legend class="fieldset-legend">
-          발행일
+          발행옵션
         </legend>
+
+        <select class="select w-full" name="post[isPublishedYn]">
+          <option value="N" {{ post?.isPublishedYn === 'N' && 'selected' }}>
+            초안
+          </option>
+          <option value="Y" {{ post?.isPublishedYn === 'Y' && 'selected' }}>
+            공개
+          </option>
+        </select>
+
         <input
           type="datetime-local"
           name="post[publishedAt]"

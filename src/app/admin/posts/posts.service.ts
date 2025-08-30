@@ -44,11 +44,10 @@ export class PostsService {
     }
 
     // 발행 상태 필터링
-    if (dto.isPublished) {
+    if (dto.isPublishedYn) {
       // 빈 문자열이 아닐 때만 조건 추가
-      const isPublished = dto.isPublished === '1';
-      qb.andWhere('post.isPublished = :isPublished', {
-        isPublished,
+      qb.andWhere('post.isPublishedYn = :isPublishedYn', {
+        isPublishedYn: dto.isPublishedYn,
       });
     }
 
@@ -107,7 +106,7 @@ export class PostsService {
       title: dto.title,
       content: dto.content,
       summary: dto.summary,
-      isPublished: dto.isPublished,
+      isPublishedYn: dto.isPublishedYn,
       publishedAt: dto.publishedAt,
       postType: dto.postType,
     });
@@ -124,7 +123,7 @@ export class PostsService {
       title: dto.title,
       content: dto.content,
       summary: dto.summary,
-      isPublished: dto.isPublished,
+      isPublishedYn: dto.isPublishedYn,
       publishedAt: dto.publishedAt,
       postType: dto.postType,
     });
@@ -146,10 +145,12 @@ export class PostsService {
     if (!post) {
       throw new BadRequestException('게시물을 찾을 수 없습니다.');
     }
+
+    console.log(dto.isPublishedYn);
+
     const updatedPost = this.postRepository.create({
       ...post,
-      isPublished: dto.isPublished,
-      ...(dto.isPublished && { publishedAt: new Date() }),
+      isPublishedYn: dto.isPublishedYn,
     });
     await this.postRepository.save(updatedPost);
   }

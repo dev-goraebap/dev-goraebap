@@ -13,7 +13,7 @@ export class PostsService {
   async getRandomSuggestedPosts(excludeSlug: string) {
     const posts = await this.postRepository
       .createQueryBuilder('post')
-      .where('post.isPublished = :isPublished', { isPublished: true })
+      .where('post.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' })
       .andWhere('post.slug != :slug', { slug: excludeSlug })
       .andWhere('post.postType = :postType', { postType: 'post' })
       .getMany();
@@ -33,7 +33,8 @@ export class PostsService {
     const qb = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
-      .where('post.slug = :slug', { slug });
+      .where("post.isPublishedYn = 'Y'")
+      .andWhere('post.slug = :slug', { slug });
     AttachmentQueryHelper.withAttachments(qb, 'post');
     const result = await qb.getOne();
     if (!result) {

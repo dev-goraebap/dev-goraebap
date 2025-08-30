@@ -7,6 +7,7 @@ const BasePostSchema = z.object({
   content: z.string().min(1, '내용을 입력해 주세요.'),
   slug: z.string().optional(),
   thumbnailBlobId: z.string().optional(),
+  isPublishedYn: z.string().optional().default('N'),
   publishedAt: z.string().optional(),
   postType: z.string().default('post'),
   tags: z.preprocess((val) => (val === undefined ? [] : val), z.array(z.string()).optional().default([])),
@@ -20,7 +21,6 @@ const PostTransform = <T extends z.infer<typeof BasePostSchema>>(x: T) => {
   }
 
   const publishedAt = x.publishedAt ? new Date(x.publishedAt) : new Date();
-  const isPublished = !!x.publishedAt;
 
   return {
     content: x.content,
@@ -32,7 +32,7 @@ const PostTransform = <T extends z.infer<typeof BasePostSchema>>(x: T) => {
     title: contentValidation.title,
     summary: contentValidation.summary,
     publishedAt,
-    isPublished,
+    isPublishedYn: x.isPublishedYn,
   } as const;
 };
 

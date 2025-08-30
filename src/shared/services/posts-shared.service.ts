@@ -47,7 +47,7 @@ export class PostsSharedService {
 
   async getPublishedPosts(): Promise<PostEntity[]> {
     return this.postRepository.find({
-      where: { isPublished: true },
+      where: { isPublishedYn: 'Y' },
       select: ['slug', 'updatedAt', 'publishedAt'],
       order: { publishedAt: 'DESC' },
     });

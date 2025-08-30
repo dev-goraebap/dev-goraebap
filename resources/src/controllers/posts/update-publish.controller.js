@@ -22,8 +22,8 @@ export class UpdatePublishController extends Controller {
 
     const input = document.createElement('input');
     input.type = 'hidden';
-    input.name = 'isPublished';
-    input.value = checked;
+    input.name = 'isPublishedYn';
+    input.value = checked ? 'Y' : 'N';
     this.formTarget.appendChild(input);
 
     this.formTarget.requestSubmit();

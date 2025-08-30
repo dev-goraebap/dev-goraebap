@@ -20,14 +20,14 @@
           연재완료
         </option>
       </select>
-      <select name="isPublished" class="select select-ghost select-sm max-w-[150px]" data-action="view-query#onChange">
-        <option value="" {{ query('isPublished') === '' && 'selected' }}>
+      <select name="isPublishedYn" class="select select-ghost select-sm max-w-[150px]" data-action="view-query#onChange">
+        <option value="" {{ query('isPublishedYn') === '' && 'selected' }}>
           전체
         </option>
-        <option value="1" {{ query('isPublished') === '1' && 'selected' }}>
+        <option value="Y" {{ query('isPublishedYn') === 'Y' && 'selected' }}>
           공개
         </option>
-        <option value="2" {{ query('isPublished') === '2' && 'selected' }}>
+        <option value="N" {{ query('isPublishedYn') === 'N' && 'selected' }}>
           비공개
         </option>
       </select>

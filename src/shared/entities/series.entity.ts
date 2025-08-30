@@ -26,8 +26,8 @@ export class SeriesEntity extends BaseEntityWithAttachments {
   @Column({ nullable: true, length: 1000 })
   readonly description: string;
 
-  @Column({ default: false })
-  readonly isPublished: boolean;
+  @Column({ default: 'N' })
+  readonly isPublishedYn: string;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   readonly publishedAt: Date;

@@ -24,7 +24,7 @@ export class PostEntity extends BaseEntityWithAttachments {
   @Column({ unique: true, length: 255 })
   readonly slug: string;
 
-  @Column({ unique: true, length: 255 })
+  @Column({ length: 255 })
   readonly title: string;
 
   @Column({ length: 500 })
@@ -33,8 +33,8 @@ export class PostEntity extends BaseEntityWithAttachments {
   @Column({ type: 'text' })
   readonly content: string;
 
-  @Column({ default: false })
-  readonly isPublished: boolean;
+  @Column({ default: 'N' })
+  readonly isPublishedYn: string;
 
   @Column({ default: () => 'CURRENT_TIMESTAMP' })
   readonly publishedAt: Date;

@@ -69,6 +69,30 @@
     <span class="label">입력하지않으면 임의의 randomUUID가 부여됩니다.</span>
   </fieldset>
 
+  {{-- 발행 옵션 --}}
+  <fieldset class="fieldset">
+    <legend class="fieldset-legend">
+      발행옵션
+    </legend>
+
+    <select class="select w-full" name="series[isPublishedYn]">
+      <option value="N" {{ series?.isPublishedYn === 'N' && 'selected' }}>
+        초안
+      </option>
+      <option value="Y" {{ series?.isPublishedYn === 'Y' && 'selected' }}>
+        공개
+      </option>
+    </select>
+
+    <input
+      type="datetime-local"
+      name="series[publishedAt]"
+      value="{{ formatDateTimeLocal(series?.publishedAt) ||  '' }}"
+      class="input w-full"
+    />
+    <span class="label">입력하지않으면 현재 날짜가 적용됩니다.</span>
+  </fieldset>
+
   <br />
 
   <button class="btn">{{ submitText }}</button>

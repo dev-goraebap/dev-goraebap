@@ -19,7 +19,7 @@ export class FeedService {
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
       .leftJoinAndSelect('post.comments', 'comment')
-      .where('post.isPublished = :isPublished', { isPublished: true })
+      .where('post.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' })
       .andWhere('post.postType = :postType', { postType: 'post' });
 
     AttachmentQueryHelper.withAttachments(qb, 'post');
@@ -74,7 +74,7 @@ export class FeedService {
     const qb = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
-      .where('post.isPublished = :isPublished', { isPublished: true })
+      .where('post.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' })
       .andWhere('post.postType = :postType', { postType: 'patch-note' });
 
     AttachmentQueryHelper.withAttachments(qb, 'post');

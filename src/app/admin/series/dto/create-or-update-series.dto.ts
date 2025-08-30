@@ -6,13 +6,19 @@ const BaseSeriesSchema = z.object({
   description: z.string().optional(),
   slug: z.string().optional(),
   status: z.string().optional(),
+  isPublishedYn: z.string().optional().default('N'),
+  publishedAt: z.string().optional(),
 });
 
 const SeriesTransform = (x: z.infer<typeof BaseSeriesSchema>) => {
+  const publishedAt = x.publishedAt ? new Date(x.publishedAt) : new Date();
+
   return {
     ...x,
     slug: x.slug || randomUUID(),
     status: x.status || 'PLAN',
+    publishedAt,
+    isPublishedYn: x.isPublishedYn,
   };
 };
 

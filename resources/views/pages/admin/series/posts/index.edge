@@ -41,7 +41,7 @@
                   {{ post?.title }}
                 </h2>
                 <span class="text-xs text-base-content/70">
-                  {{ post?.isPublished ? '공개' : '비공개' }}
+                  {{ post?.isPublishedYn === 'Y' ? '공개' : '비공개' }}
                 </span>
               </div>
             </div>

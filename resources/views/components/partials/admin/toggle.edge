@@ -1,21 +1,16 @@
 @let($actionUrl = actionUrl || 'plz-input-url')
 @let($updateId = updateId || 999)
-@let($isPublished = isPublished || false)
+@let($isPublishedYn = isPublishedYn || 'N')
 
-<form
-  action="{{ $actionUrl }}"
-  method="put"
-  data-controller="update-publish"
-  data-update-publish-target="form"
->
+<form action="{{ $actionUrl }}" method="put" data-controller="update-publish" data-update-publish-target="form">
   <div class="form-control">
     <label class="label cursor-pointer justify-start gap-2">
       {{--
         채크박스 변경시
         isPublished: boolean 값을 보내는 숨겨진 input 박스가 추가되고 form 제출
       --}}
-      <input type="checkbox" class="toggle toggle-sm" data-action="update-publish#onSubmit" {{ $isPublished && 'checked' }} />
-      <span class="label-text text-xs">{{ $isPublished ? '공개' : '비공개' }}</span>
+      <input type="checkbox" class="toggle toggle-sm" data-action="update-publish#onSubmit" {{ $isPublishedYn === 'Y' && 'checked' }} />
+      <span class="label-text text-xs">{{ $isPublishedYn === 'Y' ? '공개' : '비공개' }}</span>
     </label>
   </div>
 </form>

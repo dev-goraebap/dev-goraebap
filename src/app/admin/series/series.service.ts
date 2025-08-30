@@ -59,11 +59,10 @@ export class SeriesService {
     }
 
     // 발행 상태 필터링
-    if (dto.isPublished) {
+    if (dto.isPublishedYn) {
       // 빈 문자열이 아닐 때만 조건 추가
-      const isPublished = dto.isPublished === '1';
-      qb.andWhere('series.isPublished = :isPublished', {
-        isPublished,
+      qb.andWhere('series.isPublishedYn = :isPublishedYn', {
+        isPublishedYn: dto.isPublishedYn,
       });
     }
 
@@ -140,8 +139,7 @@ export class SeriesService {
     }
     const updatedSeries = this.seriesRepository.create({
       ...series,
-      isPublished: dto.isPublished,
-      ...(dto.isPublished && { publishedAt: new Date() }),
+      isPublishedYn: dto.isPublishedYn,
     });
     await this.seriesRepository.save(updatedSeries);
   }
