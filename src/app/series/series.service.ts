@@ -95,7 +95,7 @@ export class SeriesService {
       .createQueryBuilder('seriesPost')
       .leftJoinAndSelect('seriesPost.post', 'post')
       .leftJoinAndSelect('seriesPost.series', 'series')
-      .where("seriesPost.isPublishedYn = 'Y'")
+      .where("post.isPublishedYn = 'Y'")
       .andWhere('seriesPost.series.id = :seriesId', { seriesId })
       .andWhere('post.id != :currentPostId', { currentPostId })
       .andWhere(
@@ -121,7 +121,7 @@ export class SeriesService {
       .createQueryBuilder('seriesPost')
       .leftJoinAndSelect('seriesPost.post', 'post')
       .leftJoinAndSelect('seriesPost.series', 'series')
-      .where("seriesPost.isPublishedYn = 'Y'")
+      .where("post.isPublishedYn = 'Y'")
       .andWhere('seriesPost.series.id = :seriesId', { seriesId })
       .andWhere('post.id != :currentPostId', { currentPostId })
       .andWhere(
