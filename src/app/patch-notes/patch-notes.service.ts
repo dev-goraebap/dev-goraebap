@@ -15,7 +15,8 @@ export class PatchNotesService {
     const qb = this.postRepository.createQueryBuilder('post');
     qb.leftJoinAndSelect('post.comments', 'comment');
     AttachmentQueryHelper.withAttachments(qb, 'post');
-    qb.where('post.postType = :postType', { postType: 'patch-note' });
+    qb.where("post.isPublishedYn = 'Y'");
+    qb.andWhere('post.postType = :postType', { postType: 'patch-note' });
     qb.orderBy('post.publishedAt', 'DESC');
     return await qb.getMany();
   }
@@ -23,7 +24,9 @@ export class PatchNotesService {
   async getOtherPatchNotes(excludeSlug: string) {
     const qb = this.postRepository.createQueryBuilder('post');
     AttachmentQueryHelper.withAttachments(qb, 'post');
-    qb.where('post.postType = :postType', { postType: 'patch-note' }).andWhere('post.slug != :slug', {
+    qb.where("post.isPublishedYn = 'Y'");
+    qb.andWhere('post.postType = :postType', { postType: 'patch-note' });
+    qb.andWhere('post.slug != :slug', {
       slug: excludeSlug,
     });
     qb.orderBy('post.publishedAt', 'DESC');
@@ -34,7 +37,8 @@ export class PatchNotesService {
     const qb = this.postRepository.createQueryBuilder('post');
     AttachmentQueryHelper.withAttachments(qb, 'post');
 
-    qb.where('post.slug = :slug', { slug: slug });
+    qb.where("post.isPublishedYn = 'Y'");
+    qb.andWhere('post.slug = :slug', { slug: slug });
 
     const result = await qb.getOne();
     if (!result) {

@@ -13,7 +13,7 @@ export class PostsService {
   async getRandomSuggestedPosts(excludeSlug: string) {
     const posts = await this.postRepository
       .createQueryBuilder('post')
-      .where('post.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' })
+      .where("post.isPublishedYn = 'Y'")
       .andWhere('post.slug != :slug', { slug: excludeSlug })
       .andWhere('post.postType = :postType', { postType: 'post' })
       .getMany();

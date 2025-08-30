@@ -19,8 +19,7 @@ export class SeriesService {
     qb.leftJoinAndSelect('series.seriesPosts', 'post');
     AttachmentQueryHelper.withAttachments(qb, 'series');
 
-    qb.where('series.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' });
-
+    qb.where("series.isPublishedYn = 'Y'");
     qb.orderBy('series.createdAt', 'DESC');
 
     return await qb.getMany();
@@ -30,7 +29,7 @@ export class SeriesService {
     const qb = this.seriesRepository.createQueryBuilder('series');
     AttachmentQueryHelper.withAttachments(qb, 'series');
 
-    qb.where('series.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' });
+    qb.where("series.isPublishedYn = 'Y'");
     qb.andWhere('series.slug = :slug', { slug });
     return await qb.getOne();
   }
@@ -42,7 +41,7 @@ export class SeriesService {
     qb.leftJoinAndSelect('seriesPost.series', 'series');
     AttachmentQueryHelper.withAttachments(qb, 'post');
 
-    qb.where('series.isPublishedYn = :isPublishedYn', { isPublishedYn: 'Y' });
+    qb.where("post.isPublishedYn = 'Y'");
     qb.andWhere('series.slug = :seriesSlug', { seriesSlug });
 
     qb.orderBy('seriesPost.order', 'ASC');
@@ -96,7 +95,8 @@ export class SeriesService {
       .createQueryBuilder('seriesPost')
       .leftJoinAndSelect('seriesPost.post', 'post')
       .leftJoinAndSelect('seriesPost.series', 'series')
-      .where('seriesPost.series.id = :seriesId', { seriesId })
+      .where("seriesPost.isPublishedYn = 'Y'")
+      .andWhere('seriesPost.series.id = :seriesId', { seriesId })
       .andWhere('post.id != :currentPostId', { currentPostId })
       .andWhere(
         new Brackets((qb) => {
@@ -121,7 +121,8 @@ export class SeriesService {
       .createQueryBuilder('seriesPost')
       .leftJoinAndSelect('seriesPost.post', 'post')
       .leftJoinAndSelect('seriesPost.series', 'series')
-      .where('seriesPost.series.id = :seriesId', { seriesId })
+      .where("seriesPost.isPublishedYn = 'Y'")
+      .andWhere('seriesPost.series.id = :seriesId', { seriesId })
       .andWhere('post.id != :currentPostId', { currentPostId })
       .andWhere(
         new Brackets((qb) => {
