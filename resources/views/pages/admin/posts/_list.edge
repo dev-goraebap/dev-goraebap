@@ -18,13 +18,13 @@
           상태
         </th>
         <th>
-          조회수
+          @!partials.admin.sortButton({ btnText: '조회수', dataName: 'viewCount' })
         </th>
         <th>
-          발행일
+          @!partials.admin.sortButton({ btnText: '발행일', dataName: 'publishedAt' })
         </th>
         <th>
-          생성일
+          @!partials.admin.sortButton({ btnText: '생성일', dataName: 'createdAt' })
         </th>
         <th>
           관리

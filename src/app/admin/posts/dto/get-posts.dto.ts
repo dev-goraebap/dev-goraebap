@@ -1,19 +1,21 @@
+import { parseSortString } from 'src/shared';
 import z from 'zod';
 
 export const GetPostsSchema = z
   .object({
+    sort: z.string().optional().default('-publishedAt'),
+    page: z.coerce.number().min(1).default(1),
+    perPage: z.coerce.number().min(10).max(50).default(10),
     search: z.string().optional().default(''),
     postType: z.string().optional().default('post'),
     isPublished: z.string().optional().default(''),
-    orderKey: z.string().optional().default('publishedAt'),
-    orderBy: z.string().optional().default('DESC'),
-    page: z.coerce.number().min(1).default(1),
-    perPage: z.coerce.number().min(10).max(50).default(10),
   })
   .transform((x) => {
+    const { orderKey, orderBy } = parseSortString(x.sort, 'publishedAt');
     return {
       ...x,
-      orderBy: x.orderBy as 'ASC' | 'DESC',
+      orderBy,
+      orderKey,
     };
   });
 
