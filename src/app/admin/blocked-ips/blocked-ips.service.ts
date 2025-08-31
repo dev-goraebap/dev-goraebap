@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { BlockedIpEntity } from 'src/shared';
+import { CreateBlockedIpDto } from './dto/create-blocked-ip.dto';
 import { GetBlockedIpsDto } from './dto/get-blocked-ips.dto';
 
 @Injectable()
@@ -39,6 +40,19 @@ export class BlockedIpsService {
         totalPages: Math.ceil(total / dto.perPage),
       },
     };
+  }
+
+  async create(dto: CreateBlockedIpDto) {
+    console.log(dto);
+    const newBlockedIp = this.ipBlockedRepository.create({
+      ...dto,
+      expiresAt: null,
+    });
+    try {
+      return await this.ipBlockedRepository.save(newBlockedIp);
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
   }
 
   // 차단 해제 (레코드 유지, 비활성화)

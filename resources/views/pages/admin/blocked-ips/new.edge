@@ -1,0 +1,9 @@
+<turbo-frame id="modalContentFrame">
+  <h2 class="text-2xl">
+    접근 제한 IP 등록
+  </h2>
+  <br />
+  @!component('pages/admin/blocked-ips/_form', {
+    blockedIp: flash?.input?.blockedIp ?? null
+  })
+</turbo-frame>

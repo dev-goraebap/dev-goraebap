@@ -14,7 +14,7 @@ export class BlockedIpEntity {
   readonly reason: string | null;
 
   @Column({ length: 20, default: 'manual' })
-  readonly blockedBy: string;
+  readonly blockedBy: string; // manual, auto
 
   @Column({ type: 'timestamptz', nullable: true })
   readonly expiresAt: Date | null;
