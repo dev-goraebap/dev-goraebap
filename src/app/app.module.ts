@@ -1,7 +1,7 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 
-import { AppExceptionFilter, LoggingInterceptor, RequestIdMiddleware } from 'src/common';
+import { AppExceptionFilter, LoggingInterceptor, RequestIdMiddleware, WAFMiddleware } from 'src/common';
 import { AdminModule } from './admin/admin.module';
 import { CommentsModule } from './comments/comments.module';
 import { FeedModule } from './feed/feed.module';
@@ -31,6 +31,9 @@ import { SessionModule } from './session/session.module';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(RequestIdMiddleware).forRoutes({ path: '*', method: RequestMethod.ALL });
+    consumer.apply(
+      RequestIdMiddleware,
+      WAFMiddleware
+    ).forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }
