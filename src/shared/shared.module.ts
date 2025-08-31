@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   AttachmentEntity,
   BlobEntity,
+  BlockedIpEntity,
   CommentEntity,
   PostEntity,
   SeriesEntity,
@@ -33,6 +34,7 @@ const services = [
       BlobEntity,
       AttachmentEntity,
       CommentEntity,
+      BlockedIpEntity
     ]),
   ],
   providers: [...services],

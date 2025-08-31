@@ -6,3 +6,4 @@ export * from './series.entity';
 export * from './tag.entity';
 export * from './user.entity';
 export * from './comment.entity';
+export * from './blocked-ip.entity';
