@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, Update
 
 @Entity({ name: 'blocked_ips' })
 @Index(['ipAddress'], { unique: true })
-@Index(['isActive', 'expiresAt'])
+@Index(['isActiveYn', 'expiresAt'])
 export class BlockedIpEntity {
   @PrimaryGeneratedColumn()
   readonly id: number;
@@ -19,8 +19,8 @@ export class BlockedIpEntity {
   @Column({ type: 'timestamptz', nullable: true })
   readonly expiresAt: Date | null;
 
-  @Column({ default: true })
-  readonly isActive: boolean;
+  @Column({ default: 'Y', length: 1 })
+  readonly isActiveYn: string;
 
   @CreateDateColumn()
   readonly createdAt: Date;

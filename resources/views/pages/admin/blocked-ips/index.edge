@@ -1,0 +1,19 @@
+@layout.admin({ title: '데브고래밥 스튜디오 | 접근 관리' })
+
+  @layout.admin.tableBoard({
+    title: '보안',
+    currentUrl: '/admin/blocked-ips',
+    pagination,
+    tabList: [
+      { name: '접근관리', url: '/admin/blocked-ips' },
+    ]
+  })
+    @slot('filterForm')
+      <input type="text" name="search" value="{{ query('search') || '' }}" placeholder="ip 또는 사유 입력" class="text-sm w-[150px]" />
+    @end
+    
+    @slot('content')
+      @!component('pages/admin/blocked-ips/_list', { blockedIpList })
+    @end
+  @end
+@end

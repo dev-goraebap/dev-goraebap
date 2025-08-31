@@ -102,7 +102,7 @@ export class WAFMiddleware implements NestMiddleware {
     const blocked = await this.blockedIpRepository.findOne({
       where: { 
         ipAddress,
-        isActive: true,
+        isActiveYn: 'Y',
       },
     });
 
@@ -112,12 +112,12 @@ export class WAFMiddleware implements NestMiddleware {
     if (blocked.expiresAt && new Date() > blocked.expiresAt) {
       await this.blockedIpRepository.update(
         { ipAddress },
-        { isActive: false }
+        { isActiveYn: 'N' }
       );
       return false;
     }
 
-    return blocked.isActive;
+    return blocked.isActiveYn === 'Y';
   }
 
   private isMaliciousPath(path: string): boolean {
@@ -139,7 +139,7 @@ export class WAFMiddleware implements NestMiddleware {
           reason,
           blockedBy: 'auto',
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24시간 후 만료
-          isActive: true,
+          isActiveYn: 'Y',
         });
 
         // 자동 차단 이벤트 로깅
