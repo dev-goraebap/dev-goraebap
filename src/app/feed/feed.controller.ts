@@ -21,26 +21,17 @@ export class FeedController {
     @Res() res: Response,
     @IsTurboStream() isTurboStream: boolean,
   ) {
-    const postsData = await this.feedService.getPosts(dto);
-    const tags = await this.feedService.getTags();
-
     // 커서가 있는 경우(더보기)의 경우 터보 스트림 응답
     // 페이지 교체가 아니라 데이터를 아래 쌓아야하기 때문
     if (isTurboStream && dto.cursor) {
+      const pageData = await this.feedService.getFeedPageData(dto, true);
       res.setHeader('Content-Type', 'text/vnd.turbo-stream.html');
-      const template = await req.view.render('pages/feed/posts/_list_append', {
-        postsData,
-        tags,
-      });
+      const template = await req.view.render('pages/feed/posts/_list_append', pageData);
       return res.send(template);
     }
 
-    const patchNote = await this.feedService.getLatestPatchNote();
-    const template = await req.view.render('pages/feed/index', {
-      postsData,
-      patchNote,
-      tags,
-    });
+    const pageData = await this.feedService.getFeedPageData(dto);
+    const template = await req.view.render('pages/feed/index', pageData);
     return res.send(template);
   }
 }

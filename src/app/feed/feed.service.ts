@@ -14,7 +14,17 @@ export class FeedService {
     private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  async getPosts(dto: GetPostsDto) {
+  async getFeedPageData(dto: GetPostsDto, isSeeMore: boolean = false) {
+    const [postsData, tags, patchNote] = await Promise.all([
+      this.getPosts(dto),
+      this.getTags(),
+      isSeeMore ? Promise.resolve(null) : this.getLatestPatchNote(),
+    ]);
+
+    return { postsData, tags, patchNote };
+  }
+
+  private async getPosts(dto: GetPostsDto) {
     const qb = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
@@ -70,7 +80,7 @@ export class FeedService {
     };
   }
 
-  async getLatestPatchNote() {
+  private async getLatestPatchNote() {
     const qb = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
@@ -84,7 +94,7 @@ export class FeedService {
     return await qb.getOne();
   }
 
-  async getTags() {
+  private async getTags() {
     return await this.tagRepository.find({
       relations: {
         posts: true,
