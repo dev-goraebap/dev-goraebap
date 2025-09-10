@@ -1,27 +1,30 @@
 import { Module } from '@nestjs/common';
-import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { FileCleanupService } from './application/services/file-cleanup.service';
-import { FileUploadApplicationService } from './application/services/file-upload-application.service';
-import { GoogleVisionService } from './infrastructure/google-vision.service';
-import { R2Service } from './infrastructure/r2.service';
-import { MediaSharedModule } from './media-shared.module';
-import { FileUploadApiController } from './presentation/file-upload.api.controller';
+import { BlobEntity, AttachmentEntity } from 'src/shared';
+import { MediaService } from './application/services/media.service';
+import { MediaStorageService } from './application/services/media-storage.service';
+import { MediaAnalysisService } from './application/services/media-analysis.service';
+import { MediaCleanupService } from './application/services/media-cleanup.service';
+import { MediaUploadService } from './application/orchestrators/media-upload.service';
 
-// prettier-ignore
 @Module({
-  imports: [
-    ScheduleModule.forRoot(),
-    MediaSharedModule
-  ],
-  controllers: [
-    FileUploadApiController
-  ],
+  imports: [TypeOrmModule.forFeature([BlobEntity, AttachmentEntity])],
   providers: [
-    FileUploadApplicationService, 
-    R2Service, 
-    FileCleanupService, 
-    GoogleVisionService
+    // Level 1: 순수 도메인 서비스
+    MediaService,
+    MediaStorageService,
+    MediaAnalysisService,
+    MediaCleanupService,
+    // Level 2: 오케스트레이션 서비스
+    MediaUploadService,
+  ],
+  exports: [
+    MediaService,
+    MediaStorageService,
+    MediaAnalysisService,
+    MediaCleanupService,
+    MediaUploadService,
   ],
 })
 export class MediaModule {}

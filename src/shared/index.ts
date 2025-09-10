@@ -3,3 +3,7 @@ export * from './services';
 export * from './shared.module';
 export * from './utils';
 export * from './dto';
+export * from './guards';
+export * from './interceptors';
+export * from './filters';
+export * from './decorators';
