@@ -12,7 +12,8 @@ import {
   UsePipes,
 } from '@nestjs/common';
 
-import { AdminAuthGuard, CurrentUser, ZodValidationPipe } from 'src/common';
+import { CurrentUser, ZodValidationPipe } from 'src/common';
+import { AdminAuthGuard } from 'src/modules';
 import { UpdatePublishDto, UpdatePublishSchema, UserEntity } from 'src/shared';
 
 import { PostQueryService } from 'src/modules/post/application/services/post-query.service';

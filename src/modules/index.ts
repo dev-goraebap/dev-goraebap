@@ -39,3 +39,6 @@ export * from './user/application/services/user-auth.service';
 export * from './user/application/services/user-query.service';
 export * from './user/application/services/user-session.service';
 export * from './user/application/guards/admin-auth.guard';
+
+export * from './post/application/services/post-feed.service';
+export * from './post/application/services/post-patch-notes.service';

@@ -1,7 +1,7 @@
 import { Controller, Get, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 
-import { AdminAuthGuard } from 'src/common';
+import { AdminAuthGuard } from 'src/modules';
 
 @Controller({ path: 'admin' })
 @UseGuards(AdminAuthGuard)

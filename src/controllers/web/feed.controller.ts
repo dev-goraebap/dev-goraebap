@@ -3,28 +3,35 @@ import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { IsTurboStream, ZodValidationPipe } from 'src/common';
-// TODO: Feed 모듈 완성 후 연결
-// import { GetPostsDto, GetPostsSchema } from 'src/modules/feed/application/dto/get-posts.dto';
-// import { FeedService } from 'src/modules/feed/application/services/feed.service';
+import { GetFeedPostsDto, GetFeedPostsSchema } from 'src/modules/post/application/dto/get-feed-posts.dto';
+import { PostFeedService } from 'src/modules/post/application/services/post-feed.service';
 
 @Controller({ path: '' })
 export class FeedController {
-  // TODO: FeedService를 적절한 모듈로 이동 후 연결
-  constructor() {} // private readonly feedService: FeedService
+  constructor(private readonly postFeedService: PostFeedService) { }
 
   /**
    * 피드 페이지
    */
   @Get()
-  // @UsePipes(new ZodValidationPipe(GetPostsSchema))
+  @UsePipes(new ZodValidationPipe(GetFeedPostsSchema))
   async index(
     @Req() req: NestMvcReq,
-    // @Query() dto: GetPostsDto,
+    @Query() dto: GetFeedPostsDto,
     @Res() res: Response,
     @IsTurboStream() isTurboStream: boolean,
   ) {
-    // TODO: 새로운 모듈 구조에 맞게 서비스 로직 재구성
-    const template = await req.view.render('pages/feed/index', {});
+    // 커서가 있는 경우(더보기)의 경우 터보 스트림 응답
+    // 페이지 교체가 아니라 데이터를 아래 쌓아야하기 때문
+    if (isTurboStream && dto.cursor) {
+      const pageData = await this.postFeedService.getFeedPageData(dto, true);
+      res.setHeader('Content-Type', 'text/vnd.turbo-stream.html');
+      const template = await req.view.render('pages/feed/posts/_list_append', pageData);
+      return res.send(template);
+    }
+
+    const pageData = await this.postFeedService.getFeedPageData(dto);
+    const template = await req.view.render('pages/feed/index', pageData);
     return res.send(template);
   }
 }

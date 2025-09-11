@@ -121,32 +121,41 @@ Controllers → Application Services → Domain Services → Infrastructure
 ### 새로운 앱 모듈
 - `app-refactored.module.ts` - 리팩토링된 구조의 메인 모듈
 
-## ⚠️ 다음 세션에서 진행할 작업들
+## ✅ 완료된 추가 작업들 (2024-12-11 업데이트)
 
-### 1. User 도메인 모듈 생성 (시작됨)
-- **Session 기능을 User 도메인으로 통합** 필요
-- `src/app/session/` 의 AuthService, SessionController → `modules/user/`로 마이그레이션
-- AdminAuthGuard와 JWT 인증 범위 재정리
-- UserService, UserAuthService 등 비즈니스 로직 업무 분리
+### ✅ 1. User 도메인 모듈 생성 완료
+- **Session 기능을 User 도메인으로 완전 통합**
+- `UserAuthService`: 매직링크 인증 로직 (기존 AuthService)
+- `UserQueryService`: 사용자 조회 로직
+- `UserSessionService`: 세션 관리 로직
+- `AdminAuthGuard`: User 도메인 서비스 활용하도록 개선
+- `controllers/web/session.controller.ts`: 리팩토링된 컨트롤러
+- `src/app/session/` 디렉토리 완전 제거
 
-### 2. Post 도메인에 기능 통합
-- **Feed 기능**: RSS 생성, 피드 조회 등 → PostFeedService 생성
-- **PatchNotes 기능**: 패치노트는 Post의 특수 카테고리 → PostPatchNotesService 생성
-- 기존 `src/app/feed/`, `src/app/patch-notes/` 서비스들 이동
+### ✅ 2. Post 도메인에 기능 통합 완료
+- **PostFeedService**: 피드 조회, 게시글 목록, 최신 패치노트, 태그 조회
+- **PostPatchNotesService**: 패치노트 목록/상세 조회, 기타 패치노트 조회
+- **GetFeedPostsDto**: 피드용 쿼리 파라미터 (cursor, tag, orderType)
+- `controllers/web/feed.controller.ts`: PostFeedService 연동 완료
+- `controllers/web/patch-notes.controller.ts`: PostPatchNotesService 연동 완료
+- `src/app/feed/`, `src/app/patch-notes/` 디렉토리 완전 제거
 
-### 3. Infrastructure 기능 정리
+### ✅ 3. 기술적 정리 작업 완료
+- **AdminAuthGuard**: User 도메인으로 완전 이동, import 경로 업데이트
+- **Import 경로 정리**: `src/modules` index.ts를 통한 중앙 집중 관리
+- **기존 src/app 정리**: 마이그레이션된 기능들 제거 완료
+
+### ⚠️ 남은 작업들
+
+### 1. Infrastructure 기능 정리
 - **SEO 기능**: 사이트맵, 메타 태그 → `src/infrastructure/seo/` 또는 적절한 위치
 - SitemapController는 이미 생성되었으나 SEO 서비스들 연결 필요
 
-### 4. 남은 기술적 정리 작업
-- **AdminAuthGuard**: User 도메인에서 관리하도록 이동
-- **import 경로**: `src/modules`의 index.ts로 대부분 통합됨, 나머지 수정
-- **기존 src/app 삭제**: 마이그레이션 완료 후 점진적 제거
-
-### 5. 테스트 및 검증
-- **빌드 테스트**: `npm run build` 또는 빌드 명령 실행
-- **엔드포인트 테스트**: 각 웹/API 엔드포인트 동작 확인
-- **기능 회귀 테스트**: 기존 기능들이 정상 동작하는지 확인
+### 2. 남은 src/app 디렉토리 정리
+- `src/app/admin/`: 관리자 기능들 (아직 많은 컨트롤러와 서비스 존재)
+- `src/app/comments/`: 댓글 기능 (Comment 도메인으로 통합 검토 필요)
+- `src/app/posts/`, `src/app/series/`: 기존 컨트롤러들 (Post, Series 도메인으로 통합 검토)
+- `src/app/seo/`: SEO 관련 기능
 
 ## 🎯 리팩토링 장점
 
@@ -165,12 +174,12 @@ Controllers → Application Services → Domain Services → Infrastructure
 - 서비스 레벨 구분으로 복잡도 관리
 - 일관된 네이밍 컨벤션
 
-## 📅 다음 세션 계획 (2024년 내일 진행)
+## 📅 향후 세션 계획
 
-1. **User 도메인 완성**: Session 기능 통합 및 UserService 구조 완성
-2. **Post 도메인 확장**: Feed, PatchNotes 기능 통합
-3. **빌드 테스트**: 전체 애플리케이션 컴파일 및 동작 테스트
-4. **최종 정리**: 기존 src/app 디렉토리 제거 및 정리
+1. **Infrastructure 기능 정리**: SEO 관련 기능들을 적절한 위치로 이동
+2. **Comment 도메인 통합**: `src/app/comments/` 기능들을 Comment 도메인으로 통합
+3. **Admin 기능 정리**: 관리자 관련 컨트롤러들을 도메인별로 재배치
+4. **최종 src/app 정리**: 남은 기존 구조 완전 제거
 
 ---
 

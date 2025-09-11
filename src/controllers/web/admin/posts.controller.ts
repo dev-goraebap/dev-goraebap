@@ -16,7 +16,8 @@ import {
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { AdminAuthGuard, CurrentUser, ZodValidationPipe } from 'src/common';
+import { CurrentUser, ZodValidationPipe } from 'src/common';
+import { AdminAuthGuard } from 'src/modules';
 import { UpdatePublishDto, UpdatePublishSchema, UserEntity } from 'src/shared';
 
 // TODO: 새로운 모듈 구조에서 import

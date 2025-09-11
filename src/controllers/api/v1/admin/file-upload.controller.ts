@@ -8,7 +8,8 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { AdminAuthGuard, CurrentUser } from 'src/common';
+import { CurrentUser } from 'src/common';
+import { AdminAuthGuard } from 'src/modules';
 import { UserEntity } from 'src/shared';
 import { MediaUploadService, MediaUploadResponseDto } from 'src/modules';
 

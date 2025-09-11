@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { AttachmentQueryHelper, PostEntity } from 'src/shared';
 
 @Injectable()
-export class PatchNotesService {
+export class PostPatchNotesService {
   constructor(
     @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,

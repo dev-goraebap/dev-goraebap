@@ -3,10 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { AttachmentQueryHelper, PostEntity, TagEntity } from 'src/shared';
-import { GetPostsDto } from './dto/get-posts.dto';
+
+import { GetFeedPostsDto } from '../dto/get-feed-posts.dto';
 
 @Injectable()
-export class FeedService {
+export class PostFeedService {
   constructor(
     @InjectRepository(TagEntity)
     private readonly tagRepository: Repository<TagEntity>,
@@ -14,7 +15,7 @@ export class FeedService {
     private readonly postRepository: Repository<PostEntity>,
   ) {}
 
-  async getFeedPageData(dto: GetPostsDto, isSeeMore: boolean = false) {
+  async getFeedPageData(dto: GetFeedPostsDto, isSeeMore: boolean = false) {
     const [postsData, tags, patchNote] = await Promise.all([
       this.getPosts(dto),
       this.getTags(),
@@ -24,7 +25,7 @@ export class FeedService {
     return { postsData, tags, patchNote };
   }
 
-  private async getPosts(dto: GetPostsDto) {
+  async getPosts(dto: GetFeedPostsDto) {
     const qb = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
@@ -80,7 +81,7 @@ export class FeedService {
     };
   }
 
-  private async getLatestPatchNote() {
+  async getLatestPatchNote() {
     const qb = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.tags', 'tag')
@@ -94,7 +95,7 @@ export class FeedService {
     return await qb.getOne();
   }
 
-  private async getTags() {
+  async getTags() {
     return await this.tagRepository.find({
       relations: {
         posts: true,

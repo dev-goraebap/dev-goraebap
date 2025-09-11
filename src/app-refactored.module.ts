@@ -34,9 +34,7 @@ import {
 } from './controllers';
 
 // 기존에 유지되는 모듈들 (아직 리팩토링되지 않음)
-// import { SessionModule } from './app/session/session.module';
 // import { SeoModule } from './app/seo/seo.module';
-// import { PatchNotesModule } from './app/patch-notes/patch-notes.module';
 // import { AdminModule } from './app/admin/admin.module';
 
 import { InitService } from './app/init.service';

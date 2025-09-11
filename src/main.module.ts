@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 
-import { AppModule } from './app/app.module';
+import { AppRefactoredModule } from './app-refactored.module';
 import { ConfigModule } from './config';
 import { LoggerModule } from './logger';
 import { SharedModule } from './shared';
@@ -10,7 +10,7 @@ import { SharedModule } from './shared';
     // prettier-ignore
     LoggerModule,
     ConfigModule,
-    AppModule,
+    AppRefactoredModule,
     SharedModule,
   ],
 })
