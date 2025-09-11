@@ -5,9 +5,7 @@ export { CommentModule } from './comment/comment.module';
 export { TagModule } from './tag/tag.module';
 export { BlockedIpModule } from './blocked-ip/blocked-ip.module';
 export { MediaModule } from './media/media.module';
-
-// TODO: User 도메인 모듈 추가 예정 (session 기능 포함)
-// export { UserModule } from './user/user.module';
+export { UserModule } from './user/user.module';
 
 // 서비스들도 re-export
 export * from './post/application/services/post.service';
@@ -36,3 +34,8 @@ export * from './media/application/services/media-analysis.service';
 export * from './media/application/services/media-cleanup.service';
 export * from './media/application/orchestrators/media-upload.service';
 export * from './media/application/dto/media-upload-response.dto';
+
+export * from './user/application/services/user-auth.service';
+export * from './user/application/services/user-query.service';
+export * from './user/application/services/user-session.service';
+export * from './user/application/guards/admin-auth.guard';

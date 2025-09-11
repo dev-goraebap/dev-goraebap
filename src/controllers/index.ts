@@ -4,6 +4,7 @@ export { PostController } from './web/post.controller';
 export { SeriesController } from './web/series.controller';
 export { SitemapController } from './web/sitemap.controller';
 export { PatchNotesController } from './web/patch-notes.controller';
+export { SessionController } from './web/session.controller';
 
 // Web Controllers (SSR) - 관리자용
 export { AdminController } from './web/admin/admin.controller';

@@ -10,7 +10,8 @@ import {
   CommentModule, 
   TagModule, 
   BlockedIpModule, 
-  MediaModule
+  MediaModule,
+  UserModule
 } from './modules';
 
 // 컨트롤러들
@@ -21,6 +22,7 @@ import {
   SeriesController,
   SitemapController,
   PatchNotesController,
+  SessionController,
   
   // Web Controllers - 관리자용
   AdminController,
@@ -48,8 +50,7 @@ import { InitService } from './app/init.service';
     TagModule,
     BlockedIpModule,
     MediaModule,
-    
-    // TODO: User 도메인 모듈 추가 예정 (session 기능 포함)
+    UserModule,
   ],
   controllers: [
     // Web Controllers - 일반 사용자용
@@ -58,6 +59,7 @@ import { InitService } from './app/init.service';
     SeriesController,
     SitemapController,
     PatchNotesController,
+    SessionController,
     
     // Web Controllers - 관리자용
     AdminController,
@@ -65,7 +67,7 @@ import { InitService } from './app/init.service';
     
     // API Controllers - 관리자용
     AdminPostsApiController,
-    AdminFileUploadApiController,
+    AdminMediaApiController,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
