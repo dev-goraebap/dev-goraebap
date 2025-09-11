@@ -112,7 +112,7 @@
             const formData = new FormData();
             formData.append("file", blobInfo.blob(), blobInfo.filename());
             const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
-            fetch("/api/admin/file-upload", {
+            fetch("/api/v1/admin/media", {
               method: "POST",
               body: formData,
               headers: {

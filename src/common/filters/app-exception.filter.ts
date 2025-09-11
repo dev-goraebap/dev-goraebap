@@ -2,7 +2,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/common';
 import { Response } from 'express';
 import { NestMvcBaseExceptionHandler, NestMvcReq } from 'nestjs-mvc-tools';
-import { LoggerService } from 'src/logger';
+import { LoggerService } from 'src/shared/logger';
 import { getRealClientIp } from 'src/shared';
 
 @Catch()

@@ -1,9 +1,8 @@
 import { Module } from '@nestjs/common';
 
-import { AppRefactoredModule } from './app-refactored.module';
 import { ConfigModule } from './config';
-import { LoggerModule } from './logger';
-import { SharedModule } from './shared';
+import { AppRefactoredModule } from './presentation/presentation.module';
+import { LoggerModule, SharedModule } from './shared';
 
 @Module({
   imports: [

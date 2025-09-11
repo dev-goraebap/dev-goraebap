@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { NextFunction, Request, Response } from 'express';
 import { BlockedIpEntity, getRealClientIp } from 'src/shared';
 import { Repository } from 'typeorm';
-import { LoggerService } from 'src/logger';
+import { LoggerService } from 'src/shared/logger';
 
 @Injectable()
 export class WAFMiddleware implements NestMiddleware {

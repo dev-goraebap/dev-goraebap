@@ -1,15 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { BlobEntity, AttachmentEntity } from 'src/shared';
-import { MediaService } from './application/services/media.service';
-import { MediaStorageService } from './application/services/media-storage.service';
+import { MediaUploadService } from './application/orchestrators/media-upload.service';
 import { MediaAnalysisService } from './application/services/media-analysis.service';
 import { MediaCleanupService } from './application/services/media-cleanup.service';
-import { MediaUploadService } from './application/orchestrators/media-upload.service';
+import { MediaStorageService } from './application/services/media-storage.service';
+import { MediaService } from './application/services/media.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([BlobEntity, AttachmentEntity])],
   providers: [
     // Level 1: 순수 도메인 서비스
     MediaService,

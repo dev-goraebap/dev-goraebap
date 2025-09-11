@@ -1,20 +1,20 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { SeriesEntity, SeriesPostEntity, PostEntity } from 'src/shared';
+import { SeriesCommandService } from './application/orchestrators/series-command.service';
+import { SeriesQueryService } from './application/orchestrators/series-query.service';
 import { SeriesService } from './application/services/series.service';
-import { SeriesQueryService } from './application/services/series-query.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SeriesEntity, SeriesPostEntity, PostEntity])],
   providers: [
     // Level 1: 순수 도메인 서비스
     SeriesService,
     SeriesQueryService,
+    SeriesCommandService
   ],
   exports: [
     SeriesService,
     SeriesQueryService,
+    SeriesCommandService
   ],
 })
 export class SeriesModule {}

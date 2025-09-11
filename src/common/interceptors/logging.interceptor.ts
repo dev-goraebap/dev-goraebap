@@ -1,7 +1,7 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable, tap } from 'rxjs';
 
-import { LoggerService } from 'src/logger';
+import { LoggerService } from 'src/shared/logger';
 import { getRealClientIp } from 'src/shared';
 
 @Injectable()
