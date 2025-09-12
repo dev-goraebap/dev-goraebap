@@ -1,16 +1,15 @@
 import { Module } from '@nestjs/common';
 
 import { ConfigModule } from './config';
-import { AppRefactoredModule } from './presentation/presentation.module';
-import { LoggerModule, SharedModule } from './shared';
+import { PresentationModule } from './core/presentation/presentation.module';
+import { LoggerModule } from './shared';
 
 @Module({
   imports: [
     // prettier-ignore
     LoggerModule,
     ConfigModule,
-    AppRefactoredModule,
-    SharedModule,
+    PresentationModule,
   ],
 })
 export class MainModule {}

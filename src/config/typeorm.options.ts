@@ -3,17 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-import {
-  AttachmentEntity,
-  BlobEntity,
-  BlockedIpEntity,
-  CommentEntity,
-  PostEntity,
-  SeriesEntity,
-  SeriesPostEntity,
-  TagEntity,
-  UserEntity,
-} from 'src/shared';
+import { AttachmentEntity, BlobEntity, BlockedIpEntity, CommentEntity, PostEntity, SeriesEntity, SeriesPostEntity, TagEntity, UserEntity } from 'src/core/infrastructure/entities';
 
 @Injectable()
 export class TypeOrmOptionsImpl implements TypeOrmOptionsFactory {
