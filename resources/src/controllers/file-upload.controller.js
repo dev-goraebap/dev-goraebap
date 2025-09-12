@@ -41,7 +41,7 @@ export class FileUploadController extends Controller {
         // 서버 업로드 설정
         server: {
           process: {
-            url: '/api/admin/file-upload',
+            url: '/api/v1/admin/media',
             method: 'POST',
             withCredentials: false,
             headers: {},
