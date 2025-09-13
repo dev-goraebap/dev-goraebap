@@ -2,7 +2,8 @@ import { Controller, Delete, Get, Param, Query, Req, Res, UseGuards, UsePipes } 
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { CommentCommandService, CommentQueryService, GetCommentsDto, GetCommentsSchema } from 'src/core/application/comment';
+import { CommentCommandService, CommentQueryService } from 'src/core/application/comment';
+import { GetAdminCommentsDto, GetAdminCommentsSchema } from 'src/core/infrastructure/dto';
 import { AdminAuthGuard } from 'src/core/presentation/guards';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
 
@@ -15,9 +16,9 @@ export class AdminCommentController {
   ) { }
 
   @Get()
-  @UsePipes(new ZodValidationPipe(GetCommentsSchema))
-  async index(@Req() req: NestMvcReq, @Query() dto: GetCommentsDto) {
-    const commentData = await this.commentQueryService.getComments(dto);
+  @UsePipes(new ZodValidationPipe(GetAdminCommentsSchema))
+  async index(@Req() req: NestMvcReq, @Query() dto: GetAdminCommentsDto) {
+    const commentData = await this.commentQueryService.getAdminComments(dto);
     return req.view.render('pages/admin/comments/index', { ...commentData });
   }
 

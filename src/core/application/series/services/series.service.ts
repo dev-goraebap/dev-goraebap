@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Not, Repository } from 'typeorm';
 
 import { PostEntity, SeriesEntity, SeriesPostEntity, UserEntity } from 'src/core/infrastructure/entities';
-import { UpdatePublishDto } from 'src/shared';
+import { UpdatePublishDto } from '../../_concern';
 import { CreateSeriesDto, UpdateSeriesDto } from '../dto/create-or-update-series.dto';
 
 @Injectable()

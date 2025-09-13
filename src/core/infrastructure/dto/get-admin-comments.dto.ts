@@ -1,7 +1,7 @@
 import { parseSortString } from 'src/shared';
 import z from 'zod';
 
-export const GetCommentsSchema = z
+export const GetAdminCommentsSchema = z
   .object({
     sort: z.string().optional().default('-createdAt'),
     page: z.coerce.number().min(1).default(1),
@@ -17,4 +17,4 @@ export const GetCommentsSchema = z
     };
   });
 
-export type GetCommentsDto = z.infer<typeof GetCommentsSchema>;
+export type GetAdminCommentsDto = z.infer<typeof GetAdminCommentsSchema>;

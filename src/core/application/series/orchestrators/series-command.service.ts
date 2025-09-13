@@ -3,8 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, In, Repository } from 'typeorm';
 
 import { SeriesPostEntity, UserEntity } from 'src/core/infrastructure/entities';
-import { UpdatePublishDto } from 'src/shared';
-import { AttachmentSharedService, PostSharedService } from '../../_concern';
+import { AttachmentSharedService, PostSharedService, UpdatePublishDto } from '../../_concern';
 import { CreateSeriesDto, UpdateSeriesDto } from '../dto/create-or-update-series.dto';
 import { SeriesService } from '../services/series.service';
 

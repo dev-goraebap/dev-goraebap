@@ -2,14 +2,12 @@ import { Module } from '@nestjs/common';
 
 import { CommentCommandService } from './orchestrators/comment-command.service';
 import { CommentQueryService } from './orchestrators/comment-query.service';
-import { CommentSharedService } from './orchestrators/comment-shared.service';
 import { CommentService } from './services/comment.service';
 
 const services = [
   CommentService,
   CommentQueryService,
-  CommentCommandService,
-  CommentSharedService
+  CommentCommandService
 ];
 
 @Module({

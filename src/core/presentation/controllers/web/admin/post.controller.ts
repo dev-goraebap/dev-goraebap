@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
+import { UpdatePublishDto, UpdatePublishSchema } from 'src/core/application/_concern';
 
 import { CreatePostDto, CreatePostSchema, PostCommandService, PostQueryService, UpdatePostDto, UpdatePostSchema } from 'src/core/application/post';
 import { GetAdminPostsDTO, GetAdminPostsSchema } from 'src/core/infrastructure/dto';
@@ -22,7 +23,6 @@ import { UserEntity } from 'src/core/infrastructure/entities';
 import { CurrentUser } from 'src/core/presentation/decorators';
 import { AdminAuthGuard } from 'src/core/presentation/guards';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
-import { UpdatePublishDto, UpdatePublishSchema } from 'src/shared';
 
 @Controller({ path: '/admin/posts' })
 @UseGuards(AdminAuthGuard)

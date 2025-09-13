@@ -15,7 +15,8 @@ import {
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { BlockedIpCommandService, BlockedIpQueryService, CreateBlockedIpDto, CreateBlockedIpSchema, GetBlockedIpsDto, GetBlockedIpsSchema } from 'src/core/application/blocked-ip';
+import { BlockedIpCommandService, BlockedIpQueryService, CreateBlockedIpDto, CreateBlockedIpSchema } from 'src/core/application/blocked-ip';
+import { GetBlockedIpsDto, GetBlockedIpsSchema } from 'src/core/infrastructure/dto';
 import { AdminAuthGuard } from 'src/core/presentation/guards';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
 
@@ -30,7 +31,7 @@ export class AdminBlockedIpsController {
   @Get()
   @UsePipes(new ZodValidationPipe(GetBlockedIpsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetBlockedIpsDto) {
-    const ipBlockedData = await this.blockedIpQueryService.getBlockedIpList(dto);
+    const ipBlockedData = await this.blockedIpQueryService.getAdminBlockedIpList(dto);
     return req.view.render('pages/admin/blocked-ips/index', { ...ipBlockedData });
   }
 

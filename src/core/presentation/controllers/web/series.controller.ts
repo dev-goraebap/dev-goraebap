@@ -2,7 +2,7 @@ import { Controller, Get, Param, Req } from '@nestjs/common';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { PostSharedService } from 'src/core/application/_concern';
-import { CommentSharedService } from 'src/core/application/comment';
+import { CommentQueryService } from 'src/core/application/comment';
 import { SeriesQueryService } from 'src/core/application/series';
 
 @Controller({ path: 'series' })
@@ -10,7 +10,7 @@ export class SeriesController {
 
   constructor(
     private readonly postSharedService: PostSharedService,
-    private readonly commentSharedService: CommentSharedService,
+    private readonly commentQueryService: CommentQueryService,
     private readonly seriesQueryService: SeriesQueryService,
   ) {}
 
@@ -38,7 +38,7 @@ export class SeriesController {
     await this.postSharedService.updateViewCount(postSlug);
 
     const result = await this.seriesQueryService.getSeriesPost(postSlug, seriesSlug);
-    const comments = await this.commentSharedService.getComments(postSlug);
+    const comments = await this.commentQueryService.getPostComments(postSlug);
     return req.view.render('pages/series/posts/show', {
       ...result,
       comments,

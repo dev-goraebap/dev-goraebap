@@ -2,8 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 
 import { PostEntity, UserEntity } from 'src/core/infrastructure/entities';
-import { UpdatePublishDto } from 'src/shared';
-import { AttachmentSharedService, TagSharedService } from '../../_concern';
+import { AttachmentSharedService, TagSharedService, UpdatePublishDto } from '../../_concern';
 import { CreatePostDto, UpdatePostDto } from '../dto/create-or-update-post.dto';
 import { PostService } from '../services/post.service';
 

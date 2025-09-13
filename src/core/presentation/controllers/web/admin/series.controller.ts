@@ -16,13 +16,13 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
+import { UpdatePublishDto, UpdatePublishSchema } from 'src/core/application/_concern';
 
 import { CreateSeriesDto, CreateSeriesSchema, GetSeriesDto, GetSeriesSchema, SeriesCommandService, SeriesQueryService, UpdateSeriesDto, UpdateSeriesSchema } from 'src/core/application/series';
 import { UserEntity } from 'src/core/infrastructure/entities';
 import { CurrentUser } from 'src/core/presentation/decorators';
 import { AdminAuthGuard } from 'src/core/presentation/guards';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
-import { UpdatePublishDto, UpdatePublishSchema } from 'src/shared';
 
 @Controller({ path: '/admin/series' })
 @UseGuards(AdminAuthGuard)
