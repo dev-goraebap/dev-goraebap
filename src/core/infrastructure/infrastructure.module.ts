@@ -2,12 +2,19 @@ import { Global, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AttachmentEntity, BlobEntity, BlockedIpEntity, CommentEntity, PostEntity, SeriesEntity, SeriesPostEntity, TagEntity, UserEntity } from "./entities";
+import { TagRepository } from "./repositories";
+import { PostRepository } from "./repositories/post.repository";
 import { CloudflareR2Service, GoogleImageService } from "./services";
 
 const services = [
   GoogleImageService,
   CloudflareR2Service
 ];
+
+const repositories = [
+  PostRepository,
+  TagRepository
+]
 
 @Global()
 @Module({
@@ -24,7 +31,7 @@ const services = [
       BlockedIpEntity
     ]),
   ],
-  providers: [...services],
-  exports: [...services, TypeOrmModule]
+  providers: [...services, ...repositories],
+  exports: [...services, ...repositories, TypeOrmModule]
 })
 export class InfrastructureModule { }

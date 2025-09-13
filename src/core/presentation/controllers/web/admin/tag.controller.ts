@@ -17,11 +17,12 @@ import {
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { CreateOrUpdateTagDto, CreateOrUpdateTagSchema, GetTagsDto, GetTagsSchema, TagCommandService, TagQueryService } from 'src/core/application/tag';
+import { CreateOrUpdateTagDto, CreateOrUpdateTagSchema, TagCommandService, TagQueryService } from 'src/core/application/tag';
+import { GetAdminTagsDto, GetAdminTagsSchema } from 'src/core/infrastructure/dto';
+import { UserEntity } from 'src/core/infrastructure/entities';
 import { CurrentUser } from 'src/core/presentation/decorators';
 import { AdminAuthGuard } from 'src/core/presentation/guards';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
-import { UserEntity } from 'src/core/infrastructure/entities';
 
 @Controller({ path: '/admin/tags' })
 @UseGuards(AdminAuthGuard)
@@ -32,9 +33,9 @@ export class AdminTagController {
   ) { }
 
   @Get()
-  @UsePipes(new ZodValidationPipe(GetTagsSchema))
-  async index(@Req() req: NestMvcReq, @Query() dto: GetTagsDto) {
-    const tagData = await this.tagQueryService.getTags(dto);
+  @UsePipes(new ZodValidationPipe(GetAdminTagsSchema))
+  async index(@Req() req: NestMvcReq, @Query() dto: GetAdminTagsDto) {
+    const tagData = await this.tagQueryService.getAdminTags(dto);
     return req.view.render('pages/admin/tags/index', { ...tagData });
   }
 
@@ -60,7 +61,7 @@ export class AdminTagController {
       throw new NotFoundException('페이지를 찾을 수 없습니다.');
     }
 
-    const tag = await this.tagQueryService.getTag(id);
+    const tag = await this.tagQueryService.getAdminTag(id);
     return req.view.render('pages/admin/tags/edit', { tag });
   }
 

@@ -16,7 +16,8 @@ import {
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { CreatePostDto, CreatePostSchema, GetPostsDTO, GetPostsSchema, PostCommandService, PostQueryService, UpdatePostDto, UpdatePostSchema } from 'src/core/application/post';
+import { CreatePostDto, CreatePostSchema, PostCommandService, PostQueryService, UpdatePostDto, UpdatePostSchema } from 'src/core/application/post';
+import { GetAdminPostsDTO, GetAdminPostsSchema } from 'src/core/infrastructure/dto';
 import { UserEntity } from 'src/core/infrastructure/entities';
 import { CurrentUser } from 'src/core/presentation/decorators';
 import { AdminAuthGuard } from 'src/core/presentation/guards';
@@ -32,9 +33,9 @@ export class AdminPostController {
   ) { }
 
   @Get()
-  @UsePipes(new ZodValidationPipe(GetPostsSchema))
-  async index(@Req() req: NestMvcReq, @Query() dto: GetPostsDTO) {
-    const postData = await this.postQueryService.getPosts(dto);
+  @UsePipes(new ZodValidationPipe(GetAdminPostsSchema))
+  async index(@Req() req: NestMvcReq, @Query() dto: GetAdminPostsDTO) {
+    const postData = await this.postQueryService.getAdminPosts(dto);
 
     return req.view.render('pages/admin/posts/index', {
       ...postData,
@@ -48,7 +49,7 @@ export class AdminPostController {
 
   @Get(':id')
   async show(@Req() req: NestMvcReq, @Param('id', ParseIntPipe) id: number) {
-    const post = await this.postQueryService.getPost(id);
+    const post = await this.postQueryService.getAdminPost(id);
     return req.view.render('pages/admin/posts/show', { post });
   }
 
@@ -67,7 +68,7 @@ export class AdminPostController {
 
   @Get(':id/edit')
   async edit(@Req() req: NestMvcReq, @Param('id', ParseIntPipe) id: number) {
-    const post = await this.postQueryService.getPost(id);
+    const post = await this.postQueryService.getAdminPost(id);
     return req.view.render('pages/admin/posts/edit', { post });
   }
 

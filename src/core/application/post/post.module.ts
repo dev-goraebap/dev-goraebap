@@ -3,13 +3,11 @@ import { Module } from '@nestjs/common';
 import { ApplicationConcernModule } from '../_concern';
 import { PostCommandService } from './orchestrators/post-command.service';
 import { PostQueryService } from './orchestrators/post-query.service';
-import { PostFeedService } from './services/post-feed.service';
 import { PostPatchNotesService } from './services/post-patch-notes.service';
 import { PostService } from './services/post.service';
 
 const services = [
   PostService,
-  PostFeedService,
   PostPatchNotesService,
   PostQueryService,
   PostCommandService,
