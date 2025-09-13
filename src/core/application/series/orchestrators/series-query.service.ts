@@ -2,9 +2,10 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Brackets, In, Repository } from 'typeorm';
 
+import { GetAdminSeriesDto } from 'src/core/infrastructure/dto';
 import { PostEntity, SeriesEntity, SeriesPostEntity } from 'src/core/infrastructure/entities';
+import { SeriesRepository } from 'src/core/infrastructure/repositories';
 import { AttachmentQueryHelper } from 'src/shared';
-import { GetSeriesDto } from '../dto/get-series.dto';
 
 @Injectable()
 export class SeriesQueryService {
@@ -15,45 +16,11 @@ export class SeriesQueryService {
     private readonly postRepository: Repository<PostEntity>,
     @InjectRepository(SeriesPostEntity)
     private readonly seriesPostRepository: Repository<SeriesPostEntity>,
+    private readonly customSeriesRepository: SeriesRepository
   ) {}
 
-  async findSeriesList(dto: GetSeriesDto) {
-    const qb = this.seriesRepository.createQueryBuilder('series');
-    qb.leftJoinAndSelect('series.seriesPosts', 'post');
-    AttachmentQueryHelper.withAttachments(qb, 'series');
-
-    if (dto.search) {
-      qb.where('series.name LIKE :searchName', {
-        searchName: `%${dto.search}%`,
-      });
-    }
-
-    if (dto.status) {
-      qb.andWhere('series.status = :status', { status: dto.status });
-    }
-
-    if (dto.isPublishedYn) {
-      qb.andWhere('series.isPublishedYn = :isPublishedYn', {
-        isPublishedYn: dto.isPublishedYn,
-      });
-    }
-
-    qb.orderBy(`series.${dto.orderKey}`, dto.orderBy);
-
-    const offset = (dto.page - 1) * dto.perPage;
-    qb.skip(offset).take(dto.perPage);
-
-    const [seriesList, total] = await qb.getManyAndCount();
-
-    return {
-      seriesList,
-      pagination: {
-        page: dto.page,
-        perPage: dto.perPage,
-        total,
-        totalPages: Math.ceil(total / dto.perPage),
-      },
-    };
+  async getAdminSeriesList(dto: GetAdminSeriesDto) {
+    return this.customSeriesRepository.findAdminSeriesList(dto);
   }
 
   async findSeriesItem(id: number): Promise<SeriesEntity> {

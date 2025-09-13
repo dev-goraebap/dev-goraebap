@@ -1,7 +1,7 @@
 import { parseSortString } from 'src/shared';
 import z from 'zod';
 
-export const GetSeriesSchema = z
+export const GetAdminSeriesSchema = z
   .object({
     sort: z.string().optional().default('-publishedAt'),
     page: z.coerce.number().min(1).default(1),
@@ -19,4 +19,4 @@ export const GetSeriesSchema = z
     };
   });
 
-export type GetSeriesDto = z.infer<typeof GetSeriesSchema>;
+export type GetAdminSeriesDto = z.infer<typeof GetAdminSeriesSchema>;

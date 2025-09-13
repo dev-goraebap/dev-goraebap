@@ -18,7 +18,8 @@ import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 import { UpdatePublishDto, UpdatePublishSchema } from 'src/core/application/_concern';
 
-import { CreateSeriesDto, CreateSeriesSchema, GetSeriesDto, GetSeriesSchema, SeriesCommandService, SeriesQueryService, UpdateSeriesDto, UpdateSeriesSchema } from 'src/core/application/series';
+import { CreateSeriesDto, CreateSeriesSchema, SeriesCommandService, SeriesQueryService, UpdateSeriesDto, UpdateSeriesSchema } from 'src/core/application/series';
+import { GetAdminSeriesDto, GetAdminSeriesSchema } from 'src/core/infrastructure/dto';
 import { UserEntity } from 'src/core/infrastructure/entities';
 import { CurrentUser } from 'src/core/presentation/decorators';
 import { AdminAuthGuard } from 'src/core/presentation/guards';
@@ -33,9 +34,9 @@ export class AdminSeriesController {
   ) { }
 
   @Get()
-  @UsePipes(new ZodValidationPipe(GetSeriesSchema))
-  async index(@Req() req: NestMvcReq, @Query() dto: GetSeriesDto) {
-    const seriesData = await this.seriesQueryService.findSeriesList(dto);
+  @UsePipes(new ZodValidationPipe(GetAdminSeriesSchema))
+  async index(@Req() req: NestMvcReq, @Query() dto: GetAdminSeriesDto) {
+    const seriesData = await this.seriesQueryService.getAdminSeriesList(dto);
     return req.view.render('pages/admin/series/index', { ...seriesData });
   }
 

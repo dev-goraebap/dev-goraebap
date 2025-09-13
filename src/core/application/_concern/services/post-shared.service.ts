@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -37,13 +37,6 @@ export class PostSharedService {
     qb.take(5);
 
     return await qb.getMany();
-  }
-
-  async updateViewCount(slug: string) {
-    const result = await this.postRepository.increment({ slug }, 'viewCount', 1);
-    if (result.affected === 0) {
-      throw new BadRequestException('조회수 업데이트에 실패하였습니다.');
-    }
   }
 
   async getPublishedPosts(): Promise<PostEntity[]> {

@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { EntityManager } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 
+import { InjectRepository } from '@nestjs/typeorm';
 import { PostEntity, UserEntity } from 'src/core/infrastructure/entities';
 import { AttachmentSharedService, TagSharedService, UpdatePublishDto } from '../../_concern';
 import { CreatePostDto, UpdatePostDto } from '../dto/create-or-update-post.dto';
@@ -10,10 +11,27 @@ import { PostService } from '../services/post.service';
 export class PostCommandService {
   constructor(
     private readonly entityManager: EntityManager,
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
     private readonly tagSharedService: TagSharedService,
     private readonly attachmentSharedService: AttachmentSharedService,
     private readonly postsService: PostService,
-  ) {}
+  ) { }
+
+  // ---------------------------------------------------------------------------
+  // 일반 기능
+  // ---------------------------------------------------------------------------
+
+  async updateViewCount(slug: string) {
+    const result = await this.postRepository.increment({ slug }, 'viewCount', 1);
+    if (result.affected === 0) {
+      throw new BadRequestException('조회수 업데이트에 실패하였습니다.');
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 관리자 기능
+  // ---------------------------------------------------------------------------
 
   async createPost(user: UserEntity, dto: CreatePostDto) {
     await this.entityManager.transaction(async (m: EntityManager) => {
@@ -106,6 +124,10 @@ export class PostCommandService {
       await this.postsService.destroyPost(existingPost, m);
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // PRIVATE
+  // ---------------------------------------------------------------------------
 
   private async updateTags(post: PostEntity, newTagNames: string[] | undefined, manager: EntityManager) {
     if (newTagNames && newTagNames.length > 0) {
