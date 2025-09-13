@@ -4,7 +4,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ApplicationConcernModule } from '../application/_concern';
 import { ApplicationModule } from '../application/application.module';
 import { InfrastructureModule } from '../infrastructure/infrastructure.module';
-import { AdminBlockedIpsController, AdminCommentController, AdminController, AdminMediaApiController, AdminPostController, AdminSeriesController, FeedController, PatchNotesController, PostCommentController, PostController, SeriesController, SessionController, SitemapController } from './controllers';
+import { AdminBlockedIpsController, AdminCommentController, AdminController, AdminMediaApiController, AdminPostController, AdminSeriesController, AdminTagController, FeedController, PatchNotesController, PostCommentController, PostController, SeriesController, SessionController, SitemapController } from './controllers';
 import { AppExceptionFilter } from './filters';
 import { LoggingInterceptor } from './interceptors';
 import { RequestIdMiddleware, WAFMiddleware } from './middlewares';
@@ -16,6 +16,14 @@ import { RequestIdMiddleware, WAFMiddleware } from './middlewares';
     ApplicationConcernModule, // 리팩토링 후 제거해야함
   ],
   controllers: [
+    // Web Controllers - 관리자용
+    AdminController,
+    AdminPostController,
+    AdminSeriesController,
+    AdminCommentController,
+    AdminBlockedIpsController,
+    AdminTagController,
+
     // Web Controllers - 일반 사용자용
     FeedController,
     PostController,
@@ -24,13 +32,6 @@ import { RequestIdMiddleware, WAFMiddleware } from './middlewares';
     SitemapController,
     PatchNotesController,
     SessionController,
-
-    // Web Controllers - 관리자용
-    AdminController,
-    AdminPostController,
-    AdminSeriesController,
-    AdminCommentController,
-    AdminBlockedIpsController,
 
     // API Controllers - 관리자용
     AdminMediaApiController,
