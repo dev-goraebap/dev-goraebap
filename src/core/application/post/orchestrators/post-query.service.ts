@@ -49,4 +49,8 @@ export class PostQueryService {
     }
     return post;
   }
+
+  async getAdminPostsExcludeSeriesId(seriesId: number, postTitle: string = '') {
+    return this.postRepository.findAdminPostsExcludeSeriesId(seriesId, postTitle);
+  }
 }

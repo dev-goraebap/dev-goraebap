@@ -17,27 +17,17 @@ export class SeriesQueryService {
     @InjectRepository(SeriesPostEntity)
     private readonly seriesPostRepository: Repository<SeriesPostEntity>,
     private readonly customSeriesRepository: SeriesRepository
-  ) {}
+  ) { }
 
   async getAdminSeriesList(dto: GetAdminSeriesDto) {
     return this.customSeriesRepository.findAdminSeriesList(dto);
   }
 
-  async findSeriesItem(id: number): Promise<SeriesEntity> {
-    const qb = this.seriesRepository.createQueryBuilder('series');
-    qb.leftJoinAndSelect('series.seriesPosts', 'seriesPost');
-    qb.leftJoinAndSelect('seriesPost.post', 'post');
-    AttachmentQueryHelper.withAttachments(qb, 'series');
-
-    qb.where('series.id = :id', { id });
-    qb.orderBy('seriesPost.order', 'ASC');
-    qb.addOrderBy('seriesPost.createdAt', 'DESC');
-    const series = await qb.getOne();
-
+  async getAdminSeriesWithPosts(id: number): Promise<SeriesEntity> {
+    const series = await this.customSeriesRepository.findSeriesWithPosts(id);
     if (!series) {
       throw new BadRequestException('시리즈를 찾을 수 없습니다.');
     }
-
     return series;
   }
 

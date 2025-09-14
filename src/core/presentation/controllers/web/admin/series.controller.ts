@@ -58,7 +58,7 @@ export class AdminSeriesController {
 
   @Get(':id/edit')
   async edit(@Param('id') id: number, @Req() req: NestMvcReq) {
-    const series = await this.seriesQueryService.findSeriesItem(id);
+    const series = await this.seriesQueryService.getAdminSeriesWithPosts(id);
     return req.view.render('pages/admin/series/edit', {
       series,
     });
