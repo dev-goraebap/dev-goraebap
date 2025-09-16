@@ -40,6 +40,7 @@
     "cross-env": "^10.0.0",
     "express-session": "^1.18.2",
     "multer": "^2.0.2",
+    "mybatis-mapper": "^0.8.0",
     "nestjs-mvc-tools": "^1.0.0",
     "nodemailer": "^7.0.5",
     "passport": "^0.7.0",
