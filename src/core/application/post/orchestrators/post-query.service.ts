@@ -3,11 +3,13 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { GetAdminPostsDTO, GetFeedPostsDto } from 'src/core/infrastructure/dto';
 import { PostEntity } from 'src/core/infrastructure/entities';
 import { PostRepository } from 'src/core/infrastructure/repositories';
+import { MybatisService } from 'src/shared/mybatis';
 
 @Injectable()
 export class PostQueryService {
   constructor(
-    private readonly postRepository: PostRepository
+    private readonly postRepository: PostRepository,
+    private readonly mybatisService: MybatisService
   ) { }
 
   // ---------------------------------------------------------------------------
@@ -15,6 +17,8 @@ export class PostQueryService {
   // ---------------------------------------------------------------------------
 
   async getFeedPosts(dto: GetFeedPostsDto) {
+    const sql = this.mybatisService.getStatement('PostMapper', 'findFeedPosts', dto);
+    console.log(sql);
     return await this.postRepository.findFeedPosts(dto);
   }
 
@@ -54,3 +58,5 @@ export class PostQueryService {
     return this.postRepository.findAdminPostsExcludeSeriesId(seriesId, postTitle);
   }
 }
+
+

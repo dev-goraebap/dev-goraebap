@@ -5,6 +5,6 @@ import { MybatisService } from "./mybatis.service";
 @Module({
   imports: [],
   providers: [MybatisService],
-  exports: [],
+  exports: [MybatisService],
 })
 export class MybatisModule {}

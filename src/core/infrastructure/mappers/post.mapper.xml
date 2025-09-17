@@ -1,8 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="post">
-  <select id="findByPost">
-    SELECT * FROM posts;
-  </select>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PostMapper">
+<select id="findFeedPosts">
+    SELECT
+    p.*,
+    t.id as tag_id,
+    t.name as tag_name,
+    c.id as comment_id,
+    c.content as comment_content,
+    a.id as attachment_id,
+    a.file_path as attachment_path
+    FROM posts p
+    LEFT JOIN post_tags pt ON p.id = pt.post_id
+    LEFT JOIN tags t ON pt.tag_id = t.id
+    LEFT JOIN comments c ON p.id = c.post_id
+    LEFT JOIN attachments a ON p.id = a.post_id
+    WHERE p.is_published_yn = 'Y'
+    AND p.post_type = 'post'
+
+    <if test="cursor != null and cursor != ''">
+        <choose>
+            <when test="orderType == 'traffic'">
+                AND (p.view_count &lt; #{viewCount}
+                OR (p.view_count = #{viewCount} AND p.published_at &lt; #{publishedAt}))
+            </when>
+            <otherwise>
+                AND p.published_at &lt; #{publishedAt}
+            </otherwise>
+        </choose>
+    </if>
+
+    <if test="tag != null and tag != ''">
+        AND t.name = #{tag}
+    </if>
+
+    <choose>
+        <when test="orderType == 'traffic'">
+            ORDER BY p.view_count DESC, p.published_at DESC
+        </when>
+        <otherwise>
+            ORDER BY p.published_at DESC
+        </otherwise>
+    </choose>
+
+    LIMIT #{perPage} + 1
+</select>
 </mapper>
