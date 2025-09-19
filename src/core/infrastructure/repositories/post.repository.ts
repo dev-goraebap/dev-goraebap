@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import SQL from 'sql-template-strings';
 import { DataSource, Repository } from 'typeorm';
 
 import { PostEntity } from 'src/core/infrastructure/entities';
@@ -24,7 +23,7 @@ export class PostRepository {
   // ---------------------------------------------------------------------------
 
   async findTest() {
-    const sqlStatement = SQL`
+    const sqlStatement = `
     SELECT
     p.id,
       p.title,
@@ -87,7 +86,7 @@ export class PostRepository {
     p.published_at DESC
     LIMIT 5;
     `;
-    const results: any[] = await this.dataSource.query(sqlStatement.sql);
+    const results: any[] = await this.dataSource.query(sqlStatement);
 
     const postModels = results.map(x => {
       if (x.key) {

@@ -3,13 +3,11 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { GetAdminPostsDTO, GetFeedPostsDto } from 'src/core/infrastructure/dto';
 import { PostEntity } from 'src/core/infrastructure/entities';
 import { PostRepository } from 'src/core/infrastructure/repositories';
-import { MybatisService } from 'src/shared/mybatis';
 
 @Injectable()
 export class PostQueryService {
   constructor(
-    private readonly postRepository: PostRepository,
-    private readonly mybatisService: MybatisService
+    private readonly postRepository: PostRepository
   ) { }
 
   // ---------------------------------------------------------------------------
