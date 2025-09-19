@@ -17,8 +17,7 @@ export class PostQueryService {
   // ---------------------------------------------------------------------------
 
   async getFeedPosts(dto: GetFeedPostsDto) {
-    const sql = this.mybatisService.getStatement('PostMapper', 'findFeedPosts', dto);
-    console.log(sql);
+    await this.postRepository.findTest();
     return await this.postRepository.findFeedPosts(dto);
   }
 
