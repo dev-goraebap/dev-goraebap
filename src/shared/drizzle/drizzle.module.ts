@@ -18,7 +18,7 @@ export type DrizzleDB = NodePgDatabase<typeof schema>;
         const host = configService.get<string>('DB_HOST');
         const port = Number(configService.get<string>('DB_PORT'));
         const database = configService.get<string>('DB_NAME');
-        const user = configService.get<string>('DB_USER');
+        const user = configService.get<string>('DB_USERNAME');
         const password = configService.get<string>('DB_PASSWORD');
         const config: PoolConfig = {
           host,
