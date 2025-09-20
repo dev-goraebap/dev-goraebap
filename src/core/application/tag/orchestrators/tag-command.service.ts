@@ -1,37 +1,79 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { eq } from "drizzle-orm";
 
-import { TagEntity, UserEntity } from "src/core/infrastructure/entities";
+import { UserEntity } from "src/core/infrastructure/entities";
+import { LoggerService } from "src/shared";
+import { DRIZZLE, DrizzleDB, SelectTag, tags } from "src/shared/drizzle";
 import { CreateOrUpdateTagDto } from "../dto/create-or-update-tag.dto";
 
 @Injectable()
 export class TagCommandService {
 
   constructor(
-    @InjectRepository(TagEntity)
-    private readonly tagRepository: Repository<TagEntity>,
+    @Inject(DRIZZLE)
+    private readonly drizzle: DrizzleDB,
+    private readonly logger: LoggerService
   ) { }
 
-  async createTag(user: UserEntity, dto: CreateOrUpdateTagDto): Promise<TagEntity> {
-    const newTagEntity = this.tagRepository.create({ user, ...dto });
-    return await this.tagRepository.save(newTagEntity);
+  async createTag(user: UserEntity, dto: CreateOrUpdateTagDto): Promise<SelectTag> {
+    const existsTag = await this.drizzle.query.tags.findFirst({
+      where: eq(tags.name, dto.name)
+    });
+    if (existsTag) {
+      throw new BadRequestException('이미 사용중인 태그명 입니다.');
+    }
+
+    try {
+      return (await this.drizzle.insert(tags).values({
+        userId: user.id,
+        name: dto.name,
+        description: dto.description ?? ''
+      }).returning())[0];
+    } catch (err) {
+      this.logger.error(err);
+      throw new BadRequestException(err);
+    }
   }
 
-  async updateTag(id: number, dto: CreateOrUpdateTagDto): Promise<TagEntity> {
-    const tag = await this.tagRepository.findOne({ where: { id } });
+  async updateTag(id: number, dto: CreateOrUpdateTagDto): Promise<SelectTag> {
+    const tag = await this.drizzle.query.tags.findFirst({
+      where: eq(tags.id, id)
+    })
     if (!tag) {
       throw new BadRequestException('태그가 존재하지 않습니다.');
     }
-    const updatedTagEntity = this.tagRepository.create({ ...tag, ...dto });
-    return await this.tagRepository.save(updatedTagEntity);
+
+    try {
+      return (await this.drizzle
+        .update(tags)
+        .set({
+          name: dto.name,
+          description: dto.description ?? tag.description,
+        })
+        .where(eq(tags.id, id))
+        .returning())[0];
+    } catch (err) {
+      this.logger.error(err);
+      throw new BadRequestException(err);
+    }
   }
 
-  async destroyTag(id: number): Promise<void> {
-    const tag = await this.tagRepository.findOne({ where: { id } });
+  async destroyTag(id: number): Promise<{ id: number }> {
+    const tag = await this.drizzle.query.tags.findFirst({
+      where: eq(tags.id, id)
+    })
     if (!tag) {
       throw new BadRequestException('태그가 존재하지 않습니다.');
     }
-    await this.tagRepository.remove(tag);
+
+    try {
+      return (await this.drizzle
+        .delete(tags)
+        .where(eq(tags.id, id))
+        .returning({ id: tags.id }))[0];
+    } catch (err) {
+      this.logger.error(err);
+      throw new BadRequestException(err);
+    }
   }
 }
