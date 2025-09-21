@@ -1,12 +1,11 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { InjectRepository } from '@nestjs/typeorm';
 import { EdgeJsService } from 'nestjs-mvc-tools';
 import { createTransport, Transporter } from 'nodemailer';
-import { Repository } from 'typeorm';
 
-import { UserEntity } from 'src/core/infrastructure/entities';
+import { eq } from 'drizzle-orm';
+import { DRIZZLE, DrizzleOrm, users } from 'src/shared/drizzle';
 
 @Injectable()
 export class UserAuthService {
@@ -16,8 +15,8 @@ export class UserAuthService {
     private readonly jwtService: JwtService,
     private readonly edgeService: EdgeJsService,
     private readonly configService: ConfigService,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @Inject(DRIZZLE)
+    private readonly drizzle: DrizzleOrm,
   ) {
     this.transporter = createTransport({
       host: this.configService.get('SMTP_HOST'),
@@ -31,16 +30,14 @@ export class UserAuthService {
   }
 
   async sendMagicLink(email: string): Promise<boolean> {
-    const user = await this.userRepository.findOne({
-      where: {
-        email,
-      },
-    });
+    const user = await this.drizzle.query.users.findFirst({
+      where: eq(users.email, email)
+    })
     if (!user) {
       throw new BadRequestException('사용할 수 없는 email 입니다.');
     }
-    const token = this.jwtService.sign({ email }, { expiresIn: '5m' });
 
+    const token = this.jwtService.sign({ email }, { expiresIn: '5m' });
     const magicLink = `${this.configService.get('APP_URL')}/session/verify?token=${token}`;
 
     const edge = this.edgeService.getEdgeInstance();

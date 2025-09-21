@@ -1,32 +1,37 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { eq } from 'drizzle-orm';
 
-import { UserEntity } from 'src/core/infrastructure/entities';
+import { LoggerService } from 'src/shared';
+import { DRIZZLE, DrizzleOrm, users } from 'src/shared/drizzle';
 
 @Injectable()
 export class InitService implements OnModuleInit {
   constructor(
     private readonly configService: ConfigService,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
-  ) {}
+    @Inject(DRIZZLE)
+    private readonly drizzle: DrizzleOrm,
+    private readonly logger: LoggerService
+  ) { }
 
   async onModuleInit() {
     const adminEmail = this.configService.get('ADMIN_USERNAME');
-    const user = await this.userRepository.findOne({
-      where: {
-        email: adminEmail,
-      },
+    const user = await this.drizzle.query.users.findFirst({
+      where: eq(users.email, adminEmail)
     });
     if (user) {
+      this.logger.info('Exist admin User');
       return;
     }
-    const newUser = this.userRepository.create({
-      email: adminEmail,
-      nickname: 'dev.goraebap',
-    });
-    await this.userRepository.save(newUser);
+
+    try {
+      await this.drizzle.insert(users).values({
+        email: adminEmail,
+        nickname: 'dev.goraebap'
+      });
+      this.logger.info('Init admin User');
+    } catch (err) {
+      this.logger.error(err);
+    }
   }
 }

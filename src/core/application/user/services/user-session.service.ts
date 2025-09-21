@@ -18,7 +18,7 @@ export class UserSessionService {
     return !!session?.isAuthenticated;
   }
 
-  getUserEmail(session: any): string | null {
+  getUserEmail(session: any) {
     return session?.userEmail || null;
   }
 
