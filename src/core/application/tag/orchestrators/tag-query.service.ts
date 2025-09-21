@@ -2,13 +2,13 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { asc, count, desc, eq, like } from 'drizzle-orm';
 
 import { GetAdminTagsDto } from 'src/core/infrastructure/dto';
-import { DRIZZLE, DrizzleDB, posts, postTags, tags } from 'src/shared/drizzle';
+import { DRIZZLE, DrizzleOrm, posts, postTags, tags } from 'src/shared/drizzle';
 
 @Injectable()
 export class TagQueryService {
   constructor(
     @Inject(DRIZZLE)
-    private readonly drizzle: DrizzleDB
+    private readonly drizzle: DrizzleOrm
   ) { }
 
   // ---------------------------------------------------------------------------

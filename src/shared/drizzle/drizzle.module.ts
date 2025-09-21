@@ -6,7 +6,7 @@ import { Pool, PoolConfig } from 'pg';
 import * as schema from './schema';
 
 export const DRIZZLE = Symbol('DRIZZLE');
-export type DrizzleDB = NodePgDatabase<typeof schema>;
+export type DrizzleOrm = NodePgDatabase<typeof schema>;
 
 @Global()
 @Module({
@@ -29,7 +29,9 @@ export type DrizzleDB = NodePgDatabase<typeof schema>;
           max: 20,
           idleTimeoutMillis: 30000,
         };
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         const pool = new Pool(config);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         return drizzle(pool, { schema });
       },
       inject: [ConfigService],

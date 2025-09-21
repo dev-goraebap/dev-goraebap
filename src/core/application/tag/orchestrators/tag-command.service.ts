@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 
 import { UserEntity } from "src/core/infrastructure/entities";
 import { LoggerService } from "src/shared";
-import { DRIZZLE, DrizzleDB, SelectTag, tags } from "src/shared/drizzle";
+import { DRIZZLE, DrizzleOrm, SelectTag, tags } from "src/shared/drizzle";
 import { CreateOrUpdateTagDto } from "../dto/create-or-update-tag.dto";
 
 @Injectable()
@@ -11,7 +11,7 @@ export class TagCommandService {
 
   constructor(
     @Inject(DRIZZLE)
-    private readonly drizzle: DrizzleDB,
+    private readonly drizzle: DrizzleOrm,
     private readonly logger: LoggerService
   ) { }
 
