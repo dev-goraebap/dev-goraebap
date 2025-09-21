@@ -1,20 +1,22 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
 import { createHash, randomUUID } from 'crypto';
+import { eq } from 'drizzle-orm';
 
-import { CloudflareR2Service, GoogleImageService } from 'src/core/infrastructure/services';
 import { UserEntity } from 'src/core/infrastructure/entities';
+import { CloudflareR2Service, GoogleImageService } from 'src/core/infrastructure/services';
+import { blobs, DRIZZLE, DrizzleOrm, SelectBlob } from 'src/shared/drizzle';
 import { MediaUploadResponseDto } from '../dto/media-upload-response.dto';
-import { MediaService } from '../services/media.service';
 
 @Injectable()
 export class MediaUploadService {
   private readonly logger = new Logger(MediaUploadService.name);
 
   constructor(
+    @Inject(DRIZZLE)
+    private readonly drizzle: DrizzleOrm,
     private readonly cloudflareR2Service: CloudflareR2Service,
-    private readonly googleImageService: GoogleImageService,
-    private readonly mediaService: MediaService,
-  ) {}
+    private readonly googleImageService: GoogleImageService
+  ) { }
 
   async uploadFile(user: UserEntity, file: Express.Multer.File): Promise<MediaUploadResponseDto> {
     // 1단계: 파일 검증
@@ -27,39 +29,38 @@ export class MediaUploadService {
 
     try {
       // 3단계: 중복 파일 확인
-      const existingBlob = await this.mediaService.findBlobByChecksum(checksum);
+      const existingBlob = await this.drizzle.query.blobs.findFirst({
+        where: eq(blobs.checksum, checksum)
+      });
+
       if (existingBlob) {
         // 기존 파일이 있으면 새로 업로드하지 않고 기존 blob 반환
         this.logger.log(`기존 파일 재사용: ${existingBlob.filename} (checksum: ${checksum})`);
-        return {
-          blobId: existingBlob.id,
-          key: existingBlob.key,
-          filename: existingBlob.filename,
-          contentType: existingBlob.contentType,
-          byteSize: existingBlob.byteSize,
-          url: this.cloudflareR2Service.getPublicUrl(existingBlob.key),
-          metadata: existingBlob.metadata,
-        };
+        return this.mapBlobToResponse(existingBlob);
       }
 
       // 4단계: R2 업로드 (새로운 파일인 경우에만)
       await this.cloudflareR2Service.uploadFile(key, file.buffer, file.mimetype);
 
       // 5단계: DB 저장
-      const savedBlob = await this.mediaService.createBlob(key, file, checksum, metadata, user);
+      const savedBlob = (
+        await this.drizzle.insert(blobs).values({
+          key,
+          filename: file.originalname,
+          contentType: file.mimetype,
+          serviceName: 'r2',
+          byteSize: file.size,
+          checksum,
+          metadata: JSON.stringify(metadata),
+          createdBy: user.id.toString(),
+        }).returning()
+      )[0];
 
       // 6단계: 응답 반환
-      return {
-        blobId: savedBlob.id,
-        key: savedBlob.key,
-        filename: savedBlob.filename,
-        contentType: savedBlob.contentType,
-        byteSize: savedBlob.byteSize,
-        url: this.cloudflareR2Service.getPublicUrl(savedBlob.key),
-        metadata: savedBlob.metadata,
-      };
+      return this.mapBlobToResponse(savedBlob);
     } catch (error) {
       // 업로드 실패 시 R2에서 파일 삭제 시도
+      this.logger.error(error);
       try {
         await this.cloudflareR2Service.deleteFile(key);
       } catch (deleteError) {
@@ -119,5 +120,17 @@ export class MediaUploadService {
     }
 
     return metadata;
+  }
+
+  private mapBlobToResponse(blob: SelectBlob): MediaUploadResponseDto {
+    return {
+      blobId: blob.id,
+      key: blob.key,
+      filename: blob.filename,
+      contentType: blob.contentType,
+      byteSize: blob.byteSize,
+      url: this.cloudflareR2Service.getPublicUrl(blob.key),
+      metadata: blob.metadata ? JSON.parse(blob.metadata) : {},
+    };
   }
 }
