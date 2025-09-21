@@ -12,7 +12,7 @@ import {
   Req,
   Res,
   UseGuards,
-  UsePipes,
+  UsePipes
 } from '@nestjs/common';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
