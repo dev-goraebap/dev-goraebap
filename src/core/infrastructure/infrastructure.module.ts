@@ -2,7 +2,7 @@ import { Global, Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { AttachmentEntity, BlobEntity, BlockedIpEntity, CommentEntity, PostEntity, SeriesEntity, SeriesPostEntity, TagEntity, UserEntity } from "./entities";
-import { BlockedIpRepository, SeriesRepository } from "./repositories";
+import { SeriesRepository } from "./repositories";
 import { PostRepository } from "./repositories/post.repository";
 import { CloudflareR2Service, GoogleImageService } from "./services";
 
@@ -13,7 +13,6 @@ const services = [
 
 const repositories = [
   PostRepository,
-  BlockedIpRepository,
   SeriesRepository
 ]
 

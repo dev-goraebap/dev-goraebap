@@ -1,56 +1,84 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { eq } from 'drizzle-orm';
 
-import { BlockedIpEntity } from 'src/core/infrastructure/entities';
+import { blockedIps, DRIZZLE, DrizzleOrm, SelectBlockedIp } from 'src/shared/drizzle';
 import { CreateBlockedIpDto } from '../dto/create-blocked-ip.dto';
 
 @Injectable()
 export class BlockedIpCommandService {
   constructor(
-    @InjectRepository(BlockedIpEntity)
-    private readonly ipBlockedRepository: Repository<BlockedIpEntity>,
+    @Inject(DRIZZLE)
+    private readonly drizzle: DrizzleOrm,
   ) { }
 
-  async createBlockedIp(dto: CreateBlockedIpDto): Promise<BlockedIpEntity> {
-    const newBlockedIp = this.ipBlockedRepository.create({
-      ...dto,
-      expiresAt: null,
-    });
-
+  async createBlockedIp(dto: CreateBlockedIpDto): Promise<SelectBlockedIp> {
     try {
-      return await this.ipBlockedRepository.save(newBlockedIp);
-    } catch (err) {
-      throw new BadRequestException(err);
+      return (
+        await this.drizzle.insert(blockedIps).values({
+          ...dto,
+          expiresAt: null,
+        }).returning()
+      )[0];
+    } catch (err: any) {
+      throw new BadRequestException(err.cause?.detail);
     }
   }
 
   async unblockIp(id: number): Promise<void> {
-    const blockedIp = await this.ipBlockedRepository.findOne({ where: { id } });
+    const blockedIp = await this.drizzle.query.blockedIps.findFirst({
+      where: eq(blockedIps.id, id)
+    });
     if (!blockedIp) {
       throw new BadRequestException('IP를 찾을 수 없습니다.');
     }
-    await this.ipBlockedRepository.update(blockedIp.id, {
-      isActiveYn: 'N',
-    });
+
+    try {
+      await this.drizzle
+        .update(blockedIps)
+        .set({
+          isActiveYn: 'N',
+        })
+        .where(eq(blockedIps.id, id));
+    } catch (err) {
+      throw new BadRequestException(err.cause?.detail);
+    }
   }
 
   async makePermanentBlock(id: number): Promise<void> {
-    const blockedIp = await this.ipBlockedRepository.findOne({ where: { id } });
+    const blockedIp = await this.drizzle.query.blockedIps.findFirst({
+      where: eq(blockedIps.id, id)
+    });
     if (!blockedIp) {
       throw new BadRequestException('IP를 찾을 수 없습니다.');
     }
-    await this.ipBlockedRepository.update(blockedIp.id, {
-      expiresAt: null,
-      isActiveYn: 'Y',
-    });
+
+    try {
+      await this.drizzle
+        .update(blockedIps)
+        .set({
+          expiresAt: null,
+          isActiveYn: 'N',
+        })
+        .where(eq(blockedIps.id, id));
+    } catch (err) {
+      throw new BadRequestException(err.cause?.detail);
+    }
   }
 
   async removeBlockedIp(id: number): Promise<void> {
-    const blockedIp = await this.ipBlockedRepository.findOne({ where: { id } });
+    const blockedIp = await this.drizzle.query.blockedIps.findFirst({
+      where: eq(blockedIps.id, id)
+    });
     if (!blockedIp) {
       throw new BadRequestException('IP를 찾을 수 없습니다.');
     }
-    await this.ipBlockedRepository.delete(blockedIp.id);
+
+    try {
+      await this.drizzle
+        .delete(blockedIps)
+        .where(eq(blockedIps.id, id));
+    } catch (err) {
+      throw new BadRequestException(err.cause?.detail);
+    }
   }
 }
