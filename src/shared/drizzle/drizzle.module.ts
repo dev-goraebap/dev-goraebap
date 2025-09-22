@@ -1,12 +1,15 @@
 import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { ExtractTablesWithRelations } from 'drizzle-orm';
+import { drizzle, NodePgDatabase, NodePgQueryResultHKT } from 'drizzle-orm/node-postgres';
+import { PgTransaction } from 'drizzle-orm/pg-core';
 import { Pool, PoolConfig } from 'pg';
 
 import * as schema from './schema';
 
 export const DRIZZLE = Symbol('DRIZZLE');
 export type DrizzleOrm = NodePgDatabase<typeof schema>;
+export type DrizzleTransaction = PgTransaction<NodePgQueryResultHKT, typeof schema, ExtractTablesWithRelations<typeof schema>>;
 
 @Global()
 @Module({
