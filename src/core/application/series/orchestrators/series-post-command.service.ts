@@ -1,80 +1,69 @@
-import { BadRequestException } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { In, Repository } from "typeorm";
+import { BadRequestException, Inject } from "@nestjs/common";
+import { and, eq, inArray, sql } from "drizzle-orm";
 
-import { PostEntity, SeriesEntity, SeriesPostEntity } from "src/core/infrastructure/entities";
+import { DRIZZLE, DrizzleOrm, posts, series, seriesPosts } from "src/shared/drizzle";
 
 export class SeriesPostCommandService {
 
   constructor(
-    @InjectRepository(SeriesEntity)
-    private readonly seriesRepository: Repository<SeriesEntity>,
-    @InjectRepository(SeriesPostEntity)
-    private readonly seriesPostRepository: Repository<SeriesPostEntity>,
-    @InjectRepository(PostEntity)
-    private readonly postRepository: Repository<PostEntity>,
+    @Inject(DRIZZLE)
+    private readonly drizzle: DrizzleOrm
   ) { }
 
   async create(seriesId: number, postId: number) {
-    const series = await this.seriesRepository.findOne({
-      where: {
-        id: seriesId,
-      },
+    const seriesItem = await this.drizzle.query.series.findFirst({
+      where: eq(series.id, seriesId)
     });
-    if (!series) {
+    if (!seriesItem) {
       throw new BadRequestException('시리즈를 찾을 수 없습니다.');
     }
 
-    const post = await this.postRepository.findOne({
-      where: {
-        id: postId,
-      },
+    const post = await this.drizzle.query.posts.findFirst({
+      where: eq(posts.id, postId)
     });
     if (!post) {
       throw new BadRequestException('게시물을 찾을 수 없습니다.');
     }
 
-    const newSeriesPost = this.seriesPostRepository.create({
-      series,
-      post,
-    });
-    await this.seriesPostRepository.save(newSeriesPost);
+    await this.drizzle
+      .insert(seriesPosts)
+      .values({
+        seriesId: seriesItem.id,
+        postId: post.id
+      });
   }
 
   async updateOrders(idAndOrders: { id: number; order: number }[]) {
-    const idAndOrderMap = new Map(idAndOrders.map(({ id, order }) => [id, order]));
-    const ids = Array.from(idAndOrderMap.keys());
+    if (idAndOrders.length === 0) return;
 
-    console.log(ids);
+    const cases = idAndOrders
+      .map(({ id, order }) => `WHEN ${id} THEN ${order}`)
+      .join(' ');
 
-    const seriesPosts = await this.seriesPostRepository.find({
-      where: { id: In(ids) },
-    });
+    const ids = idAndOrders.map(({ id }) => id);
 
-    const updated = seriesPosts.map((seriesPost) =>
-      this.seriesPostRepository.create({
-        ...seriesPost,
-        order: idAndOrderMap.get(seriesPost.id) ?? 0,
-      }),
-    );
-
-    await this.seriesPostRepository.save(updated);
+    await this.drizzle
+      .update(seriesPosts)
+      .set({
+        order: sql`CASE id ${sql.raw(cases)} END`
+      })
+      .where(inArray(seriesPosts.id, ids));
   }
 
   async destroy(seriesId: number, postId: number) {
-    const seriesPost = await this.seriesPostRepository.findOne({
-      where: {
-        series: {
-          id: seriesId,
-        },
-        post: {
-          id: postId,
-        },
-      },
+    const seriesPost = await this.drizzle.query.seriesPosts.findFirst({
+      where: and(
+        eq(seriesPosts.seriesId, seriesId),
+        eq(seriesPosts.postId, postId)
+      )
     });
+
     if (!seriesPost) {
       throw new BadRequestException('시리즈의 게시물을 찾을 수 없습니다.');
     }
-    await this.seriesPostRepository.remove(seriesPost);
+
+    await this.drizzle
+      .delete(seriesPosts)
+      .where(eq(seriesPosts.id, seriesPost.id));
   }
 }
