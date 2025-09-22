@@ -1,9 +1,9 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { and, eq, inArray } from 'drizzle-orm';
-import { PgTransaction } from 'drizzle-orm/pg-core';
 
 import { extractImageUrls } from 'src/shared';
-import { attachments, blobs, DRIZZLE, DrizzleOrm, SelectAttachment } from 'src/shared/drizzle';
+import { attachments, blobs, DRIZZLE, DrizzleOrm, SelectAttachment, DrizzleTransaction } from 'src/shared/drizzle';
+
 
 @Injectable()
 export class AttachmentSharedService {
@@ -16,7 +16,7 @@ export class AttachmentSharedService {
     blobId: number,
     recordId: string,
     recordType: string,
-    tx: PgTransaction<any>,
+    tx: DrizzleTransaction,
   ): Promise<SelectAttachment> {
     const blob = await this.drizzle.query.blobs.findFirst({
       where: eq(blobs.id, blobId)
@@ -41,7 +41,7 @@ export class AttachmentSharedService {
     }
   }
 
-  async createContentImageAttachments(content: string, recordId: string, recordType: string, tx: PgTransaction<any>) {
+  async createContentImageAttachments(content: string, recordId: string, recordType: string, tx: DrizzleTransaction) {
     const imageUrls = extractImageUrls(content);
 
     if (imageUrls.length === 0) return [];
@@ -69,7 +69,7 @@ export class AttachmentSharedService {
     return await tx.insert(attachments).values(attachmentValues).returning();
   }
 
-  async updateThumbnailAttachment(blobId: number, recordId: string, recordType: string, tx: PgTransaction<any>) {
+  async updateThumbnailAttachment(blobId: number, recordId: string, recordType: string, tx: DrizzleTransaction) {
     // 1. 기존 썸네일 제거
     await this.deleteThumbnailAttachments(recordId, recordType, tx);
 
@@ -77,7 +77,7 @@ export class AttachmentSharedService {
     await this.createThumbnailAttachment(blobId, recordId, recordType, tx);
   }
 
-  async updateContentImageAttachments(content: string, recordId: string, recordType: string, tx: PgTransaction<any>) {
+  async updateContentImageAttachments(content: string, recordId: string, recordType: string, tx: DrizzleTransaction) {
     // 1. 기존 콘텐츠 이미지 모두 제거
     await this.deleteContentImageAttachments(recordId, recordType, tx);
 
@@ -85,7 +85,7 @@ export class AttachmentSharedService {
     await this.createContentImageAttachments(content, recordId, recordType, tx);
   }
 
-  async deleteAllAttachments(recordId: string, recordType: string, tx: PgTransaction<any>) {
+  async deleteAllAttachments(recordId: string, recordType: string, tx: DrizzleTransaction) {
     await tx
       .delete(attachments)
       .where(
@@ -96,7 +96,7 @@ export class AttachmentSharedService {
       );
   }
 
-  async deleteThumbnailAttachments(recordId: string, recordType: string, tx: PgTransaction<any>) {
+  async deleteThumbnailAttachments(recordId: string, recordType: string, tx: DrizzleTransaction) {
     await tx
       .delete(attachments)
       .where(
@@ -108,7 +108,7 @@ export class AttachmentSharedService {
       );
   }
 
-  async deleteContentImageAttachments(recordId: string, recordType: string, tx: PgTransaction<any>) {
+  async deleteContentImageAttachments(recordId: string, recordType: string, tx: DrizzleTransaction) {
     await tx
       .delete(attachments)
       .where(

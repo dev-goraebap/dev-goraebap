@@ -38,9 +38,9 @@ export class SitemapController {
 
     for (const post of posts) {
       const lastmod = post.updatedAt
-        ? post.updatedAt.toISOString().split('T')[0]
+        ? post.updatedAt.split('T')[0]
         : post.publishedAt
-          ? post.publishedAt.toISOString().split('T')[0]
+          ? post.publishedAt.split('T')[0]
           : currentDate;
 
       sitemap += `
