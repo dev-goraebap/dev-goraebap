@@ -35,11 +35,11 @@ export type DrizzleTransaction = PgTransaction<NodePgQueryResultHKT, typeof sche
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         const pool = new Pool(config);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        return drizzle(pool, { schema });
+        return drizzle(pool, { schema, logger: true });
       },
       inject: [ConfigService],
     },
   ],
   exports: [DRIZZLE],
 })
-export class DrizzleModule {}
+export class DrizzleModule { }
