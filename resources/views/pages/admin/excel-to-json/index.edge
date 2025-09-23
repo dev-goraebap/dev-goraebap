@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excel to JSON 변환기</title>
+    <script src="https://unpkg.com/@hotwired/stimulus/dist/stimulus.umd.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f8fafc;
+        }
+        
+        .upload-area {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            border-color: #3b82f6;
+            background-color: #e0f2fe;
+        }
+        
+        .upload-area.dragover {
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .btn {
+            background-color: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin: 0.5rem;
+            transition: background-color 0.2s;
+        }
+        
+        .btn:hover {
+            background-color: #2563eb;
+        }
+        
+        .btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background-color: #6b7280;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1rem 0;
+        }
+        
+        .alert-error {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+        
+        .alert-success {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+        }
+        
+        .stats {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            margin: 1rem 0;
+        }
+        
+        .preview {
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .preview pre {
+            background-color: #f8fafc;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 0.8rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            border: 2px solid #f3f4f6;
+            border-radius: 50%;
+            border-top: 2px solid #3b82f6;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div data-controller="excel-converter">
+        <h1>Excel to JSON 변환기</h1>
+        <p style="color: #6b7280;">Excel 파일을 업로드하면 JSON 형식으로 변환해드립니다. 병합된 셀도 자동으로 처리됩니다.</p>
+        
+        <!-- 파일 업로드 영역 -->
+        <div class="upload-area" 
+             data-excel-converter-target="uploadArea"
+             data-action="click->excel-converter#selectFile dragover->excel-converter#handleDragOver dragleave->excel-converter#handleDragLeave drop->excel-converter#handleDrop">
+            <div>
+                <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="color: #9ca3af; margin: 0 auto 1rem;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+                </svg>
+                <p><strong>클릭하여 파일 업로드</strong> 또는 드래그 앤 드롭</p>
+                <p style="font-size: 0.8rem; color: #6b7280;">Excel 파일 (.xlsx, .xls)</p>
+            </div>
+            <input type="file" 
+                   class="file-input" 
+                   accept=".xlsx,.xls"
+                   data-excel-converter-target="fileInput"
+                   data-action="change->excel-converter#handleFileSelect">
+        </div>
+        
+        <!-- 로딩 -->
+        <div class="loading hidden" data-excel-converter-target="loading">
+            <div class="spinner"></div>
+            <span>파일을 변환하는 중...</span>
+        </div>
+        
+        <!-- 에러 메시지 -->
+        <div class="alert alert-error hidden" data-excel-converter-target="errorAlert">
+            <strong>오류 발생:</strong> <span data-excel-converter-target="errorMessage"></span>
+        </div>
+        
+        <!-- 성공 메시지 및 통계 -->
+        <div class="alert alert-success hidden" data-excel-converter-target="successAlert">
+            <strong>변환 완료!</strong>
+            <div class="stats">
+                <p data-excel-converter-target="statsInfo"></p>
+            </div>
+        </div>
+        
+        <!-- 다운로드 버튼들 -->
+        <div class="hidden" data-excel-converter-target="downloadButtons">
+            <button class="btn" data-action="click->excel-converter#downloadJson">
+                📥 JSON 파일 다운로드
+            </button>
+            <button class="btn btn-secondary" data-action="click->excel-converter#copyToClipboard">
+                📋 클립보드에 복사
+            </button>
+        </div>
+        
+        <!-- JSON 미리보기 -->
+        <div class="preview hidden" data-excel-converter-target="preview">
+            <h3>JSON 미리보기 (처음 3개 항목)</h3>
+            <pre data-excel-converter-target="previewContent"></pre>
+            <p style="color: #6b7280; font-size: 0.9rem;" data-excel-converter-target="previewNote"></p>
+        </div>
+    </div>
+
+    <script>
+        // Stimulus 컨트롤러 등록
+        const application = Stimulus.Application.start();
+        
+        application.register("excel-converter", class extends Stimulus.Controller {
+            static targets = ["uploadArea", "fileInput", "loading", "errorAlert", "errorMessage", 
+                            "successAlert", "statsInfo", "downloadButtons", "preview", 
+                            "previewContent", "previewNote"];
+            
+            connect() {
+                this.jsonData = null;
+                this.fileName = null;
+            }
+            
+            selectFile() {
+                this.fileInputTarget.click();
+            }
+            
+            handleDragOver(event) {
+                event.preventDefault();
+                this.uploadAreaTarget.classList.add('dragover');
+            }
+            
+            handleDragLeave(event) {
+                event.preventDefault();
+                this.uploadAreaTarget.classList.remove('dragover');
+            }
+            
+            handleDrop(event) {
+                event.preventDefault();
+                this.uploadAreaTarget.classList.remove('dragover');
+                
+                const files = event.dataTransfer.files;
+                if (files.length > 0) {
+                    this.processFile(files[0]);
+                }
+            }
+            
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    this.processFile(file);
+                }
+            }
+            
+            async processFile(file) {
+                // 파일 확장자 검사
+                const fileName = file.name.toLowerCase();
+                if (!fileName.endsWith('.xlsx') && !fileName.endsWith('.xls')) {
+                    this.showError('Excel 파일(.xlsx, .xls)만 업로드 가능합니다.');
+                    return;
+                }
+                
+                this.fileName = file.name;
+                this.hideMessages();
+                this.showLoading(true);
+                
+                try {
+                    // 파일을 ArrayBuffer로 읽기
+                    const arrayBuffer = await file.arrayBuffer();
+                    
+                    // Excel 파일 파싱
+                    const workbook = XLSX.read(arrayBuffer, {
+                        cellStyles: true,
+                        cellFormulas: true,
+                        cellDates: true,
+                        sheetStubs: true
+                    });
+                    
+                    // 첫 번째 시트 또는 "1" 시트 선택
+                    let sheetName = workbook.SheetNames[0];
+                    if (workbook.SheetNames.includes('1')) {
+                        sheetName = '1';
+                    }
+                    
+                    const sheet = workbook.Sheets[sheetName];
+                    const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                    
+                    if (rawData.length === 0) {
+                        throw new Error('시트에 데이터가 없습니다.');
+                    }
+                    
+                    // 헤더와 데이터 분리
+                    const headers = rawData[0];
+                    const dataRows = rawData.slice(1);
+                    
+                    // 병합된 셀 처리
+                    const merges = sheet['!merges'] || [];
+                    const mergeMap = new Map();
+                    
+                    merges.forEach(merge => {
+                        const startRow = merge.s.r;
+                        const endRow = merge.e.r;
+                        const startCol = merge.s.c;
+                        const endCol = merge.e.c;
+                        const firstCellValue = rawData[startRow] && rawData[startRow][startCol];
+                        
+                        for (let r = startRow; r <= endRow; r++) {
+                            for (let c = startCol; c <= endCol; c++) {
+                                mergeMap.set(`${r},${c}`, firstCellValue);
+                            }
+                        }
+                    });
+                    
+                    // JSON 데이터 생성
+                    const jsonResult = [];
+                    dataRows.forEach((row, rowIndex) => {
+                        const actualRowIndex = rowIndex + 1;
+                        const obj = {};
+                        let hasData = false;
+                        
+                        headers.forEach((header, colIndex) => {
+                            let value = row[colIndex];
+                            
+                            // 병합된 셀 값 적용
+                            const mergeKey = `${actualRowIndex},${colIndex}`;
+                            if (mergeMap.has(mergeKey)) {
+                                value = mergeMap.get(mergeKey);
+                            }
+                            
+                            if (value !== undefined && value !== null && value !== '') {
+                                obj[header] = value;
+                                hasData = true;
+                            }
+                        });
+                        
+                        if (hasData) {
+                            jsonResult.push(obj);
+                        }
+                    });
+                    
+                    this.jsonData = jsonResult;
+                    
+                    // 성공 메시지와 통계 표시
+                    this.showSuccess({
+                        sheetName: sheetName,
+                        originalRows: rawData.length - 1,
+                        processedRows: jsonResult.length,
+                        columns: headers.length,
+                        mergedCells: merges.length
+                    });
+                    
+                    this.showPreview();
+                    
+                } catch (error) {
+                    this.showError(`파일 처리 중 오류가 발생했습니다: ${error.message}`);
+                } finally {
+                    this.showLoading(false);
+                }
+            }
+            
+            showLoading(show) {
+                this.loadingTarget.classList.toggle('hidden', !show);
+            }
+            
+            hideMessages() {
+                this.errorAlertTarget.classList.add('hidden');
+                this.successAlertTarget.classList.add('hidden');
+                this.downloadButtonsTarget.classList.add('hidden');
+                this.previewTarget.classList.add('hidden');
+            }
+            
+            showError(message) {
+                this.errorMessageTarget.textContent = message;
+                this.errorAlertTarget.classList.remove('hidden');
+            }
+            
+            showSuccess(stats) {
+                this.statsInfoTarget.innerHTML = `
+                    • 시트: ${stats.sheetName}<br>
+                    • 총 ${stats.originalRows}행 → ${stats.processedRows}개 객체로 변환<br>
+                    • 컬럼 수: ${stats.columns}개<br>
+                    • 병합된 셀: ${stats.mergedCells}개 (자동 처리됨)
+                `;
+                this.successAlertTarget.classList.remove('hidden');
+                this.downloadButtonsTarget.classList.remove('hidden');
+            }
+            
+            showPreview() {
+                if (!this.jsonData) return;
+                
+                const previewData = this.jsonData.slice(0, 3);
+                this.previewContentTarget.textContent = JSON.stringify(previewData, null, 2);
+                
+                if (this.jsonData.length > 3) {
+                    this.previewNoteTarget.textContent = `... 총 ${this.jsonData.length}개 항목 (전체 내용은 다운로드해서 확인하세요)`;
+                } else {
+                    this.previewNoteTarget.textContent = '';
+                }
+                
+                this.previewTarget.classList.remove('hidden');
+            }
+            
+            downloadJson() {
+                if (!this.jsonData) return;
+                
+                const jsonString = JSON.stringify(this.jsonData, null, 2);
+                const blob = new Blob([jsonString], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = this.fileName ? this.fileName.replace(/\.(xlsx?|xls)$/i, '.json') : 'converted.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+            
+            async copyToClipboard() {
+                if (!this.jsonData) return;
+                
+                try {
+                    await navigator.clipboard.writeText(JSON.stringify(this.jsonData, null, 2));
+                    alert('JSON 데이터가 클립보드에 복사되었습니다!');
+                } catch (error) {
+                    alert('클립보드 복사에 실패했습니다.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

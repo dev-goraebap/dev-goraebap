@@ -2,6 +2,7 @@ export * from './api/v1/admin/media.controller';
 export * from './web/admin/admin.controller';
 export * from './web/admin/blocked-ip.controller';
 export * from './web/admin/comment.controller';
+export * from './web/admin/excel-to-json.controller';
 export * from './web/admin/post.controller';
 export * from './web/admin/series.controller';
 export * from './web/admin/series/post.controller';
