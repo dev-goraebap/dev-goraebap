@@ -34,8 +34,8 @@
           <td>
             <div class="w-10 h-16 overflow-hidden bg-base-200 border border-base-content/30">
               @!uikit.image({
-                url: cloudImageUrl(seriesItem?.getImage('thumbnail')?.url),
-                dominantColor: seriesItem?.getImage('thumbnail')?.dominantColor
+                url: seriesItem?.thumbnail?.url,
+                dominantColor: seriesItem?.thumbnail?.dominantColor
               })
             </div>
           </td>
@@ -65,7 +65,7 @@
             })
           </td>
           <td>
-            <span class="text-xs text-base-content/70">{{ seriesItem?.seriesPosts?.length }}개의 게시물</span>
+            <span class="text-xs text-base-content/70">{{ seriesItem?.postCount }}개의 게시물</span>
           </td>
           <td>
             <div class="text-sm">

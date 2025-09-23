@@ -1,25 +1,25 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Res, UsePipes } from '@nestjs/common';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { PostQueryService } from 'src/core/application/post';
 import { CreateSeriesPostDto, CreateSeriesPostSchema, SeriesPostCommandService, SeriesQueryService } from 'src/core/application/series';
-import { AdminAuthGuard } from 'src/core/presentation/guards';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
 
 @Controller({ path: 'admin/series/:seriesId/posts' })
-@UseGuards(AdminAuthGuard)
+// @UseGuards(AdminAuthGuard)
 export class AdminSeriesPostController {
   constructor(
     private readonly seriesQueryService: SeriesQueryService,
     private readonly postQueryService: PostQueryService,
     private readonly seriesPostCommandService: SeriesPostCommandService
-  ) {}
+  ) { }
 
   @Get()
   async index(@Param('seriesId') seriesId: number, @Req() req: NestMvcReq) {
-    const series = await this.seriesQueryService.getAdminSeriesWithPosts(seriesId);
-    return req.view.render('pages/admin/series/posts/index', { series });
+    const series = await this.seriesQueryService.getAdminSeriesItem(seriesId);
+    const seriesPosts = await this.postQueryService.getAdminSeriesPosts(seriesId);
+    return req.view.render('pages/admin/series/posts/index', { series, seriesPosts });
   }
 
   @Get('new')

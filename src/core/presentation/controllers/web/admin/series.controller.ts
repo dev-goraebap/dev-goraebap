@@ -11,8 +11,7 @@ import {
   Query,
   Req,
   Res,
-  UseGuards,
-  UsePipes,
+  UsePipes
 } from '@nestjs/common';
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
@@ -22,11 +21,10 @@ import { CreateSeriesDto, CreateSeriesSchema, SeriesCommandService, SeriesQueryS
 import { GetAdminSeriesDto, GetAdminSeriesSchema } from 'src/core/infrastructure/dto';
 import { UserEntity } from 'src/core/infrastructure/entities';
 import { CurrentUser } from 'src/core/presentation/decorators';
-import { AdminAuthGuard } from 'src/core/presentation/guards';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
 
 @Controller({ path: '/admin/series' })
-@UseGuards(AdminAuthGuard)
+// @UseGuards(AdminAuthGuard)
 export class AdminSeriesController {
   constructor(
     private readonly seriesQueryService: SeriesQueryService,
@@ -36,8 +34,8 @@ export class AdminSeriesController {
   @Get()
   @UsePipes(new ZodValidationPipe(GetAdminSeriesSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetAdminSeriesDto) {
-    const seriesData = await this.seriesQueryService.getAdminSeriesList(dto);
-    return req.view.render('pages/admin/series/index', { ...seriesData });
+    const result = await this.seriesQueryService.getAdminSeriesList(dto);
+    return req.view.render('pages/admin/series/index', { ...result });
   }
 
   @Get('new')
@@ -58,7 +56,7 @@ export class AdminSeriesController {
 
   @Get(':id/edit')
   async edit(@Param('id') id: number, @Req() req: NestMvcReq) {
-    const series = await this.seriesQueryService.getAdminSeriesWithPosts(id);
+    const series = await this.seriesQueryService.getAdminSeriesItem(id);
     return req.view.render('pages/admin/series/edit', {
       series,
     });

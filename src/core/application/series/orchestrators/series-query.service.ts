@@ -1,15 +1,23 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { and, asc, count, desc, eq, getTableColumns, like, SQL, sql } from 'drizzle-orm';
 import { Brackets, In, Repository } from 'typeorm';
 
 import { GetAdminSeriesDto } from 'src/core/infrastructure/dto';
 import { PostEntity, SeriesEntity, SeriesPostEntity } from 'src/core/infrastructure/entities';
 import { SeriesRepository } from 'src/core/infrastructure/repositories';
+import { CloudflareR2Service } from 'src/core/infrastructure/services';
 import { AttachmentQueryHelper } from 'src/shared';
+import { DRIZZLE, DrizzleOrm, SelectSeries, series, seriesPosts, thumbnailSubQueryFn } from 'src/shared/drizzle';
+import { PaginationModel, ThumbnailModel } from '../../_concern';
+import { AdminSeriesModel } from '../view-models';
 
 @Injectable()
 export class SeriesQueryService {
   constructor(
+    @Inject(DRIZZLE)
+    private readonly drizzle: DrizzleOrm,
+    private readonly r2Service: CloudflareR2Service,
     @InjectRepository(SeriesEntity)
     private readonly seriesRepository: Repository<SeriesEntity>,
     @InjectRepository(PostEntity)
@@ -19,16 +27,106 @@ export class SeriesQueryService {
     private readonly customSeriesRepository: SeriesRepository
   ) { }
 
-  async getAdminSeriesList(dto: GetAdminSeriesDto) {
-    return this.customSeriesRepository.findAdminSeriesList(dto);
+  // -------------------------------------------------
+  // 관리자 조회
+  // -------------------------------------------------
+
+  async getAdminSeriesList(dto: GetAdminSeriesDto): Promise<PaginationModel<AdminSeriesModel>> {
+    // 동적 조건 처리
+    const whereConditions: SQL[] = [];
+    if (dto.search) {
+      whereConditions.push(like(series.name, `%${dto.search}%`));
+    }
+    if (dto.status) {
+      whereConditions.push(eq(series.status, dto.status));
+    }
+    if (dto.isPublishedYn) {
+      whereConditions.push(eq(series.isPublishedYn, dto.isPublishedYn));
+    }
+    const whereCondition = whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+    // 정렬 설정
+    const orderCondition = dto.orderBy === 'ASC'
+      ? asc(series[dto.orderKey])
+      : desc(series[dto.orderKey]);
+
+    // 썸네일 공용 서브쿼리
+    const thumbnailSubQuery = thumbnailSubQueryFn(this.drizzle);
+
+    // 시리즈별 게시물 개수 조회 서브쿼리
+    const seriesPostQuery = this.drizzle
+      .select({
+        seriesId: seriesPosts.seriesId,
+        postCount: count().as('postCount')
+      })
+      .from(seriesPosts)
+      .groupBy(seriesPosts.seriesId)
+      .as('sp');
+
+    // 데이터 쿼리
+    const dataQuery = this.drizzle
+      .select({
+        ...getTableColumns(series),
+        postCount: seriesPostQuery.postCount,
+        file: {
+          key: thumbnailSubQuery.key,
+          metadata: thumbnailSubQuery.metadata
+        }
+      })
+      .from(series)
+      .leftJoin(seriesPostQuery, eq(seriesPostQuery.seriesId, series.id))
+      .leftJoin(thumbnailSubQuery, and(
+        eq(thumbnailSubQuery.recordType, 'series'),
+        eq(thumbnailSubQuery.recordId, sql`CAST(${series.id} AS TEXT)`),
+      ))
+      .where(whereCondition)
+      .orderBy(orderCondition)
+      .limit(dto.perPage)
+      .offset((dto.page - 1) * dto.perPage);
+
+    // 전체 페이지 쿼리
+    const countQuery = this.drizzle.select({ count: count() })
+      .from(series)
+      .where(whereCondition);
+
+    // 병렬 처리
+    const [data, countResult] = await Promise.all([
+      dataQuery,
+      countQuery
+    ]);
+
+    // 뷰모델로 변경
+    const items = data.map(x => this.getSeriesModel(x));
+
+    // 페이지네이션으로 감싸기
+    return PaginationModel.with(items, {
+      page: dto.page,
+      perPage: dto.perPage,
+      total: countResult[0].count
+    });
   }
 
-  async getAdminSeriesWithPosts(id: number): Promise<SeriesEntity> {
-    const series = await this.customSeriesRepository.findSeriesWithPosts(id);
-    if (!series) {
+  async getAdminSeriesItem(seriesId: number): Promise<SelectSeries> {
+    const thumbnailQuery = thumbnailSubQueryFn(this.drizzle);
+    const [seriesItem] = await this.drizzle
+      .select({
+        ...getTableColumns(series),
+        file: {
+          key: thumbnailQuery.key,
+          metadata: thumbnailQuery.metadata
+        }
+      })
+      .from(series)
+      .leftJoin(thumbnailQuery, and(
+        eq(thumbnailQuery.recordType, 'series'),
+        eq(thumbnailQuery.recordId, sql`CAST(${series.id} AS TEXT)`)
+      ))
+      .where(eq(series.id, seriesId));
+    if (!seriesItem) {
       throw new BadRequestException('시리즈를 찾을 수 없습니다.');
     }
-    return series;
+
+    return this.getSeriesModel(seriesItem);
   }
 
   async getSeriesList(): Promise<SeriesEntity[]> {
@@ -170,5 +268,18 @@ export class SeriesQueryService {
       .getOne();
 
     return result?.post;
+  }
+
+  // -------------------------------------------------
+  // PRIVATE
+  // -------------------------------------------------
+
+  private getSeriesModel(series: any) {
+    if (series.file) {
+      const url = this.r2Service.getPublicUrl(series.file?.key);
+      const thumbnailModel = ThumbnailModel.from(url, series.file?.metadata);
+      return AdminSeriesModel.from(series, thumbnailModel);
+    }
+    return AdminSeriesModel.from(series);
   }
 }
