@@ -1,17 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { inArray } from 'drizzle-orm';
-import { PgTransaction } from 'drizzle-orm/pg-core';
 
-import { DRIZZLE, DrizzleOrm, tags } from 'src/shared/drizzle';
+import { DrizzleTransaction, SelectTag, tags } from 'src/shared/drizzle';
 
 @Injectable()
 export class TagSharedService {
-  constructor(
-    @Inject(DRIZZLE)
-    private readonly drizzle: DrizzleOrm,
-  ) { }
 
-  async findOrCreateTags(tagNames: string[], tx: PgTransaction<any>) {
+  async findOrCreateTags(tagNames: string[], tx: DrizzleTransaction): Promise<SelectTag[]> {
     // 기존 태그 조회
     const existingTags = await tx
       .select()
@@ -22,7 +17,7 @@ export class TagSharedService {
     const newTagNames = tagNames.filter((name) => !existingTagNames.includes(name));
 
     // 새 태그 생성
-    let newTags: any[] = [];
+    let newTags: SelectTag[] = [];
     if (newTagNames.length > 0) {
       const tagsToCreate = newTagNames.map((name) => ({
         name,
@@ -32,8 +27,6 @@ export class TagSharedService {
         .values(tagsToCreate)
         .returning();
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return [...existingTags, ...newTags];
   }
 }
