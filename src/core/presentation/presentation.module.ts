@@ -4,7 +4,7 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { ApplicationConcernModule } from '../application/_concern';
 import { ApplicationModule } from '../application/application.module';
 import { InfrastructureModule } from '../infrastructure/infrastructure.module';
-import { AdminBlockedIpsController, AdminCommentController, AdminController, AdminMediaApiController, AdminPostController, AdminSeriesController, AdminSeriesPostController, AdminTagController, FeedController, PatchNotesController, PostCommentController, PostController, SeriesController, SessionController, SitemapController } from './controllers';
+import { AdminBlockedIpsController, AdminCommentController, AdminController, AdminMediaApiController, AdminPostController, AdminSeriesController, AdminSeriesPostController, AdminTagController, AdminExcelToJsonController, FeedController, PatchNotesController, PostCommentController, PostController, SeriesController, SessionController, SitemapController } from './controllers';
 import { AppExceptionFilter } from './filters';
 import { LoggingInterceptor } from './interceptors';
 import { RequestIdMiddleware, WAFMiddleware } from './middlewares';
@@ -24,6 +24,7 @@ import { RequestIdMiddleware, WAFMiddleware } from './middlewares';
     AdminCommentController,
     AdminBlockedIpsController,
     AdminTagController,
+    AdminExcelToJsonController,
 
     // Web Controllers - 일반 사용자용
     FeedController,
