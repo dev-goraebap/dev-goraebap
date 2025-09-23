@@ -4,10 +4,8 @@ import { ApplicationConcernModule } from '../_concern';
 import { PostCommandService } from './orchestrators/post-command.service';
 import { PostQueryService } from './orchestrators/post-query.service';
 import { PostPatchNotesService } from './services/post-patch-notes.service';
-import { PostService } from './services/post.service';
 
 const services = [
-  PostService,
   PostPatchNotesService,
   PostQueryService,
   PostCommandService,
