@@ -5,7 +5,7 @@
       </li>
     @end
     <li>
-      @!partials.posts.card({ post, collectionUrl: `/series/${ post?.seriesPosts[0]?.series?.slug }` })
+      @!partials.posts.card({ post, collectionUrl: `/series/${ post?.seriesSlug }` })
     </li>
   @end
 </ul>

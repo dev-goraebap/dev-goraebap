@@ -5,9 +5,9 @@
     <div class=" flex items-center justify-center overflow-hidden sm:shadow-xl">
       <div class="w-full aspect-[2/3] overflow-hidden">
         @!uikit.image({
-          url: cloudImageUrl(seriesItem?.getImage('thumbnail')?.url),
+          url: seriesItem.thumbnail?.url,
           alt: seriesItem?.name + ' 시리즈 - 썸네일',
-          dominantColor: seriesItem?.getImage('thumbnail')?.dominantColor
+          dominantColor: seriesItem.thumbnail?.dominantColor
         })
       </div>
     </div>
@@ -22,8 +22,6 @@
     @!component('pages/series/_status', { seriesItem })
     
     {{-- 게시물 개수 --}}
-    @if(seriesItem?.seriesPosts)
-      <span>{{ seriesItem?.seriesPosts?.length }}개의 게시물</span>
-    @endif
+    <span>{{ seriesItem?.postCount }}개의 게시물</span>
   </div>
 </a>

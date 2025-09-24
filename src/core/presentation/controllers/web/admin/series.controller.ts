@@ -19,9 +19,9 @@ import { UpdatePublishDto, UpdatePublishSchema } from 'src/core/application/_con
 
 import { CreateSeriesDto, CreateSeriesSchema, SeriesCommandService, SeriesQueryService, UpdateSeriesDto, UpdateSeriesSchema } from 'src/core/application/series';
 import { GetAdminSeriesDto, GetAdminSeriesSchema } from 'src/core/infrastructure/dto';
-import { UserEntity } from 'src/core/infrastructure/entities';
 import { CurrentUser } from 'src/core/presentation/decorators';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
+import { SelectUser } from 'src/shared/drizzle';
 
 @Controller({ path: '/admin/series' })
 // @UseGuards(AdminAuthGuard)
@@ -48,15 +48,15 @@ export class AdminSeriesController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(CreateSeriesSchema))
-  async create(@Req() req: NestMvcReq, @Body('series') dto: CreateSeriesDto, @CurrentUser() user: UserEntity) {
-    await this.seriesAppService.createSeries(user, dto);
+  async create(@Req() req: NestMvcReq, @Body('series') dto: CreateSeriesDto, @CurrentUser() user: SelectUser) {
+    await this.seriesAppService.createSeries(user.id, dto);
     req.flash.success('시리즈를 성공적으로 등록하였습니다.');
     return req.view.render('pages/admin/series/_success');
   }
 
   @Get(':id/edit')
   async edit(@Param('id') id: number, @Req() req: NestMvcReq) {
-    const series = await this.seriesQueryService.getAdminSeriesItem(id);
+    const series = await this.seriesQueryService.getSeriesItem({ id });
     return req.view.render('pages/admin/series/edit', {
       series,
     });

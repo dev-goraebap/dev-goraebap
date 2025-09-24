@@ -19,10 +19,10 @@ import { UpdatePublishDto, UpdatePublishSchema } from 'src/core/application/_con
 
 import { CreatePostDto, CreatePostSchema, PostCommandService, PostQueryService, UpdatePostDto, UpdatePostSchema } from 'src/core/application/post';
 import { GetAdminPostsDTO, GetAdminPostsSchema } from 'src/core/infrastructure/dto';
-import { UserEntity } from 'src/core/infrastructure/entities';
 import { CurrentUser } from 'src/core/presentation/decorators';
 import { AdminAuthGuard } from 'src/core/presentation/guards';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
+import { SelectUser } from 'src/shared/drizzle';
 
 @Controller({ path: '/admin/posts' })
 @UseGuards(AdminAuthGuard)
@@ -37,9 +37,9 @@ export class AdminPostController {
   async index(@Req() req: NestMvcReq, @Query() dto: GetAdminPostsDTO) {
     const postData = await this.postQueryService.getAdminPosts(dto);
 
-    return req.view.render('pages/admin/posts/index', {
-      ...postData,
-    });
+    // return req.view.render('pages/admin/posts/index', {
+    //   ...postData,
+    // });
   }
 
   @Get('new')
@@ -59,9 +59,9 @@ export class AdminPostController {
     @Req() req: NestMvcReq,
     @Res() res: Response,
     @Body('post') dto: CreatePostDto,
-    @CurrentUser() user: UserEntity,
+    @CurrentUser() user: SelectUser,
   ) {
-    await this.postCommandService.createPost(user, dto);
+    await this.postCommandService.createPost(user.id, dto);
     req.flash.success('게시물 저장 완료');
     return res.redirect('/admin/posts');
   }

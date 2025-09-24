@@ -17,8 +17,8 @@ export class AdminSeriesPostController {
 
   @Get()
   async index(@Param('seriesId') seriesId: number, @Req() req: NestMvcReq) {
-    const series = await this.seriesQueryService.getAdminSeriesItem(seriesId);
-    const seriesPosts = await this.postQueryService.getAdminSeriesPosts(seriesId);
+    const series = await this.seriesQueryService.getSeriesItem({ id: seriesId });
+    const seriesPosts = await this.postQueryService.getSeriesPosts({ seriesId });
     return req.view.render('pages/admin/series/posts/index', { series, seriesPosts });
   }
 

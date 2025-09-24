@@ -1,1 +1,1 @@
-export * from './admin-series-post.model';
+export * from './post.model';

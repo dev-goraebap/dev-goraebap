@@ -1,6 +1,6 @@
 import { ThumbnailModel } from "../../_concern";
 
-export class AdminSeriesModel {
+export class SeriesModel {
   // DEFAULT
   id: number;
   name: string;
@@ -17,9 +17,10 @@ export class AdminSeriesModel {
   postCount?: number;
   thumbnail?: ThumbnailModel;
 
-  static from(data: AdminSeriesModel, thumbnailModel?: ThumbnailModel): AdminSeriesModel {
+  static from(data: SeriesModel, thumbnailModel?: ThumbnailModel): SeriesModel {
     return {
       ...data,
+      postCount: data?.postCount ?? 0,
       thumbnail: thumbnailModel
     }
   }

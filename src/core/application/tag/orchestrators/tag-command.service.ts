@@ -1,9 +1,8 @@
 import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { eq } from "drizzle-orm";
 
-import { UserEntity } from "src/core/infrastructure/entities";
 import { LoggerService } from "src/shared";
-import { DRIZZLE, DrizzleOrm, SelectTag, tags } from "src/shared/drizzle";
+import { DRIZZLE, DrizzleOrm, SelectTag, tags, UserId } from "src/shared/drizzle";
 import { CreateOrUpdateTagDto } from "../dto/create-or-update-tag.dto";
 
 @Injectable()
@@ -15,7 +14,7 @@ export class TagCommandService {
     private readonly logger: LoggerService
   ) { }
 
-  async createTag(user: UserEntity, dto: CreateOrUpdateTagDto): Promise<SelectTag> {
+  async createTag(userId: UserId, dto: CreateOrUpdateTagDto): Promise<SelectTag> {
     const existsTag = await this.drizzle.query.tags.findFirst({
       where: eq(tags.name, dto.name)
     });
@@ -25,7 +24,7 @@ export class TagCommandService {
 
     try {
       return (await this.drizzle.insert(tags).values({
-        userId: user.id,
+        userId,
         name: dto.name,
         description: dto.description ?? ''
       }).returning())[0];

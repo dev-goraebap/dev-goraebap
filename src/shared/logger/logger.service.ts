@@ -1,8 +1,13 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // src/logger/logger.service.ts
-import { Injectable } from '@nestjs/common';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
+import { Inject, Injectable } from '@nestjs/common';
 import * as winston from 'winston';
+import { sql } from 'drizzle-orm';
+
+import { DRIZZLE, DrizzleOrm } from 'src/shared/drizzle';
+import { appLogs } from 'src/shared/drizzle/schema/app-logs.schema';
 
 export interface LogData {
   level: 'ERROR' | 'WARN' | 'INFO' | 'DEBUG';
@@ -30,8 +35,8 @@ export class LoggerService {
   private readonly BATCH_TIMEOUT = 5000; // 5초
 
   constructor(
-    @InjectDataSource()
-    private readonly dataSource: DataSource,
+    @Inject(DRIZZLE)
+    private readonly drizzle: DrizzleOrm,
   ) {
     // Winston 콘솔 로거 설정
     this.logger = winston.createLogger({
@@ -240,41 +245,25 @@ export class LoggerService {
   private async saveBatchToDatabase(logs: LogData[]) {
     if (logs.length === 0) return;
 
-    // VALUES 절 구성
-    const placeholders = logs
-      .map((_, index) => {
-        const base = index * 14;
-        return `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5}, $${base + 6}, $${base + 7}, $${base + 8}, $${base + 9}, $${base + 10}, $${base + 11}, $${base + 12}, $${base + 13}, $${base + 14})`;
-      })
-      .join(', ');
+    // LogData를 appLogs insert 형태로 변환
+    const insertData = logs.map((log) => ({
+      level: log.level,
+      message: log.message,
+      method: log.method || null,
+      url: log.url || null,
+      statusCode: log.statusCode || null,
+      responseTime: log.responseTime || null,
+      userId: log.userId || null,
+      sessionId: log.sessionId || null,
+      ipAddress: log.ipAddress || null,
+      requestId: log.requestId || null,
+      errorMessage: log.errorMessage || null,
+      errorStack: log.errorStack || null,
+      metadata: log.metadata || null,
+      tags: log.tags && log.tags.length > 0 ? log.tags : null,
+    }));
 
-    // 파라미터 배열 구성
-    const params = logs.flatMap((log) => [
-      log.level,
-      log.message,
-      log.method || null,
-      log.url || null,
-      log.statusCode || null,
-      log.responseTime || null,
-      log.userId || null,
-      log.sessionId || null,
-      log.ipAddress || null,
-      log.requestId || null,
-      log.errorMessage || null,
-      log.errorStack || null,
-      log.metadata ? JSON.stringify(log.metadata) : null,
-      log.tags || [],
-    ]);
-
-    const query = `
-      INSERT INTO app_logs (
-        level, message, method, url, status_code, response_time,
-        user_id, session_id, ip_address, request_id,
-        error_message, error_stack, metadata, tags
-      ) VALUES ${placeholders}
-    `;
-
-    await this.dataSource.query(query, params);
+    await this.drizzle.insert(appLogs).values(insertData);
   }
 
   // 앱 종료 시 남은 로그 저장

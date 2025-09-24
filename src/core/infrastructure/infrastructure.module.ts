@@ -1,8 +1,5 @@
 import { Global, Module } from "@nestjs/common";
-import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { AttachmentEntity, BlobEntity, BlockedIpEntity, CommentEntity, PostEntity, SeriesEntity, SeriesPostEntity, TagEntity, UserEntity } from "./entities";
-import { SeriesRepository } from "./repositories";
 import { PostRepository } from "./repositories/post.repository";
 import { CloudflareR2Service, GoogleImageService } from "./services";
 
@@ -12,26 +9,12 @@ const services = [
 ];
 
 const repositories = [
-  PostRepository,
-  SeriesRepository
+  PostRepository
 ]
 
 @Global()
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      UserEntity,
-      PostEntity,
-      TagEntity,
-      SeriesEntity,
-      SeriesPostEntity,
-      BlobEntity,
-      AttachmentEntity,
-      CommentEntity,
-      BlockedIpEntity
-    ]),
-  ],
   providers: [...services, ...repositories],
-  exports: [...services, ...repositories, TypeOrmModule]
+  exports: [...services, ...repositories]
 })
 export class InfrastructureModule { }

@@ -1,8 +1,7 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { and, eq, ne } from 'drizzle-orm';
 
-import { UserEntity } from 'src/core/infrastructure/entities';
-import { DRIZZLE, DrizzleOrm, SelectSeriesPost, series, seriesPosts } from 'src/shared/drizzle';
+import { DRIZZLE, DrizzleOrm, SelectSeriesPost, series, seriesPosts, UserId } from 'src/shared/drizzle';
 import { AttachmentSharedService, PostSharedService, UpdatePublishDto } from '../../_concern';
 import { CreateSeriesDto, UpdateSeriesDto } from '../dto/create-or-update-series.dto';
 
@@ -19,7 +18,7 @@ export class SeriesCommandService {
   // 시리즈 관리
   // -------------------------------------------------
 
-  async createSeries(user: UserEntity, dto: CreateSeriesDto) {
+  async createSeries(userId: UserId, dto: CreateSeriesDto) {
     return await this.drizzle.transaction(async (tx) => {
       // 1. 시리즈 이름 중복 검증
       await this.validateSeriesNameUniqueness(dto.name);
@@ -28,7 +27,7 @@ export class SeriesCommandService {
       const [createdSeries] = await tx
         .insert(series)
         .values({
-          userId: user.id,
+          userId,
           ...dto,
           publishedAt: dto.publishedAt.toISOString()
         })

@@ -19,10 +19,10 @@ import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { CreateOrUpdateTagDto, CreateOrUpdateTagSchema, TagCommandService, TagQueryService } from 'src/core/application/tag';
 import { GetAdminTagsDto, GetAdminTagsSchema } from 'src/core/infrastructure/dto';
-import { UserEntity } from 'src/core/infrastructure/entities';
 import { CurrentUser } from 'src/core/presentation/decorators';
 import { AdminAuthGuard } from 'src/core/presentation/guards';
 import { ZodValidationPipe } from 'src/core/presentation/pipes';
+import { SelectUser } from 'src/shared/drizzle';
 
 @Controller({ path: '/admin/tags' })
 @UseGuards(AdminAuthGuard)
@@ -49,8 +49,8 @@ export class AdminTagController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(CreateOrUpdateTagSchema))
-  async create(@Req() req: NestMvcReq, @Body('tag') dto: CreateOrUpdateTagDto, @CurrentUser() user: UserEntity) {
-    await this.tagCommandService.createTag(user, dto);
+  async create(@Req() req: NestMvcReq, @Body('tag') dto: CreateOrUpdateTagDto, @CurrentUser() user: SelectUser) {
+    await this.tagCommandService.createTag(user.id, dto);
     req.flash.success('태그를 성공적으로 추가하였습니다.');
     return req.view.render('pages/admin/tags/_success');
   }

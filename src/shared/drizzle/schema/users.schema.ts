@@ -1,8 +1,8 @@
 import {
   pgTable,
   serial,
-  varchar,
   timestamp,
+  varchar,
 } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
@@ -19,3 +19,4 @@ export const users = pgTable('users', {
 
 export type SelectUser = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+export type UserId = number;

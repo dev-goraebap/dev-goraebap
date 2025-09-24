@@ -2,7 +2,6 @@ import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common'
 import { createHash, randomUUID } from 'crypto';
 import { eq } from 'drizzle-orm';
 
-import { UserEntity } from 'src/core/infrastructure/entities';
 import { CloudflareR2Service, GoogleImageService } from 'src/core/infrastructure/services';
 import { blobs, DRIZZLE, DrizzleOrm, SelectBlob } from 'src/shared/drizzle';
 import { MediaUploadResponseDto } from '../dto/media-upload-response.dto';
@@ -18,7 +17,7 @@ export class MediaUploadService {
     private readonly googleImageService: GoogleImageService
   ) { }
 
-  async uploadFile(user: UserEntity, file: Express.Multer.File): Promise<MediaUploadResponseDto> {
+  async uploadFile(userId: number, file: Express.Multer.File): Promise<MediaUploadResponseDto> {
     // 1단계: 파일 검증
     this.validateFile(file);
 
@@ -52,7 +51,7 @@ export class MediaUploadService {
           byteSize: file.size,
           checksum,
           metadata: JSON.stringify(metadata),
-          createdBy: user.id.toString(),
+          createdBy: userId.toString(),
         }).returning()
       )[0];
 

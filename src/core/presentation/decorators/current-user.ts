@@ -1,9 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { UserEntity } from 'src/core/infrastructure/entities';
+import { SelectUser } from 'src/shared/drizzle';
 
 export const CurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): UserEntity => {
+  (data: unknown, ctx: ExecutionContext): SelectUser => {
     const request = ctx.switchToHttp().getRequest();
-    return request.currentUser as UserEntity;
+    return request.currentUser as SelectUser;
   },
 );

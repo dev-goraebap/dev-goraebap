@@ -1,19 +1,18 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
+import { and, eq } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
-import { Repository } from 'typeorm';
 
-import { BlockedIpEntity } from 'src/core/infrastructure/entities';
 import { getRealClientIp } from 'src/shared';
+import { blockedIps, DRIZZLE, DrizzleOrm } from 'src/shared/drizzle';
 import { LoggerService } from 'src/shared/logger';
 
 @Injectable()
 export class WAFMiddleware implements NestMiddleware {
   constructor(
-    @InjectRepository(BlockedIpEntity)
-    private blockedIpRepository: Repository<BlockedIpEntity>,
+    @Inject(DRIZZLE)
+    private readonly drizzle: DrizzleOrm,
     private readonly logger: LoggerService,
-  ) {}
+  ) { }
 
   // 악성 경로 패턴들
   private readonly MALICIOUS_PATHS = [
@@ -101,21 +100,23 @@ export class WAFMiddleware implements NestMiddleware {
 
 
   private async isIPBlocked(ipAddress: string): Promise<boolean> {
-    const blocked = await this.blockedIpRepository.findOne({
-      where: { 
-        ipAddress,
-        isActiveYn: 'Y',
-      },
+    const blocked = await this.drizzle.query.blockedIps.findFirst({
+      where: and(
+        eq(blockedIps.ipAddress, ipAddress),
+        eq(blockedIps.isActiveYn, 'Y')
+      )
     });
-
     if (!blocked) return false;
 
     // 만료 시간 확인
-    if (blocked.expiresAt && new Date() > blocked.expiresAt) {
-      await this.blockedIpRepository.update(
-        { ipAddress },
-        { isActiveYn: 'N' }
-      );
+    if (blocked.expiresAt && new Date() > new Date(blocked.expiresAt)) {
+      await this.drizzle
+        .update(blockedIps)
+        .set({
+          ipAddress,
+          isActiveYn: 'N'
+        })
+        .where(eq(blockedIps.id, blocked.id));
       return false;
     }
 
@@ -133,16 +134,19 @@ export class WAFMiddleware implements NestMiddleware {
 
   private async autoBlockIP(ipAddress: string, reason: string, path: string, userAgent: string): Promise<void> {
     try {
-      const existingBlock = await this.blockedIpRepository.findOne({ where: { ipAddress } });
-
+      const existingBlock = await this.drizzle.query.blockedIps.findFirst({
+        where: eq(blockedIps.ipAddress, ipAddress)
+      });
       if (!existingBlock) {
-        await this.blockedIpRepository.save({
-          ipAddress,
-          reason,
-          blockedBy: 'auto',
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24시간 후 만료
-          isActiveYn: 'Y',
-        });
+        await this.drizzle
+          .insert(blockedIps)
+          .values({
+            ipAddress,
+            reason,
+            blockedBy: 'auto',
+            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24시간 후 만료
+            isActiveYn: 'Y',
+          });
 
         // 자동 차단 이벤트 로깅
         this.logger.logSecurityEvent('AUTO_BLOCKED', `IP ${ipAddress} automatically blocked`, {
@@ -166,7 +170,7 @@ export class WAFMiddleware implements NestMiddleware {
       userAgent,
       blockReason: reason,
     });
-    
+
     res.status(403).end();
   }
 }

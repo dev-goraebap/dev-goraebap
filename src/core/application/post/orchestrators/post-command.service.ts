@@ -1,9 +1,8 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { and, eq, ne, sql } from 'drizzle-orm';
 
-import { UserEntity } from 'src/core/infrastructure/entities';
 import { LoggerService } from 'src/shared';
-import { DRIZZLE, DrizzleOrm, DrizzleTransaction, posts, postTags, SelectPost, SelectTag } from 'src/shared/drizzle';
+import { DRIZZLE, DrizzleOrm, DrizzleTransaction, posts, postTags, SelectPost, SelectTag, UserId } from 'src/shared/drizzle';
 import { AttachmentSharedService, TagSharedService, UpdatePublishDto } from '../../_concern';
 import { CreatePostDto, UpdatePostDto } from '../dto/create-or-update-post.dto';
 
@@ -40,7 +39,7 @@ export class PostCommandService {
   // 관리자 기능
   // ---------------------------------------------------------------------------
 
-  async createPost(user: UserEntity, dto: CreatePostDto) {
+  async createPost(userId: UserId, dto: CreatePostDto) {
     await this.drizzle.transaction(async (tx) => {
       // 0. slug 중복 검증
       await this.validateSlugUniqueness(dto.slug, undefined);
@@ -49,7 +48,7 @@ export class PostCommandService {
       const [createdPost] = await tx
         .insert(posts)
         .values({
-          userId: user.id,
+          userId: userId,
           slug: dto.slug,
           title: dto.title,
           content: dto.content,

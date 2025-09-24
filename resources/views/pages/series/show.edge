@@ -1,7 +1,7 @@
-@layout.app({ 
-  title: 'devgoraebap | '+ seriesItem?.name, 
-  description: seriesItem?.description, 
-  ogImage: cloudImageUrl(seriesItem?.getImage('thumbnail')?.url),
+@layout.app({
+  title: 'devgoraebap | '+ seriesItem?.name,
+  description: seriesItem?.description,
+  ogImage: seriesItem.thumbnail?.url,
   twitterCard: 'summary'
 })
   <div class="p-2 space-y-6">
@@ -9,15 +9,21 @@
       <div class="flex gap-3 sm:gap-4 justify-start w-full">
         <div class="aspect-2/3 h-[200px] sm:h-[250px] drop-shadow-2xl">
           @!uikit.image({
-            url: cloudImageUrl(seriesItem?.getImage('thumbnail')?.url),
+            url: seriesItem.thumbnail?.url,
             alt: seriesItem?.name + ' 시리즈 - 썸네일',
-            dominantColor: seriesItem?.getImage('thumbnail')?.dominantColor
+            dominantColor: seriesItem.thumbnail?.dominantColor
           })
         </div>
         <div class="space-y-2">
-          <h2 class="text-xl font-bold sm:text-2xl">{{seriesItem?.name}}</h2>
-          <p class="text-sm sm:text-lg">총 {{posts?.length}} 개의 게시물</p>
-          <p class="text-xs sm:text-sm max-w-xs">{{seriesItem?.description}}</p>
+          <h2 class="text-xl font-bold sm:text-2xl">
+            {{ seriesItem?.name }}
+          </h2>
+          <p class="text-sm sm:text-lg">
+            총 {{ seriesItem?.postCount }} 개의 게시물
+          </p>
+          <p class="text-xs sm:text-sm max-w-xs">
+            {{ seriesItem?.description }}
+          </p>
           @!component('pages/series/_status', { seriesItem })
         </div>
       </div>
@@ -40,7 +46,7 @@
 
   @slot('subContent')
     <pre class="text-xs font-bold">
- _          _ _            
+      _          _ _            
 | |__   ___| | | ___       
 | '_ \ / _ \ | |/ _ \      
 | | | |  __/ | | (_) |     
