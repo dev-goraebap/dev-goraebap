@@ -1,17 +1,21 @@
 import { Module } from '@nestjs/common';
 
+import { AppModule } from './app/app.module';
 import { ConfigModule } from './config';
-import { PresentationModule } from './core/presentation/presentation.module';
-import { LoggerModule } from './shared';
+import { CloudFlareR2Module } from './shared/cloudflare-r2';
 import { DrizzleModule } from './shared/drizzle';
+import { GoogleVisionAiModule } from './shared/google-vision-ai';
+import { LoggerModule } from './shared/logger';
 
 @Module({
   imports: [
     // prettier-ignore
+    DrizzleModule,
     LoggerModule,
+    GoogleVisionAiModule,
+    CloudFlareR2Module,
     ConfigModule,
-    PresentationModule,
-    DrizzleModule
+    AppModule,
   ],
 })
 export class MainModule {}
