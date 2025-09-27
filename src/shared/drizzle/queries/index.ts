@@ -1,3 +1,4 @@
-export * from './thumbnail-sub-query';
+export * from './comment.subquery';
+export * from './series.subquery';
+export * from './thumbnail.subquery';
 export * from './with-pagination';
-

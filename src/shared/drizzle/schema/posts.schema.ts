@@ -1,12 +1,15 @@
 import {
+  integer,
+  pgEnum,
   pgTable,
   serial,
-  varchar,
   text,
-  integer,
   timestamp,
+  varchar,
 } from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
+
+export const publishedYnEnum = pgEnum('published_yn', ['Y', 'N']);
 
 export const posts = pgTable('posts', {
   id: serial().primaryKey(),
@@ -26,8 +29,8 @@ export const posts = pgTable('posts', {
     .defaultNow()
     .notNull(),
   userId: integer('user_id')
-    .references(() => users.id, { onDelete: 'cascade' }),
-  isPublishedYn: varchar('is_published_yn').default('N').notNull(),
+    .references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  isPublishedYn: publishedYnEnum('is_published_yn').default('N').notNull(),
 });
 
 export type SelectPost = typeof posts.$inferSelect;

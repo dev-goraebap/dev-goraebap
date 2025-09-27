@@ -2,7 +2,7 @@ import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nes
 import { Observable, tap } from 'rxjs';
 
 import { LoggerService } from 'src/shared/logger';
-import { getRealClientIp } from 'src/shared';
+import { getRealClientIp } from 'src/shared/utils';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {

@@ -1,2 +1,3 @@
 export * from './dto';
-export * from './vm';
+export * from './models';
+export * from './types';

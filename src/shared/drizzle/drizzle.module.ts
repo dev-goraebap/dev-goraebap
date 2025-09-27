@@ -6,6 +6,7 @@ import { PgTransaction } from 'drizzle-orm/pg-core';
 import { Pool, PoolConfig } from 'pg';
 
 import * as schema from './schema';
+import { TransactionContext } from './transaction-context';
 
 export const DRIZZLE = Symbol('DRIZZLE');
 export type DrizzleOrm = NodePgDatabase<typeof schema>;
@@ -39,7 +40,8 @@ export type DrizzleTransaction = PgTransaction<NodePgQueryResultHKT, typeof sche
       },
       inject: [ConfigService],
     },
+    TransactionContext,
   ],
-  exports: [DRIZZLE],
+  exports: [DRIZZLE, TransactionContext],
 })
 export class DrizzleModule { }

@@ -2,9 +2,9 @@ import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
 import { NextFunction, Request, Response } from 'express';
 
-import { getRealClientIp } from 'src/shared';
 import { blockedIps, DRIZZLE, DrizzleOrm } from 'src/shared/drizzle';
 import { LoggerService } from 'src/shared/logger';
+import { getRealClientIp } from 'src/shared/utils';
 
 @Injectable()
 export class WAFMiddleware implements NestMiddleware {
