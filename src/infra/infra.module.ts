@@ -1,7 +1,7 @@
 import { Global, Module } from "@nestjs/common";
 
 import { POST_REPO, POST_TABLE_GATEWAY } from "src/app/post";
-import { PostRepository } from "src/shared/drizzle";
+import { PostRepository } from "./repositories/post.repository";
 import { PostTableGateway } from "./table-gateways/post-table.gateway";
 
 const repositories = [
