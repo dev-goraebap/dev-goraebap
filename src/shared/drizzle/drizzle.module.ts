@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Inject, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ExtractTablesWithRelations } from 'drizzle-orm';
 import { drizzle, NodePgDatabase, NodePgQueryResultHKT } from 'drizzle-orm/node-postgres';
@@ -7,6 +7,7 @@ import { Pool, PoolConfig } from 'pg';
 
 import * as schema from './schema';
 import { TransactionContext } from './transaction-context';
+import { DbProvider } from './db-provider';
 
 export const DRIZZLE = Symbol('DRIZZLE');
 export type DrizzleOrm = NodePgDatabase<typeof schema>;
@@ -44,4 +45,14 @@ export type DrizzleTransaction = PgTransaction<NodePgQueryResultHKT, typeof sche
   ],
   exports: [DRIZZLE, TransactionContext],
 })
-export class DrizzleModule { }
+export class DrizzleModule implements OnModuleInit {
+  constructor(
+    @Inject(DRIZZLE) private db: DrizzleOrm,
+    private txContext: TransactionContext
+  ) {}
+
+  onModuleInit() {
+    // DbProvider 초기화 - Active Record 패턴을 위한 정적 DB 접근
+    DbProvider.setDb(this.db, this.txContext);
+  }
+}
