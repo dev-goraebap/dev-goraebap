@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { TagService } from "src/app/tag";
 import { UserID } from "src/app/user";
-import { TransactionContext } from "src/shared/drizzle";
+import { DbProvider } from "src/shared/drizzle/db-provider";
 import { PostService } from "../domain";
 import { CreatePostDto } from "./dto/create-or-update-post.dto";
 
@@ -10,13 +10,12 @@ import { CreatePostDto } from "./dto/create-or-update-post.dto";
 export class PostApplicationService {
 
   constructor(
-    private readonly txContext: TransactionContext,
     private readonly tagService: TagService,
     private readonly postService: PostService,
   ) {}
 
   async createPost(userId: UserID, dto: CreatePostDto) {
-    return await this.txContext.runInTransaction(async () => {
+    return await DbProvider.runInTransaction(async () => {
       // 1. 게시물 생성
       const createdPost = await this.postService.create({
         ...dto,
