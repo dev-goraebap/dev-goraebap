@@ -1,3 +1,3 @@
-export * from './domain';
-export * from './use-cases';
+export * from './user.entity';
 export * from './user.module';
+export * from './user.service';

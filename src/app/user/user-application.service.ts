@@ -2,14 +2,15 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 import { LoggerService } from "src/shared/logger";
-import { UserEntity } from "../domain";
+import { UserService } from "./user.service";
 
 @Injectable()
 export class UserApplicationService {
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly logger: LoggerService
+    private readonly logger: LoggerService,
+    private readonly userService: UserService
   ) { }
 
   async initAdmin() {
@@ -25,20 +26,14 @@ export class UserApplicationService {
       }
 
       this.logger.info(`Checking if admin user exists: ${adminEmail}`);
-      const existUser = await UserEntity.findByEmail(adminEmail);
-
-      if (existUser) {
+      const exists = await this.userService.verifyExistsUser(adminEmail);
+      if (exists) {
         this.logger.info(`Admin user already exists: ${adminEmail}`);
         return;
       }
 
       this.logger.info(`Creating new admin user: ${adminEmail}`);
-      const user = UserEntity.create({
-        email: adminEmail,
-        nickname: 'dev.goraebap'
-      });
-
-      await user.save();
+      await this.userService.createAdmin(adminEmail);
       this.logger.info(`Admin user created successfully: ${adminEmail}`);
 
     } catch (error) {
