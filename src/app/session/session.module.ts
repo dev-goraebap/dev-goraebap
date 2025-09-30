@@ -2,7 +2,6 @@ import { Module } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 
-import { UserModule } from "../user";
 import { EmailService } from "./services/email.service";
 import { TokenService } from "./services/token.service";
 import { SessionApplicationService } from "./session-application.service";
@@ -10,7 +9,6 @@ import { SessionController } from "./web/session.controller";
 
 @Module({
   imports: [
-    UserModule,
     JwtModule.registerAsync({
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),

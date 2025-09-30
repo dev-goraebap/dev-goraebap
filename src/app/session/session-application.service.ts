@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { BadRequestException } from "@nestjs/common";
 
-import { UserTableModule } from "../user";
+import { UserEntity } from "../user/user.entity";
 import { EmailService } from "./services/email.service";
 import { TokenService } from "./services/token.service";
 
@@ -12,13 +13,15 @@ export interface SessionData {
 @Injectable()
 export class SessionApplicationService {
   constructor(
-    private readonly userTableModule: UserTableModule,
     private readonly tokenService: TokenService,
     private readonly emailService: EmailService,
   ) { }
 
   async login(email: string): Promise<boolean> {
-    await this.userTableModule.throwIfNotFoundUser(email);
+    const user = await UserEntity.findByEmail(email);
+    if (!user) {
+      throw new BadRequestException('사용자를 찾을 수 없습니다.');
+    }
 
     const token = this.tokenService.createMagicLinkToken(email);
     return this.emailService.sendMagicLink(email, token);
