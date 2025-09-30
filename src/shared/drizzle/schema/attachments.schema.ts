@@ -15,7 +15,7 @@ export const attachments = pgTable('attachments', {
   blobId: integer('blob_id')
     .notNull()
     .references(() => blobs.id),
-  createdAt: timestamp('created_at', { mode: 'string' })
+  createdAt: timestamp('created_at')
     .defaultNow()
     .notNull(),
 });

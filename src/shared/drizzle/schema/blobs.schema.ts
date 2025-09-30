@@ -16,7 +16,7 @@ export const blobs = pgTable('blobs', {
   byteSize: integer('byte_size').notNull(),
   checksum: varchar({ length: 255 }).notNull().unique(),
   createdBy: varchar('created_by', { length: 100 }).notNull(),
-  createdAt: timestamp('created_at', { mode: 'string' })
+  createdAt: timestamp('created_at')
     .defaultNow()
     .notNull(),
   metadata: text().default('{}').notNull(),
