@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { UserService } from "../user";
+
+import { UserTableModule } from "../user";
 import { EmailService } from "./services/email.service";
 import { TokenService } from "./services/token.service";
 
@@ -11,13 +12,13 @@ export interface SessionData {
 @Injectable()
 export class SessionApplicationService {
   constructor(
-    private readonly userService: UserService,
+    private readonly userTableModule: UserTableModule,
     private readonly tokenService: TokenService,
     private readonly emailService: EmailService,
   ) { }
 
   async login(email: string): Promise<boolean> {
-    await this.userService.throwIfNotFoundUser(email);
+    await this.userTableModule.throwIfNotFoundUser(email);
 
     const token = this.tokenService.createMagicLinkToken(email);
     return this.emailService.sendMagicLink(email, token);
