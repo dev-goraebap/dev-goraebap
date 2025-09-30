@@ -1,16 +1,11 @@
-import { CanActivate, ExecutionContext, Inject, Injectable, Logger } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
 import { eq } from 'drizzle-orm';
 
-import { DRIZZLE, DrizzleOrm, users } from 'src/shared/drizzle';
+import { DrizzleContext, users } from 'src/shared/drizzle';
 
 @Injectable()
 export class AdminAuthGuard implements CanActivate {
   private readonly logger = new Logger(AdminAuthGuard.name);
-
-  constructor(
-    @Inject(DRIZZLE)
-    private readonly drizzle: DrizzleOrm,
-  ) { }
 
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
@@ -20,7 +15,7 @@ export class AdminAuthGuard implements CanActivate {
       return false;
     }
 
-    const user = await this.drizzle.query.users.findFirst({
+    const user = await DrizzleContext.db().query.users.findFirst({
       where: eq(users.email, session?.userEmail)
     });
     if (!user) {
