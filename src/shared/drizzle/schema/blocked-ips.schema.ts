@@ -19,10 +19,10 @@ export const blockedIps = pgTable(
       .default('manual')
       .notNull(),
     expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'string' }),
-    createdAt: timestamp('created_at', { mode: 'string' })
+    createdAt: timestamp('created_at')
       .defaultNow()
       .notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string' })
+    updatedAt: timestamp('updated_at')
       .defaultNow()
       .notNull(),
     isActiveYn: varchar('is_active_yn', { length: 1 }).default('Y').notNull(),

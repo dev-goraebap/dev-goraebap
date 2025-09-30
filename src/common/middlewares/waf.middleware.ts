@@ -1,16 +1,13 @@
-import { Inject, Injectable, NestMiddleware } from '@nestjs/common';
-import { and, eq } from 'drizzle-orm';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 
-import { blockedIps, DRIZZLE, DrizzleOrm } from 'src/shared/drizzle';
+import { BlockedIpEntity } from 'src/app/blocked-ip/blocked-ip.entity';
 import { LoggerService } from 'src/shared/logger';
 import { getRealClientIp } from 'src/shared/utils';
 
 @Injectable()
 export class WAFMiddleware implements NestMiddleware {
   constructor(
-    @Inject(DRIZZLE)
-    private readonly drizzle: DrizzleOrm,
     private readonly logger: LoggerService,
   ) { }
 
@@ -100,27 +97,8 @@ export class WAFMiddleware implements NestMiddleware {
 
 
   private async isIPBlocked(ipAddress: string): Promise<boolean> {
-    const blocked = await this.drizzle.query.blockedIps.findFirst({
-      where: and(
-        eq(blockedIps.ipAddress, ipAddress),
-        eq(blockedIps.isActiveYn, 'Y')
-      )
-    });
-    if (!blocked) return false;
-
-    // 만료 시간 확인
-    if (blocked.expiresAt && new Date() > new Date(blocked.expiresAt)) {
-      await this.drizzle
-        .update(blockedIps)
-        .set({
-          ipAddress,
-          isActiveYn: 'N'
-        })
-        .where(eq(blockedIps.id, blocked.id));
-      return false;
-    }
-
-    return blocked.isActiveYn === 'Y';
+    const blocked = await BlockedIpEntity.findActiveByIp(ipAddress);
+    return blocked !== null && blocked.isActive();
   }
 
   private isMaliciousPath(path: string): boolean {
@@ -134,30 +112,19 @@ export class WAFMiddleware implements NestMiddleware {
 
   private async autoBlockIP(ipAddress: string, reason: string, path: string, userAgent: string): Promise<void> {
     try {
-      const existingBlock = await this.drizzle.query.blockedIps.findFirst({
-        where: eq(blockedIps.ipAddress, ipAddress)
-      });
-      if (!existingBlock) {
-        await this.drizzle
-          .insert(blockedIps)
-          .values({
-            ipAddress,
-            reason,
-            blockedBy: 'auto',
-            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // 24시간 후 만료
-            isActiveYn: 'Y',
-          });
+      const blocked = await BlockedIpEntity.autoBlock(ipAddress, reason, 24);
 
+      if (blocked) {
         // 자동 차단 이벤트 로깅
         this.logger.logSecurityEvent('AUTO_BLOCKED', `IP ${ipAddress} automatically blocked`, {
           ipAddress,
           reason,
           path,
           userAgent,
-          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          expiresAt: blocked.expiresAt,
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error('Failed to auto-block IP', { error: error.message, ipAddress });
     }
   }
