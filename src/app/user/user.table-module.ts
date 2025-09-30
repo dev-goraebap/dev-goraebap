@@ -1,11 +1,10 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { UserRepository } from "./user.repository";
+import { BadRequestException } from "@nestjs/common";
+import { UserDataGateway } from "./user.data-gateway";
 
-@Injectable()
-export class UserService {
+export class UserTableModule {
 
   constructor(
-    private readonly repository: UserRepository
+    private readonly dataGateway: UserDataGateway
   ) { }
 
   async throwIfNotFoundUser(email: string, message?: string) {
@@ -16,7 +15,7 @@ export class UserService {
   }
 
   async verifyExistsUser(email: string) {
-    const exists = await this.repository.findByEmail(email);
+    const exists = await this.dataGateway.findByEmail(email);
     if (exists) {
       return true;
     }
@@ -24,7 +23,7 @@ export class UserService {
   }
 
   async createAdmin(adminEmail: string) {
-    return await this.repository.save({
+    return await this.dataGateway.create({
       email: adminEmail,
       nickname: 'dev.goraebap'
     });
