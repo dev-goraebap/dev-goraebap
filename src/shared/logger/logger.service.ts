@@ -2,11 +2,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // src/logger/logger.service.ts
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as winston from 'winston';
-import { sql } from 'drizzle-orm';
 
-import { DRIZZLE, DrizzleOrm } from 'src/shared/drizzle';
+import { DrizzleContext } from 'src/shared/drizzle';
 import { appLogs } from 'src/shared/drizzle/schema/app-logs.schema';
 
 export interface LogData {
@@ -34,10 +33,7 @@ export class LoggerService {
   private readonly BATCH_SIZE = 50;
   private readonly BATCH_TIMEOUT = 5000; // 5초
 
-  constructor(
-    @Inject(DRIZZLE)
-    private readonly drizzle: DrizzleOrm,
-  ) {
+  constructor() {
     // Winston 콘솔 로거 설정
     this.logger = winston.createLogger({
       level: 'info',
@@ -263,7 +259,7 @@ export class LoggerService {
       tags: log.tags && log.tags.length > 0 ? log.tags : null,
     }));
 
-    await this.drizzle.insert(appLogs).values(insertData);
+    await DrizzleContext.db().insert(appLogs).values(insertData);
   }
 
   // 앱 종료 시 남은 로그 저장
