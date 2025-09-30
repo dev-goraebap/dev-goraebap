@@ -1,7 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable, Logger } from '@nestjs/common';
-import { eq } from 'drizzle-orm';
 
-import { DrizzleContext, users } from 'src/shared/drizzle';
+import { UserEntity } from 'src/app/user/user.entity';
 
 @Injectable()
 export class AdminAuthGuard implements CanActivate {
@@ -15,9 +14,7 @@ export class AdminAuthGuard implements CanActivate {
       return false;
     }
 
-    const user = await DrizzleContext.db().query.users.findFirst({
-      where: eq(users.email, session?.userEmail)
-    });
+    const user = await UserEntity.findByEmail(session?.userEmail);
     if (!user) {
       this.logger.warn('사용자를 찾을 수 없습니다.');
       return false;

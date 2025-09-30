@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 
 import { LoggerService } from "src/shared/logger";
-import { UserTableModule } from "./user.table-module";
+import { UserEntity } from "./user.entity";
 
 @Injectable()
 export class UserApplicationService {
@@ -10,7 +10,6 @@ export class UserApplicationService {
   constructor(
     private readonly configService: ConfigService,
     private readonly logger: LoggerService,
-    private readonly userTableModule: UserTableModule
   ) { }
 
   async initAdmin() {
@@ -26,14 +25,17 @@ export class UserApplicationService {
       }
 
       this.logger.info(`Checking if admin user exists: ${adminEmail}`);
-      const exists = await this.userTableModule.verifyExistsUser(adminEmail);
+      const exists = await UserEntity.existsByEmail(adminEmail);
       if (exists) {
         this.logger.info(`Admin user already exists: ${adminEmail}`);
         return;
       }
 
       this.logger.info(`Creating new admin user: ${adminEmail}`);
-      await this.userTableModule.createAdmin(adminEmail);
+      await UserEntity.create({
+        email: adminEmail,
+        nickname: 'dev.goraebap'
+      });
       this.logger.info(`Admin user created successfully: ${adminEmail}`);
 
     } catch (error) {
