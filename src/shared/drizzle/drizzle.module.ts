@@ -5,9 +5,8 @@ import { drizzle, NodePgDatabase, NodePgQueryResultHKT } from 'drizzle-orm/node-
 import { PgTransaction } from 'drizzle-orm/pg-core';
 import { Pool, PoolConfig } from 'pg';
 
+import { DrizzleContext } from './drizzle.context';
 import * as schema from './schema';
-import { TransactionContext } from './transaction-context';
-import { DbProvider } from './db-provider';
 
 export const DRIZZLE = Symbol('DRIZZLE');
 export type DrizzleOrm = NodePgDatabase<typeof schema>;
@@ -41,18 +40,13 @@ export type DrizzleTransaction = PgTransaction<NodePgQueryResultHKT, typeof sche
       },
       inject: [ConfigService],
     },
-    TransactionContext,
   ],
-  exports: [DRIZZLE, TransactionContext],
+  exports: [],
 })
 export class DrizzleModule implements OnModuleInit {
-  constructor(
-    @Inject(DRIZZLE) private db: DrizzleOrm,
-    private txContext: TransactionContext
-  ) {}
+  constructor(@Inject(DRIZZLE) private database: DrizzleOrm) { }
 
   onModuleInit() {
-    // DbProvider 초기화 - Active Record 패턴을 위한 정적 DB 접근
-    DbProvider.setDb(this.db, this.txContext);
+    DrizzleContext.initialize(this.database);
   }
 }
