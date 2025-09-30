@@ -1,4 +1,6 @@
-import { SelectTag } from "src/shared/drizzle";
+import { inArray } from "drizzle-orm";
+
+import { DrizzleContext, SelectTag, tags } from "src/shared/drizzle";
 import { UserID } from "../user";
 
 export type TagID = number;
@@ -19,7 +21,7 @@ export class TagEntity implements SelectTag {
     readonly updatedAt: Date,
   ) { }
 
-  static fromRaw(data: SelectTag) {
+  static fromRaw(data: SelectTag): TagEntity {
     return new TagEntity(
       data.id,
       data.userId,
@@ -28,5 +30,48 @@ export class TagEntity implements SelectTag {
       data.createdAt,
       data.updatedAt
     );
+  }
+
+  static async findByNames(names: string[]): Promise<TagEntity[]> {
+    const rawTags = await DrizzleContext.db()
+      .select()
+      .from(tags)
+      .where(inArray(tags.name, names));
+    return rawTags.map(x => TagEntity.fromRaw(x));
+  }
+
+  static async insertMany(values: CreateTagParam[]): Promise<TagEntity[]> {
+    const rawTags = await DrizzleContext.db()
+      .insert(tags)
+      .values(values)
+      .returning();
+    return rawTags.map(x => TagEntity.fromRaw(x));
+  }
+
+  /**
+   * 태그 찾기 or 생성 (없으면 자동 생성)
+   */
+  static async findOrCreate(userId: UserID, tagNames: string[]): Promise<TagEntity[]> {
+    // 1. 기존 태그 조회
+    const existingTags = await this.findByNames(tagNames);
+    const existingNames = existingTags.map(t => t.name);
+
+    // 2. 없는 태그 이름 찾기
+    const newTagNames = tagNames.filter(name => !existingNames.includes(name));
+
+    // 3. 새 태그 생성
+    if (newTagNames.length === 0) {
+      return existingTags;
+    }
+
+    const createTagParams = newTagNames.map(name => ({
+      userId,
+      name,
+      description: ''
+    } as CreateTagParam));
+    const newTags = await this.insertMany(createTagParams);
+
+    // 4. 기존 + 새로생성 합쳐서 반환
+    return [...existingTags, ...newTags];
   }
 }
