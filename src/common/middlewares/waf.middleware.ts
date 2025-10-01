@@ -1,7 +1,7 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
+import { BlockedIpEntity } from 'src/domain/blocked-ip';
 
-import { BlockedIpEntity } from 'src/app/blocked-ip/blocked-ip.entity';
 import { LoggerService } from 'src/shared/logger';
 import { getRealClientIp } from 'src/shared/utils';
 

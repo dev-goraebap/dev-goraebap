@@ -108,6 +108,28 @@ export class BlockedIpEntity implements SelectBlockedIp {
   }
 
   /**
+   * 영구 차단으로 변경 (만료 시간 제거)
+   */
+  static async makePermanent(id: number): Promise<void> {
+    await DrizzleContext.db()
+      .update(blockedIps)
+      .set({
+        expiresAt: null,
+        isActiveYn: 'Y',
+      })
+      .where(eq(blockedIps.id, id));
+  }
+
+  /**
+   * 차단 IP 삭제
+   */
+  static async delete(id: number): Promise<void> {
+    await DrizzleContext.db()
+      .delete(blockedIps)
+      .where(eq(blockedIps.id, id));
+  }
+
+  /**
    * 만료된 IP들 일괄 비활성화 (배치용)
    */
   static async expireOldBlocks(): Promise<number> {
