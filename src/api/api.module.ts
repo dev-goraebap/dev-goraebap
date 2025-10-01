@@ -3,14 +3,20 @@ import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 
 import { AppExceptionFilter, LoggingInterceptor, RequestIdMiddleware, WAFMiddleware } from "src/common";
 import { AdminBlockedIpModule } from "./admin/blocked-ips";
+import { AdminCommentModule } from "./admin/comments";
 import { AdminMediaModule } from "./admin/media";
+import { AdminTagModule } from "./admin/tags";
+import { PostsModule } from "./posts";
 import { SessionModule } from "./session";
 
 @Module({
   imports: [
-    SessionModule,
     AdminMediaModule,
-    AdminBlockedIpModule
+    AdminBlockedIpModule,
+    AdminCommentModule,
+    AdminTagModule,
+    SessionModule,
+    PostsModule
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
