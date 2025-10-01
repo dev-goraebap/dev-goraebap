@@ -2,7 +2,7 @@ import { and, eq, getTableColumns, isNull, lt } from "drizzle-orm";
 
 import { R2PathHelper } from "src/shared/cloudflare-r2";
 import { attachments, blobs, DrizzleContext, InsertBlob, SelectBlob } from "src/shared/drizzle";
-import { MediaUploadResponseDto } from "../dto/media-upload-response.dto";
+import { MediaUploadResponseDto } from "./dto/media-upload-response.dto";
 
 export class BlobEntity implements SelectBlob {
   private constructor(

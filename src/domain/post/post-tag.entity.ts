@@ -1,5 +1,5 @@
+import { TagID } from "src/domain/tag";
 import { DrizzleContext, postTags, SelectPostTag } from "src/shared/drizzle";
-import { TagID } from "src/app/tag";
 
 export class PostTagEntity implements SelectPostTag {
   private constructor(
