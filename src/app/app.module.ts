@@ -1,25 +1,26 @@
-import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
-import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
+import { Global, Module, OnModuleInit } from "@nestjs/common";
+import { ScheduleModule } from "@nestjs/schedule";
 
-import { AppExceptionFilter, LoggingInterceptor, RequestIdMiddleware, WAFMiddleware } from "src/common";
-import { SessionModule } from "./session";
-import { UserModule } from "./user";
+import { AdminInitializerService } from "./services/admin-initializer.service";
+import { MediaCleanupService } from "./services/media-cleanup.service";
 
+@Global()
 @Module({
   imports: [
-    UserModule,
-    SessionModule
+    ScheduleModule.forRoot(),
   ],
   providers: [
-    { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
-    { provide: APP_FILTER, useClass: AppExceptionFilter },
+    AdminInitializerService,
+    MediaCleanupService
   ],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(
-      RequestIdMiddleware,
-      WAFMiddleware
-    ).forRoutes({ path: '*', method: RequestMethod.ALL });
+export class AppModule implements OnModuleInit {
+
+  constructor(
+    private readonly adminInitializerService: AdminInitializerService
+  ) { }
+
+  async onModuleInit() {
+    await this.adminInitializerService.create();
   }
 }
