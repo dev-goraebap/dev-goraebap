@@ -1,8 +1,9 @@
 import { Global, Module } from "@nestjs/common";
-import { BlockedIpQueryService } from "./queries";
+import { BlockedIpQueryService, TagQueryService } from "./queries";
 
 const queries = [
-  BlockedIpQueryService
+  BlockedIpQueryService,
+  TagQueryService
 ];
 
 @Global()
