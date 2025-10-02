@@ -1,9 +1,9 @@
 import { count } from "drizzle-orm";
-import { DrizzleOrm } from "../drizzle.module";
+import { DrizzleContext } from "../drizzle.context";
 import { seriesPosts } from "../schema";
 
-export function getSeriesPostCountSubquery(drizzle: DrizzleOrm) {
-  const qb = drizzle
+export function getSeriesPostCountSubquery() {
+  const qb = DrizzleContext.db()
     .select({
       seriesId: seriesPosts.seriesId,
       postCount: count().as('postCount')

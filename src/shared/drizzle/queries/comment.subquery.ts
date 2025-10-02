@@ -1,8 +1,8 @@
 import { count } from "drizzle-orm";
-import { comments, DrizzleOrm } from "src/shared/drizzle";
+import { comments, DrizzleContext } from "src/shared/drizzle";
 
-export function getCommentCountSubquery(drizzle: DrizzleOrm) {
-  const qb = drizzle
+export function getCommentCountSubquery() {
+  const qb = DrizzleContext.db()
     .select({
       postId: comments.postId,
       commentCount: count(comments.id).as('comment_count')

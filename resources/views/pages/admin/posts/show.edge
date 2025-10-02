@@ -10,8 +10,8 @@
 
       <!-- 썸네일 이미지 -->
       @!uikit.image({
-        url: cloudImageUrl(post?.getImage('thumbnail')?.url),
-        dominantColor: post?.getImage('thumbnail')?.dominantColor
+        url: post.thumbnail?.url,
+        dominantColor: post.thumbnail?.dominantColor
       })
     </div>
 

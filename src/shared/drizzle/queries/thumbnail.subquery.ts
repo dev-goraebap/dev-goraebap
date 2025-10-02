@@ -1,9 +1,9 @@
 import { desc, eq } from "drizzle-orm";
-import { DrizzleOrm } from "../drizzle.module";
+import { DrizzleContext } from "../drizzle.context";
 import { attachments, blobs } from "../schema";
 
-export function getThumbnailSubquery(drizzle: DrizzleOrm) {
-  const qb = drizzle
+export function getThumbnailSubquery() {
+  const qb = DrizzleContext.db()
     .selectDistinctOn([
       attachments.recordType,
       attachments.recordId,

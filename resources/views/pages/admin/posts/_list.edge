@@ -32,13 +32,13 @@
       </tr>
     </thead>
     <tbody>
-      @each((post, index) in posts)
+      @each((post, index) in items)
         <tr class="hover">
           <td>
             <div class="w-16 h-12 overflow-hidden bg-base-200 border border-base-content/30">
               @!uikit.image({
-                url: cloudImageUrl(post?.getImage('thumbnail')?.url),
-                dominantColor: post?.getImage('thumbnail')?.dominantColor
+                url: post.thumbnail?.url,
+                dominantColor: post.thumbnail?.dominantColor
               })
             </div>
           </td>

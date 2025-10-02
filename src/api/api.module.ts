@@ -5,12 +5,14 @@ import { AppExceptionFilter, LoggingInterceptor, RequestIdMiddleware, WAFMiddlew
 import { AdminBlockedIpModule } from "./admin/blocked-ips";
 import { AdminCommentModule } from "./admin/comments";
 import { AdminMediaModule } from "./admin/media";
+import { AdminPostModule } from "./admin/posts";
 import { AdminTagModule } from "./admin/tags";
 import { PostsModule } from "./posts";
 import { SessionModule } from "./session";
 
 @Module({
   imports: [
+    AdminPostModule,
     AdminMediaModule,
     AdminBlockedIpModule,
     AdminCommentModule,

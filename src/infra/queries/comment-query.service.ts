@@ -3,6 +3,7 @@ import { asc, count, desc, eq, getTableColumns, like, or } from 'drizzle-orm';
 
 import { comments, DrizzleContext, posts } from 'src/shared/drizzle';
 import { GetAdminCommentsDto } from '../dto/get-admin-comments.dto';
+import { PaginationModel } from '../read-models';
 
 @Injectable()
 export class CommentQueryService {
@@ -52,19 +53,13 @@ export class CommentQueryService {
       commentsQuery,
       countQuery
     ]);
-
     const total = totalResults[0].count;
 
-    // TODO: 반환 결과값 수정 필요
-    return {
-      comments: commentResults,
-      pagination: {
-        page: dto.page,
-        perPage: dto.perPage,
-        total,
-        totalPages: Math.ceil(total / dto.perPage),
-      },
-    };
+    return PaginationModel.with(commentResults, {
+      page: dto.page,
+      perPage: dto.perPage,
+      total
+    });
   }
 
   async getPostComments(postSlug: string) {

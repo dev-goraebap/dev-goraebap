@@ -1,5 +1,4 @@
 @layout.admin({ title: '데브고래밥 스튜디오 | 게시물 관리' })
-
   @layout.admin.tableBoard({
     currentUrl: '/admin/posts',
     pagination,
@@ -34,7 +33,7 @@
     @end
     
     @slot('content')
-      @!component('pages/admin/posts/_list', { posts })
+      @!component('pages/admin/posts/_list', { items })
     @end
   @end
 @end
