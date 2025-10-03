@@ -1,4 +1,4 @@
-import { CreatePostParam, PostEntity, PostID, UpdatePostParam } from "./post.entity";
+import { PostEntity, PostID } from "./post.entity";
 
 export const POST_REPO = Symbol('POST_REPO');
 
@@ -7,7 +7,6 @@ export interface PostRepository {
   findBySlug(slug: string): Promise<PostEntity | null>;
   checkSlugExists(slug: string, excludeId?: PostID): Promise<boolean>;
 
-  create(param: CreatePostParam): Promise<PostEntity>;
-  update(id: PostID, param: UpdatePostParam): Promise<PostEntity>;
+  save(post: PostEntity): Promise<PostEntity>;
   delete(id: PostID): Promise<void>;
 }

@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { and, asc, count, desc, eq, getTableColumns, like, lt, SQL, sql } from 'drizzle-orm';
 import { R2PathHelper } from 'src/shared/cloudflare-r2';
 
-import { comments, DrizzleContext, getCommentCountSubquery, getThumbnailSubquery, posts, postTags, SelectPost, series, seriesPosts, tags } from 'src/shared/drizzle';
+import { comments, DrizzleContext, getCommentCountSubquery, getTagSubquery, getThumbnailSubquery, posts, SelectPost, series, seriesPosts } from 'src/shared/drizzle';
 import { GetAdminPostsDto } from '../dto';
 import { PaginationModel, PostReadModel, ThumbnailModel } from '../read-models';
 
@@ -22,21 +22,7 @@ export class PostQueryService {
       .groupBy(comments.postId)
       .as('c');
 
-    // 태그 JSON 집계 서브쿼리
-    const tagSubquery = DrizzleContext.db()
-      .select({
-        postId: postTags.postId,
-        tags: sql<any>`JSON_AGG(
-            json_build_object(
-              'id', ${tags.id},
-              'name', ${tags.name}
-            )
-          )`.as('tags')
-      })
-      .from(postTags)
-      .innerJoin(tags, eq(tags.id, postTags.tagId))
-      .groupBy(postTags.postId)
-      .as('t');
+    const tagSubquery = getTagSubquery();
 
     // 커서 조건 설정
     let whereConditions = and(
@@ -76,7 +62,7 @@ export class PostQueryService {
         publishedAt: posts.publishedAt,
         commentCount: sql<number>`COALESCE(${commentSubquery.commentCount}, 0)`.as('comment_count'),
         ...thumbnailSubquery.columns,
-        tags: sql<any>`COALESCE(${tagSubquery.tags}, null)`.as('tags')
+        ...tagSubquery.columns
       })
       .from(posts)
       .leftJoin(thumbnailSubquery.qb, and(
@@ -84,7 +70,7 @@ export class PostQueryService {
         eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`)
       ))
       .leftJoin(commentSubquery, eq(commentSubquery.postId, posts.id))
-      .leftJoin(tagSubquery, eq(tagSubquery.postId, posts.id))
+      .leftJoin(tagSubquery.qb, eq(tagSubquery.qb.postId, posts.id))
       .where(whereConditions)
       .orderBy(...orderBy)
       .limit(limit);
@@ -114,11 +100,13 @@ export class PostQueryService {
 
     const thumbnailSubquery = getThumbnailSubquery();
     const commentCountSubquery = getCommentCountSubquery();
+    const tagSubquery = getTagSubquery();
     const postQuery = await DrizzleContext.db()
       .select({
         ...getTableColumns(posts),
         ...thumbnailSubquery.columns,
-        ...commentCountSubquery.columns
+        ...commentCountSubquery.columns,
+        ...tagSubquery.columns
       })
       .from(posts)
       .leftJoin(thumbnailSubquery.qb, and(
@@ -126,6 +114,7 @@ export class PostQueryService {
         eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`),
       ))
       .leftJoin(commentCountSubquery.qb, eq(commentCountSubquery.qb.postId, posts.id))
+      .leftJoin(tagSubquery.qb, eq(tagSubquery.qb.postId, posts.id))
       .where(whereCondition.length ? and(...whereCondition) : undefined)
       .orderBy(orderCondition)
       .limit(dto.perPage)
@@ -159,7 +148,7 @@ export class PostQueryService {
   }
 
   async getPostDetailBySlug(slug: string) {
-    const whereCondition = eq(posts.slug, slug);
+    const whereCondition = and(eq(posts.slug, slug));
     return this.getPostDetail(whereCondition);
   }
 
@@ -215,14 +204,16 @@ export class PostQueryService {
   // 공용기능
   // ---------------------------------------------------------------------------
 
-  private async getPostDetail(addedWhereCondition: SQL) {
+  private async getPostDetail(addedWhereCondition: SQL | undefined) {
     const thumbnailSubquery = getThumbnailSubquery();
     const commentCountSubquery = getCommentCountSubquery();
+    const tagSubquery = getTagSubquery();
     const [rawPost] = await DrizzleContext.db()
       .select({
         ...getTableColumns(posts),
         ...thumbnailSubquery.columns,
-        ...commentCountSubquery.columns
+        ...commentCountSubquery.columns,
+        ...tagSubquery.columns
       })
       .from(posts)
       .leftJoin(thumbnailSubquery.qb, and(
@@ -230,10 +221,8 @@ export class PostQueryService {
         eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`),
       ))
       .leftJoin(commentCountSubquery.qb, eq(commentCountSubquery.qb.postId, posts.id))
-      .where(and(
-        eq(posts.isPublishedYn, 'Y'),
-        addedWhereCondition,
-      ));
+      .leftJoin(tagSubquery.qb, eq(tagSubquery.qb.postId, posts.id))
+      .where(addedWhereCondition);
     if (!rawPost) {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
     }

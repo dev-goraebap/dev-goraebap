@@ -2,7 +2,7 @@ import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 
 import { UpdatePublishDto } from 'src/api/_concern';
 import { AttachmentEntity } from 'src/domain/media/attachment.entity';
-import { POST_REPO, PostRepository } from 'src/domain/post';
+import { POST_REPO, PostEntity, PostRepository } from 'src/domain/post';
 import { PostTagEntity } from 'src/domain/post/post-tag.entity';
 import { TagEntity } from 'src/domain/tag';
 import { DrizzleContext, UserId } from 'src/shared/drizzle';
@@ -27,8 +27,10 @@ export class PostApplicationService {
       // 1. slug 중복 검증
       await this.validateSlugUniqueness(dto.slug);
 
-      // 2. 게시물 생성
-      const post = await this.postRepository.create({
+      console.log(dto);
+
+      // 2. 게시물 생성 및 저장
+      const post = PostEntity.create({
         userId,
         slug: dto.slug,
         title: dto.title,
@@ -38,18 +40,19 @@ export class PostApplicationService {
         publishedAt: dto.publishedAt,
         postType: dto.postType,
       });
+      const savedPost = await this.postRepository.save(post);
 
       // 3. 태그 연결
       if (dto.tags && dto.tags.length > 0) {
         const tags = await TagEntity.findOrCreate(userId, dto.tags);
-        await PostTagEntity.link(post.id, tags.map(t => t.id));
+        await PostTagEntity.link(savedPost.id, tags.map(t => t.id));
       }
 
       // 4. 썸네일 첨부
       if (dto.thumbnailBlobId) {
         await AttachmentEntity.createThumbnail(
           dto.thumbnailBlobId,
-          post.id.toString(),
+          savedPost.id.toString(),
           'post'
         );
       }
@@ -57,11 +60,11 @@ export class PostApplicationService {
       // 5. 콘텐츠 이미지 첨부
       await AttachmentEntity.createContentImages(
         dto.content,
-        post.id.toString(),
+        savedPost.id.toString(),
         'post'
       );
 
-      return post;
+      return savedPost;
     })
   }
 
@@ -79,15 +82,16 @@ export class PostApplicationService {
       }
 
       // 3. 게시물 업데이트
-      const updatedPost = await this.postRepository.update(postId, {
+      const updatedPost = existingPost.update({
         slug: dto.slug,
         title: dto.title,
-        content: dto.content,
         summary: dto.summary,
+        content: dto.content,
+        postType: dto.postType,
         isPublishedYn: dto.isPublishedYn,
         publishedAt: dto.publishedAt,
-        postType: dto.postType,
       });
+      const savedPost = await this.postRepository.save(updatedPost);
 
       // 4. 태그 업데이트
       if (dto.tags !== undefined) {
@@ -115,7 +119,7 @@ export class PostApplicationService {
         );
       }
 
-      return updatedPost;
+      return savedPost;
     });
   }
 
@@ -126,7 +130,10 @@ export class PostApplicationService {
     }
 
     try {
-      return await this.postRepository.update(postId, { isPublishedYn: dto.isPublishedYn });
+      const updatedPost = post.update({
+        isPublishedYn: dto.isPublishedYn,
+      });
+      return await this.postRepository.save(updatedPost);
     } catch (err) {
       this.logger.error(err.cause?.detail);
       throw err;

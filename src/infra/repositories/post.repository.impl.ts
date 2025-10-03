@@ -1,5 +1,5 @@
 import { and, eq, ne } from "drizzle-orm";
-import { CreatePostParam, PostEntity, PostID, PostRepository, UpdatePostParam } from "src/domain/post";
+import { PostEntity, PostID, PostRepository } from "src/domain/post";
 import { DrizzleContext, posts } from "src/shared/drizzle";
 
 export class PostRepositoryImpl implements PostRepository {
@@ -29,41 +29,40 @@ export class PostRepositoryImpl implements PostRepository {
     return !!result;
   }
 
-  async create(param: CreatePostParam): Promise<PostEntity> {
-    const [raw] = await DrizzleContext.db()
-      .insert(posts)
-      .values({
-        userId: param.userId,
-        slug: param.slug,
-        title: param.title,
-        content: param.content,
-        summary: param.summary,
-        isPublishedYn: param.isPublishedYn,
-        publishedAt: param.publishedAt,
-        postType: param.postType,
-      })
-      .returning();
-    return PostEntity.fromRaw(raw);
-  }
-
-  async update(id: PostID, param: UpdatePostParam): Promise<PostEntity> {
-    const updateData: any = {};
-
-    if (param.slug !== undefined) updateData.slug = param.slug;
-    if (param.title !== undefined) updateData.title = param.title;
-    if (param.content !== undefined) updateData.content = param.content;
-    if (param.summary !== undefined) updateData.summary = param.summary;
-    if (param.isPublishedYn !== undefined) updateData.isPublishedYn = param.isPublishedYn;
-    if (param.publishedAt !== undefined) updateData.publishedAt = param.publishedAt;
-    if (param.postType !== undefined) updateData.postType = param.postType;
-
-    const [raw] = await DrizzleContext.db()
-      .update(posts)
-      .set(updateData)
-      .where(eq(posts.id, id))
-      .returning();
-
-    return PostEntity.fromRaw(raw);
+  async save(post: PostEntity): Promise<PostEntity> {
+    if (post.isNew()) {
+      // INSERT
+      const [raw] = await DrizzleContext.db()
+        .insert(posts)
+        .values({
+          userId: post.userId,
+          slug: post.slug,
+          title: post.title,
+          content: post.content,
+          summary: post.summary,
+          isPublishedYn: post.isPublishedYn,
+          publishedAt: post.publishedAt,
+          postType: post.postType,
+        })
+        .returning();
+      return PostEntity.fromRaw(raw);
+    } else {
+      // UPDATE
+      const [raw] = await DrizzleContext.db()
+        .update(posts)
+        .set({
+          slug: post.slug,
+          title: post.title,
+          content: post.content,
+          summary: post.summary,
+          isPublishedYn: post.isPublishedYn,
+          publishedAt: post.publishedAt,
+          postType: post.postType,
+        })
+        .where(eq(posts.id, post.id))
+        .returning();
+      return PostEntity.fromRaw(raw);
+    }
   }
 
   async delete(id: PostID): Promise<void> {

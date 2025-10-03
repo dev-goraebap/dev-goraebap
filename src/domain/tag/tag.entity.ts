@@ -17,7 +17,7 @@ export type UpdateTagParam = {
 }
 
 export class TagEntity implements SelectTag {
-  private constructor(
+  constructor(
     readonly id: TagID,
     readonly userId: UserID,
     readonly name: string,
@@ -25,6 +25,17 @@ export class TagEntity implements SelectTag {
     readonly createdAt: Date,
     readonly updatedAt: Date,
   ) { }
+
+  static create(param: CreateTagParam): TagEntity {
+    return new TagEntity(
+      0, // id: 0 means new entity
+      param.userId,
+      param.name,
+      param.description,
+      new Date(),
+      new Date(),
+    );
+  }
 
   static fromRaw(data: SelectTag): TagEntity {
     return new TagEntity(
@@ -35,6 +46,10 @@ export class TagEntity implements SelectTag {
       data.createdAt,
       data.updatedAt
     );
+  }
+
+  isNew(): boolean {
+    return this.id === 0;
   }
 
   static async findById(id: TagID): Promise<TagEntity | null> {
@@ -59,29 +74,58 @@ export class TagEntity implements SelectTag {
     return rawTags.map(x => TagEntity.fromRaw(x));
   }
 
-  static async create(param: CreateTagParam): Promise<TagEntity> {
-    const [raw] = await DrizzleContext.db()
-      .insert(tags)
-      .values(param)
-      .returning();
-    return TagEntity.fromRaw(raw);
+  async save(): Promise<TagEntity> {
+    if (this.isNew()) {
+      // INSERT
+      const [raw] = await DrizzleContext.db()
+        .insert(tags)
+        .values({
+          userId: this.userId,
+          name: this.name,
+          description: this.description,
+        })
+        .returning();
+      return TagEntity.fromRaw(raw);
+    } else {
+      // UPDATE
+      const [raw] = await DrizzleContext.db()
+        .update(tags)
+        .set({
+          name: this.name,
+          description: this.description,
+        })
+        .where(eq(tags.id, this.id))
+        .returning();
+      return TagEntity.fromRaw(raw);
+    }
   }
 
-  static async creates(values: CreateTagParam[]): Promise<TagEntity[]> {
-    const rawTags = await DrizzleContext.db()
-      .insert(tags)
-      .values(values)
-      .returning();
-    return rawTags.map(x => TagEntity.fromRaw(x));
-  }
+  static async saveAll(tagEntities: TagEntity[]): Promise<TagEntity[]> {
+    const newTags = tagEntities.filter(t => t.isNew());
+    const existingTags = tagEntities.filter(t => !t.isNew());
 
-  static async update(id: TagID, param: UpdateTagParam): Promise<TagEntity> {
-    const [raw] = await DrizzleContext.db()
-      .update(tags)
-      .set(param)
-      .where(eq(tags.id, id))
-      .returning();
-    return TagEntity.fromRaw(raw);
+    const results: TagEntity[] = [];
+
+    // Bulk insert for new tags
+    if (newTags.length > 0) {
+      const rawTags = await DrizzleContext.db()
+        .insert(tags)
+        .values(newTags.map(t => ({
+          userId: t.userId,
+          name: t.name,
+          description: t.description,
+        })))
+        .returning();
+      results.push(...rawTags.map(x => TagEntity.fromRaw(x)));
+    }
+
+    // Individual update for existing tags
+    for (const tag of existingTags) {
+      const updated = await tag.save();
+      results.push(updated);
+    }
+
+    return results;
   }
 
   static async delete(id: TagID): Promise<{ id: TagID }> {
@@ -108,14 +152,16 @@ export class TagEntity implements SelectTag {
       return existingTags;
     }
 
-    const createTagParams = newTagNames.map(name => ({
-      userId,
-      name,
-      description: ''
-    } as CreateTagParam));
-    const newTags = await this.creates(createTagParams);
+    const newTags = newTagNames.map(name =>
+      TagEntity.create({
+        userId,
+        name,
+        description: ''
+      })
+    );
+    const savedTags = await TagEntity.saveAll(newTags);
 
     // 4. 기존 + 새로생성 합쳐서 반환
-    return [...existingTags, ...newTags];
+    return [...existingTags, ...savedTags];
   }
 }

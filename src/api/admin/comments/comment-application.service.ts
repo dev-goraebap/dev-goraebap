@@ -19,7 +19,8 @@ export class CommentApplicationService {
 
     // 2. 댓글 차단
     try {
-      return await CommentEntity.ban(comment.id);
+      const bannedComment = comment.ban();
+      return await bannedComment.save();
     } catch (err) {
       this.logger.error(err);
       throw new BadRequestException(err);

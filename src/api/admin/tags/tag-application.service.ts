@@ -19,11 +19,12 @@ export class TagApplicationService {
     }
 
     try {
-      return await TagEntity.create({
+      const tag = TagEntity.create({
         userId,
         name: dto.name,
         description: dto.description ?? ''
       });
+      return await tag.save();
     } catch (err) {
       this.logger.error(err);
       throw new BadRequestException(err);
@@ -37,10 +38,15 @@ export class TagApplicationService {
     }
 
     try {
-      return await TagEntity.update(id, {
-        name: dto.name,
-        description: dto.description ?? tag.description,
-      });
+      const updatedTag = new TagEntity(
+        tag.id,
+        tag.userId,
+        dto.name,
+        dto.description ?? tag.description,
+        tag.createdAt,
+        new Date(),
+      );
+      return await updatedTag.save();
     } catch (err) {
       this.logger.error(err);
       throw new BadRequestException(err);

@@ -13,7 +13,7 @@ export type CreateCommentParam = {
 }
 
 export class CommentEntity implements SelectComment {
-  private constructor(
+  constructor(
     readonly id: CommentID,
     readonly requestId: string,
     readonly nickname: string,
@@ -23,6 +23,19 @@ export class CommentEntity implements SelectComment {
     readonly deletedAt: string | null,
     readonly avatarNo: number,
   ) { }
+
+  static create(param: CreateCommentParam): CommentEntity {
+    return new CommentEntity(
+      0, // id: 0 means new entity
+      param.requestId,
+      param.nickname,
+      param.comment,
+      new Date().toISOString(),
+      param.postId,
+      null,
+      param.avatarNo,
+    );
+  }
 
   static fromRaw(data: SelectComment): CommentEntity {
     return new CommentEntity(
@@ -37,6 +50,10 @@ export class CommentEntity implements SelectComment {
     );
   }
 
+  isNew(): boolean {
+    return this.id === 0;
+  }
+
   static async findById(id: CommentID): Promise<CommentEntity | null> {
     const result = await DrizzleContext.db().query.comments.findFirst({
       where: eq(comments.id, id)
@@ -44,23 +61,44 @@ export class CommentEntity implements SelectComment {
     return result ? CommentEntity.fromRaw(result) : null;
   }
 
-  static async create(param: CreateCommentParam): Promise<CommentEntity> {
-    const [raw] = await DrizzleContext.db()
-      .insert(comments)
-      .values(param)
-      .returning();
-    return CommentEntity.fromRaw(raw);
+  async save(): Promise<CommentEntity> {
+    if (this.isNew()) {
+      // INSERT
+      const [raw] = await DrizzleContext.db()
+        .insert(comments)
+        .values({
+          requestId: this.requestId,
+          postId: this.postId,
+          nickname: this.nickname,
+          comment: this.comment,
+          avatarNo: this.avatarNo,
+        })
+        .returning();
+      return CommentEntity.fromRaw(raw);
+    } else {
+      // UPDATE
+      const [raw] = await DrizzleContext.db()
+        .update(comments)
+        .set({
+          deletedAt: this.deletedAt,
+        })
+        .where(eq(comments.id, this.id))
+        .returning();
+      return CommentEntity.fromRaw(raw);
+    }
   }
 
-  static async ban(id: CommentID): Promise<CommentEntity> {
-    const [raw] = await DrizzleContext.db()
-      .update(comments)
-      .set({
-        deletedAt: new Date().toISOString()
-      })
-      .where(eq(comments.id, id))
-      .returning();
-    return CommentEntity.fromRaw(raw);
+  ban(): CommentEntity {
+    return new CommentEntity(
+      this.id,
+      this.requestId,
+      this.nickname,
+      this.comment,
+      this.createdAt,
+      this.postId,
+      new Date().toISOString(),
+      this.avatarNo,
+    );
   }
 
   /**
