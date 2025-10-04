@@ -8,6 +8,7 @@ import { AdminMediaModule } from "./admin/media";
 import { AdminPostModule } from "./admin/posts";
 import { AdminTagModule } from "./admin/tags";
 import { FeedModule } from "./feed/feed.module";
+import { PatchNoteModule } from "./patch-notes";
 import { PostsModule } from "./posts";
 import { SessionModule } from "./session";
 import { SitemapModule } from "./sitemap";
@@ -22,7 +23,8 @@ import { SitemapModule } from "./sitemap";
     SessionModule,
     PostsModule,
     FeedModule,
-    SitemapModule
+    PatchNoteModule,
+    SitemapModule,
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },

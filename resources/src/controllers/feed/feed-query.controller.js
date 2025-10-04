@@ -4,9 +4,7 @@ export class FeedQueryController extends Controller {
   static targets = ['queryForm'];
 
   connect() {
-    if (!this.hasQueryFormTarget) {
-      throw new Error('not found feed query form');
-    }
+    // queryForm은 optional (패치노트 페이지에는 없음)
   }
 
   async onSubmit(event) {
@@ -31,11 +29,17 @@ export class FeedQueryController extends Controller {
     span.classList.add('loading', 'loading-spinner');
     button.appendChild(span);
 
-    const formData = new FormData(this.queryFormTarget);
-    formData.append('cursor', cursor);
+    // queryForm이 있으면 폼 데이터 사용, 없으면 빈 URLSearchParams
+    let params;
+    if (this.hasQueryFormTarget) {
+      const formData = new FormData(this.queryFormTarget);
+      formData.append('cursor', cursor);
+      params = new URLSearchParams(formData);
+    } else {
+      params = new URLSearchParams({ cursor });
+    }
 
-    const params = new URLSearchParams(formData);
-    fetch(`/?${params.toString()}`, {
+    fetch(`${window.location.pathname}?${params.toString()}`, {
       method: 'GET',
       headers: {
         Accept: 'text/vnd.turbo-stream.html',
@@ -46,6 +50,10 @@ export class FeedQueryController extends Controller {
   }
 
   onFilterTag(event) {
+    if (!this.hasQueryFormTarget) {
+      return; // 패치노트 페이지에는 태그 필터 없음
+    }
+
     const button = event.currentTarget;
     const value = button.dataset?.value;
 

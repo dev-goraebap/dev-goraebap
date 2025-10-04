@@ -1,7 +1,7 @@
 @layout.app({
   title: 'devgoraebap | '+post?.title,
   description: post?.summary,
-  ogImage: cloudImageUrl(post?.getImage('thumbnail')?.url)
+  ogImage: post.thumbnail?.url
 })
 
   <a href="/patch-notes" class="text-sm mb-4 flex items-center gap-2 sm:text-base">
@@ -19,13 +19,13 @@
     목록으로 돌아가기
   </a>
 
-  @if(post?.getImage('thumbnail'))
+  @if(post.thumbnail?.url)
     <figure class="shrink-0">
       <div class="h-[150px] sm:h-[300px] flex items-center justify-center overflow-hidden sm:shadow-xl">
         <div class="w-full aspect-[5/3] overflow-hidden">
           @!uikit.image({
-                  url: cloudImageUrl(post?.getImage('thumbnail')?.url),
-                  dominantColor: post?.getImage('thumbnail')?.dominantColor
+            url: post.thumbnail?.url,
+            dominantColor: post.thumbnail?.dominantColor
           })
         </div>
       </div>
