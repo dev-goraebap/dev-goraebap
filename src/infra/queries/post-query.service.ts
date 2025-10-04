@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { and, asc, count, desc, eq, getTableColumns, like, lt, SQL, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, getTableColumns, like, lt, or, SQL, sql } from 'drizzle-orm';
 import { R2PathHelper } from 'src/shared/cloudflare-r2';
 
 import { DrizzleContext, getCommentCountSubquery, getTagSubquery, getThumbnailSubquery, posts, postTags, SelectPost, series, seriesPosts, tags } from 'src/shared/drizzle';
@@ -11,6 +11,8 @@ export class PostQueryService {
 
   async getPostsWithCursor(dto: GetFeedPostsDto) {
     const { cursor, orderType, perPage, tag } = dto;
+
+    console.log(cursor);
 
     // 커서 조건 설정
     let whereConditions = and(
@@ -36,9 +38,12 @@ export class PostQueryService {
       if (orderType === 'traffic') {
         whereConditions = and(
           whereConditions,
-          and(
+          or(
             lt(posts.viewCount, cursor.viewCount),
-            lt(posts.publishedAt, cursor.publishedAt)
+            and(
+              eq(posts.viewCount, cursor.viewCount),
+              lt(posts.publishedAt, cursor.publishedAt)
+            )
           )
         );
       } else {
