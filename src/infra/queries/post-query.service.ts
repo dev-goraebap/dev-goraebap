@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { and, asc, count, desc, eq, getTableColumns, like, lt, or, SQL, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, getTableColumns, like, lt, ne, or, SQL, sql } from 'drizzle-orm';
 import { R2PathHelper } from 'src/shared/cloudflare-r2';
 
 import { DrizzleContext, getCommentCountSubquery, getTagSubquery, getThumbnailSubquery, posts, postTags, SelectPost, series, seriesPosts, tags } from 'src/shared/drizzle';
@@ -197,6 +197,29 @@ export class PostQueryService {
     }
 
     return this.getPostReadModel(rawPost, rawPost.file);
+  }
+
+  async getSuggestedPosts(currentPostSlug: string, limit: number = 3) {
+    const thumbnailSubquery = getThumbnailSubquery();
+    const rawPosts = await DrizzleContext.db()
+      .select({
+        ...getTableColumns(posts),
+        ...thumbnailSubquery.columns
+      })
+      .from(posts)
+      .leftJoin(thumbnailSubquery.qb, and(
+        eq(thumbnailSubquery.qb.recordType, 'post'),
+        eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`)
+      ))
+      .where(and(
+        eq(posts.postType, 'post'),
+        eq(posts.isPublishedYn, 'Y'),
+        ne(posts.slug, currentPostSlug)
+      ))
+      .orderBy(sql`RANDOM()`)
+      .limit(limit);
+
+    return rawPosts.map(rawPost => this.getPostReadModel(rawPost, rawPost.file));
   }
 
   async getSeriesPosts(dto: { seriesId?: number; seriesSlug?: string; }) {

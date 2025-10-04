@@ -15,10 +15,12 @@ export class PostController {
     @Param('slug') slug: string,
     @Req() req: NestMvcReq
   ) {
-    const [post, comments] = await Promise.all([
+    const [post, comments, suggestedPosts] = await Promise.all([
       this.postQueryService.getPostDetailBySlug(slug),
-      this.commentQueryService.getPostComments(slug)
+      this.commentQueryService.getPostComments(slug),
+      this.postQueryService.getSuggestedPosts(slug)
     ]);
-    return req.view.render('pages/posts/show', { post, comments });
+
+    return req.view.render('pages/posts/show', { post, comments, suggestedPosts });
   }
 }
