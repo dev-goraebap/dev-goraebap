@@ -4,12 +4,12 @@
 --}}
 
 <a href="{{ collectionUrl }}/{{ post?.slug }}" data-turbo-prefetch="false" class="block group">
-  @if(post && post.getImage && post.getImage('thumbnail'))
+  @if(post && post.thumbnail)
     <div class="mb-3 w-full aspect-[5/3] overflow-hidden rounded-xl border border-base-300">
       @!uikit.image({
-        url: cloudImageUrl(post.getImage('thumbnail').url),
+        url: post.thumbnail?.url,
         alt: post.title + ' - 썸네일',
-        dominantColor: post.getImage('thumbnail').dominantColor,
+        dominantColor: post.thumbnail?.dominantColor,
         width: 'w-full',
         height: 'h-full object-cover'
       })

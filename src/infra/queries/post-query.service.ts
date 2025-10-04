@@ -4,19 +4,18 @@ import { R2PathHelper } from 'src/shared/cloudflare-r2';
 
 import { DrizzleContext, getCommentCountSubquery, getTagSubquery, getThumbnailSubquery, posts, postTags, SelectPost, series, seriesPosts, tags } from 'src/shared/drizzle';
 import { GetAdminPostsDto, GetFeedPostsDto } from '../dto';
-import { PaginationModel, PostReadModel, ThumbnailModel } from '../read-models';
+import { CursorPaginationModel, PaginationModel, PostReadModel, ThumbnailModel } from '../read-models';
+import { withCursor } from '../read-models/with-cursor';
 
 @Injectable()
 export class PostQueryService {
 
-  async getPostsWithCursor(dto: GetFeedPostsDto) {
-    const { cursor, orderType, perPage, tag } = dto;
-
-    console.log(cursor);
+  async getPostsWithCursor(dto: GetFeedPostsDto): Promise<CursorPaginationModel<PostReadModel>> {
+    const { cursor, orderType, perPage, tag, postType } = dto;
 
     // 커서 조건 설정
     let whereConditions = and(
-      eq(posts.postType, 'post'),
+      eq(posts.postType, postType),
       eq(posts.isPublishedYn, 'Y')
     );
 
@@ -88,23 +87,16 @@ export class PostQueryService {
       .orderBy(...orderBy)
       .limit(perPage + 1);
 
-    const hasMore = rawPosts.length > perPage;
-    const items = rawPosts.slice(0, perPage).map(x => this.getPostReadModel(x, x?.file));
+    const postsWithReadModel: PostReadModel[] = rawPosts.map(x => this.getPostReadModel(x, x?.file));
 
-    let nextCursor: string | undefined;
-    if (hasMore && items.length > 0) {
-      const lastItem = rawPosts[perPage - 1];
-      nextCursor = JSON.stringify({
-        viewCount: lastItem.viewCount,
-        publishedAt: lastItem.publishedAt
-      });
-    }
-
-    return {
-      items,
-      hasMore,
-      nextCursor
-    };
+    return withCursor(
+      postsWithReadModel,
+      perPage,
+      (lastItem) => ({
+        viewCount: lastItem.viewCount ?? 0,
+        publishedAt: lastItem.publishedAt ?? new Date()
+      })
+    );
   }
 
   async getPostsFromPagination(dto: GetAdminPostsDto): Promise<PaginationModel<PostReadModel>> {
@@ -292,7 +284,7 @@ export class PostQueryService {
     return this.getPostReadModel(rawPost, rawPost.file);
   }
 
-  private getPostReadModel(x: Partial<SelectPost>, file: { key: string; metadata: string } | null) {
+  private getPostReadModel(x: Partial<SelectPost>, file: { key: string; metadata: string } | null): PostReadModel {
     if (file) {
       const url = R2PathHelper.getPublicUrl(file.key);
       const thumbnailModel = ThumbnailModel.from(url, file.metadata);

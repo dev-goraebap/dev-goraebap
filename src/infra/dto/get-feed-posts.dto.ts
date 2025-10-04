@@ -18,6 +18,7 @@ export const GetFeedPostsSchema = z.object({
   }),
   tag: z.string().optional(),
   perPage: z.number().min(5).max(10).default(5),
+  postType: z.enum(['post', 'patch-note']).optional().default('post')
 });
 
 export type GetFeedPostsDto = z.infer<typeof GetFeedPostsSchema>;
