@@ -255,6 +255,14 @@ export class PostQueryService {
     });
   }
 
+  async getPostsForSitemap() {
+    return await DrizzleContext.db()
+      .select()
+      .from(posts)
+      .where(eq(posts.isPublishedYn, 'Y'))
+      .orderBy(desc(posts.publishedAt));
+  }
+
   // ---------------------------------------------------------------------------
   // 공용기능
   // ---------------------------------------------------------------------------

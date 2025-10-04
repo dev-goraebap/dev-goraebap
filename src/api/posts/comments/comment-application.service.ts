@@ -23,11 +23,12 @@ export class CommentApplicationService {
     }
 
     try {
-      return await CommentEntity.create({
+      const comment = CommentEntity.create({
         requestId,
         postId: post.id,
         ...dto,
       });
+      await comment.save();
     } catch (err) {
       this.logger.error(err);
       throw new BadRequestException(err);

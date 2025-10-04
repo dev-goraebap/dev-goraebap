@@ -32,7 +32,6 @@ export class FeedController {
       return res.send(template);
     }
 
-
     const [postsData, patchNote, tags] = await Promise.all([
       this.postQueryService.getPostsWithCursor(dto),
       this.postQueryService.getLatestPatchNotePost(),

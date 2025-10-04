@@ -10,6 +10,7 @@ import { AdminTagModule } from "./admin/tags";
 import { FeedModule } from "./feed/feed.module";
 import { PostsModule } from "./posts";
 import { SessionModule } from "./session";
+import { SitemapModule } from "./sitemap";
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { SessionModule } from "./session";
     AdminTagModule,
     SessionModule,
     PostsModule,
-    FeedModule
+    FeedModule,
+    SitemapModule
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },
