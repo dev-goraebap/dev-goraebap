@@ -95,4 +95,48 @@ export class PostEntity implements SelectPost {
       new Date(),
     );
   }
+
+  incrementViewCount(): PostEntity {
+    return new PostEntity(
+      this.id,
+      this.userId,
+      this.slug,
+      this.title,
+      this.summary,
+      this.content,
+      this.postType,
+      this.viewCount + 1,
+      this.isPublishedYn,
+      this.publishedAt,
+      this.createdAt,
+      new Date(),
+    );
+  }
+
+  toInsertData() {
+    return {
+      userId: this.userId,
+      slug: this.slug,
+      title: this.title,
+      summary: this.summary,
+      content: this.content,
+      postType: this.postType,
+      isPublishedYn: this.isPublishedYn,
+      publishedAt: this.publishedAt,
+    };
+  }
+
+  toUpdateData() {
+    return {
+      slug: this.slug,
+      title: this.title,
+      summary: this.summary,
+      content: this.content,
+      postType: this.postType,
+      viewCount: this.viewCount,
+      isPublishedYn: this.isPublishedYn,
+      publishedAt: this.publishedAt,
+      updatedAt: this.updatedAt,
+    };
+  }
 }
