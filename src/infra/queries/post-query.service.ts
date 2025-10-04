@@ -222,6 +222,29 @@ export class PostQueryService {
     return rawPosts.map(rawPost => this.getPostReadModel(rawPost, rawPost.file));
   }
 
+  async getOtherPatchNotes(currentPostSlug: string, limit: number = 5) {
+    const thumbnailSubquery = getThumbnailSubquery();
+    const rawPosts = await DrizzleContext.db()
+      .select({
+        ...getTableColumns(posts),
+        ...thumbnailSubquery.columns
+      })
+      .from(posts)
+      .leftJoin(thumbnailSubquery.qb, and(
+        eq(thumbnailSubquery.qb.recordType, 'post'),
+        eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`)
+      ))
+      .where(and(
+        eq(posts.postType, 'patch-note'),
+        eq(posts.isPublishedYn, 'Y'),
+        ne(posts.slug, currentPostSlug)
+      ))
+      .orderBy(desc(posts.publishedAt))
+      .limit(limit);
+
+    return rawPosts.map(rawPost => this.getPostReadModel(rawPost, rawPost.file));
+  }
+
   async getSeriesPosts(dto: { seriesId?: number; seriesSlug?: string; }) {
 
     let whereCondition: SQL | undefined;

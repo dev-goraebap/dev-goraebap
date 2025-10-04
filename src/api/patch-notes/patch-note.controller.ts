@@ -4,12 +4,13 @@ import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { IsTurboStream, ZodValidationPipe } from 'src/common';
 import { GetFeedPostsDto, GetFeedPostsSchema } from 'src/infra/dto';
-import { PostQueryService } from 'src/infra/queries';
+import { CommentQueryService, PostQueryService } from 'src/infra/queries';
 
 @Controller({ path: 'patch-notes' })
 export class PatchNoteController {
   constructor(
     private readonly postQueryService: PostQueryService,
+    private readonly commentQueryService: CommentQueryService
   ) { }
 
   @Get()
@@ -48,7 +49,12 @@ export class PatchNoteController {
 
   @Get(':slug')
   async show(@Req() req: NestMvcReq, @Param('slug') slug: string) {
-    const post = await this.postQueryService.getPostDetailBySlug(slug);
-    return req.view.render('pages/patch-notes/show', { post });
+    const [post, comments, otherPosts] = await Promise.all([
+      this.postQueryService.getPostDetailBySlug(slug),
+      this.commentQueryService.getPostComments(slug),
+      this.postQueryService.getOtherPatchNotes(slug)
+    ]);
+
+    return req.view.render('pages/patch-notes/show', { post, comments, otherPosts });
   }
 }
