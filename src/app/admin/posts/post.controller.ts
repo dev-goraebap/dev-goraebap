@@ -16,7 +16,7 @@ import {
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { UpdatePublishDto, UpdatePublishSchema } from 'src/api/_concern';
+import { UpdatePublishDto, UpdatePublishSchema } from 'src/app/_concern';
 import { AdminAuthGuard, CurrentUser, ZodValidationPipe } from 'src/common';
 import { GetAdminPostsDto, GetAdminPostsSchema } from 'src/infra/dto';
 import { PostQueryService } from 'src/infra/queries';

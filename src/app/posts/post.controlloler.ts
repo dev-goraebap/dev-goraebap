@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Req } from "@nestjs/common";
 import { NestMvcReq } from "nestjs-mvc-tools";
 
-import { PostViewService } from "src/app/services";
+import { PostViewService } from "src/features/services";
 import { CommentQueryService, PostQueryService } from "src/infra/queries";
 
 @Controller({ path: 'posts' })

@@ -2,7 +2,7 @@ import { Controller, Get, Param, Query, Req, Res, UsePipes } from '@nestjs/commo
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { PostViewService } from 'src/app/services';
+import { PostViewService } from 'src/features/services';
 import { IsTurboStream, ZodValidationPipe } from 'src/common';
 import { GetFeedPostsDto, GetFeedPostsSchema } from 'src/infra/dto';
 import { CommentQueryService, PostQueryService } from 'src/infra/queries';

@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 
-import { UpdatePublishDto } from 'src/api/_concern';
+import { UpdatePublishDto } from 'src/app/_concern';
 import { AttachmentEntity } from 'src/domain/media/attachment.entity';
 import { POST_REPO, PostEntity, PostRepository } from 'src/domain/post';
 import { PostTagEntity } from 'src/domain/post/post-tag.entity';
