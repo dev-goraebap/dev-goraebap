@@ -6,6 +6,7 @@ import { AdminBlockedIpModule } from "./admin/blocked-ips";
 import { AdminCommentModule } from "./admin/comments";
 import { AdminMediaModule } from "./admin/media";
 import { AdminPostModule } from "./admin/posts";
+import { AdminSeriesModule } from "./admin/series";
 import { AdminTagModule } from "./admin/tags";
 import { FeedModule } from "./feed/feed.module";
 import { PatchNoteModule } from "./patch-notes";
@@ -16,6 +17,7 @@ import { SitemapModule } from "./sitemap";
 @Module({
   imports: [
     AdminPostModule,
+    AdminSeriesModule,
     AdminMediaModule,
     AdminBlockedIpModule,
     AdminCommentModule,
