@@ -7,6 +7,7 @@ import { AdminCommentModule } from "./admin/comments";
 import { AdminMediaModule } from "./admin/media";
 import { AdminPostModule } from "./admin/posts";
 import { AdminTagModule } from "./admin/tags";
+import { FeedModule } from "./feed/feed.module";
 import { PostsModule } from "./posts";
 import { SessionModule } from "./session";
 
@@ -18,7 +19,8 @@ import { SessionModule } from "./session";
     AdminCommentModule,
     AdminTagModule,
     SessionModule,
-    PostsModule
+    PostsModule,
+    FeedModule
   ],
   providers: [
     { provide: APP_INTERCEPTOR, useClass: LoggingInterceptor },

@@ -51,4 +51,15 @@ export class UserEntity implements SelectUser {
       .returning();
     return UserEntity.fromRaw(rawUser);
   }
+
+  // test
+  static getTestAdminUser() {
+    return UserEntity.fromRaw({
+      createdAt: new Date(),
+      email: 'dev.goreabap@gmail.com',
+      id: 1,
+      nickname: 'goraebaap',
+      updatedAt: new Date()
+    });
+  }
 }

@@ -2,27 +2,15 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { and, asc, count, desc, eq, getTableColumns, like, lt, SQL, sql } from 'drizzle-orm';
 import { R2PathHelper } from 'src/shared/cloudflare-r2';
 
-import { comments, DrizzleContext, getCommentCountSubquery, getTagSubquery, getThumbnailSubquery, posts, SelectPost, series, seriesPosts } from 'src/shared/drizzle';
-import { GetAdminPostsDto } from '../dto';
+import { DrizzleContext, getCommentCountSubquery, getTagSubquery, getThumbnailSubquery, posts, postTags, SelectPost, series, seriesPosts, tags } from 'src/shared/drizzle';
+import { GetAdminPostsDto, GetFeedPostsDto } from '../dto';
 import { PaginationModel, PostReadModel, ThumbnailModel } from '../read-models';
 
 @Injectable()
 export class PostQueryService {
 
-  async getPostsWithCursor(cursor?: { viewCount: number; publishedAt: Date }, sortBy: 'latest' | 'popular' = 'latest', limit: number = 5) {
-    const thumbnailSubquery = getThumbnailSubquery();
-
-    // 댓글 수 서브쿼리
-    const commentSubquery = DrizzleContext.db()
-      .select({
-        postId: comments.postId,
-        commentCount: count(comments.id).as('comment_count')
-      })
-      .from(comments)
-      .groupBy(comments.postId)
-      .as('c');
-
-    const tagSubquery = getTagSubquery();
+  async getPostsWithCursor(dto: GetFeedPostsDto) {
+    const { cursor, orderType, perPage, tag } = dto;
 
     // 커서 조건 설정
     let whereConditions = and(
@@ -30,8 +18,22 @@ export class PostQueryService {
       eq(posts.isPublishedYn, 'Y')
     );
 
+    // 태그 필터링
+    if (tag) {
+      const tagFilterSubquery = DrizzleContext.db()
+        .select({ postId: postTags.postId })
+        .from(postTags)
+        .innerJoin(tags, eq(tags.id, postTags.tagId))
+        .where(eq(tags.name, tag));
+
+      whereConditions = and(
+        whereConditions,
+        sql`${posts.id} IN ${tagFilterSubquery}`
+      );
+    }
+
     if (cursor) {
-      if (sortBy === 'popular') {
+      if (orderType === 'traffic') {
         whereConditions = and(
           whereConditions,
           and(
@@ -48,19 +50,25 @@ export class PostQueryService {
     }
 
     // 정렬 설정
-    const orderBy = sortBy === 'popular'
+    const orderBy = orderType === 'traffic'
       ? [desc(posts.viewCount), desc(posts.publishedAt)]
       : [desc(posts.publishedAt)];
 
-    // 메인 쿼리
-    const result = await DrizzleContext.db()
+    // 서브쿼리
+    const thumbnailSubquery = getThumbnailSubquery();
+    const commentSubquery = getCommentCountSubquery();
+    const tagSubquery = getTagSubquery();
+
+    // 메인 쿼리 - perPage + 1개 조회하여 hasMore 판단
+    const rawPosts = await DrizzleContext.db()
       .select({
         id: posts.id,
+        slug: posts.slug,
         title: posts.title,
         summary: posts.summary,
         viewCount: posts.viewCount,
         publishedAt: posts.publishedAt,
-        commentCount: sql<number>`COALESCE(${commentSubquery.commentCount}, 0)`.as('comment_count'),
+        ...commentSubquery.columns,
         ...thumbnailSubquery.columns,
         ...tagSubquery.columns
       })
@@ -69,13 +77,29 @@ export class PostQueryService {
         eq(thumbnailSubquery.qb.recordType, 'post'),
         eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`)
       ))
-      .leftJoin(commentSubquery, eq(commentSubquery.postId, posts.id))
+      .leftJoin(commentSubquery.qb, eq(commentSubquery.qb.postId, posts.id))
       .leftJoin(tagSubquery.qb, eq(tagSubquery.qb.postId, posts.id))
       .where(whereConditions)
       .orderBy(...orderBy)
-      .limit(limit);
+      .limit(perPage + 1);
 
-    return result;
+    const hasMore = rawPosts.length > perPage;
+    const items = rawPosts.slice(0, perPage).map(x => this.getPostReadModel(x, x?.file));
+
+    let nextCursor: string | undefined;
+    if (hasMore && items.length > 0) {
+      const lastItem = rawPosts[perPage - 1];
+      nextCursor = JSON.stringify({
+        viewCount: lastItem.viewCount,
+        publishedAt: lastItem.publishedAt
+      });
+    }
+
+    return {
+      items,
+      hasMore,
+      nextCursor
+    };
   }
 
   async getPostsFromPagination(dto: GetAdminPostsDto): Promise<PaginationModel<PostReadModel>> {
@@ -132,7 +156,7 @@ export class PostQueryService {
     ]);
     const total = rawTotal[0].count;
 
-    const postReadModels: PostReadModel[] = rawPosts.map(
+    const postReadModels: Partial<PostReadModel>[] = rawPosts.map(
       x => this.getPostReadModel(x, x.file)
     );
     return PaginationModel.with(postReadModels, {
@@ -150,6 +174,32 @@ export class PostQueryService {
   async getPostDetailBySlug(slug: string) {
     const whereCondition = and(eq(posts.slug, slug));
     return this.getPostDetail(whereCondition);
+  }
+
+  async getLatestPatchNotePost() {
+    const thumbnailSubquery = getThumbnailSubquery();
+    const [rawPost] = await DrizzleContext.db()
+      .select({
+        ...getTableColumns(posts),
+        ...thumbnailSubquery.columns
+      })
+      .from(posts)
+      .leftJoin(thumbnailSubquery.qb, and(
+        eq(thumbnailSubquery.qb.recordType, 'post'),
+        eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`)
+      ))
+      .where(and(
+        eq(posts.postType, 'patch-note'),
+        eq(posts.isPublishedYn, 'Y')
+      ))
+      .orderBy(desc(posts.publishedAt))
+      .limit(1);
+
+    if (!rawPost) {
+      return null;
+    }
+
+    return this.getPostReadModel(rawPost, rawPost.file);
   }
 
   async getSeriesPosts(dto: { seriesId?: number; seriesSlug?: string; }) {
@@ -229,7 +279,7 @@ export class PostQueryService {
     return this.getPostReadModel(rawPost, rawPost.file);
   }
 
-  private getPostReadModel(x: SelectPost, file: { key: string; metadata: string } | null) {
+  private getPostReadModel(x: Partial<SelectPost>, file: { key: string; metadata: string } | null) {
     if (file) {
       const url = R2PathHelper.getPublicUrl(file.key);
       const thumbnailModel = ThumbnailModel.from(url, file.metadata);

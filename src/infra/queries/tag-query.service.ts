@@ -14,13 +14,14 @@ export class TagQueryService {
   async getFeedTags() {
     return await DrizzleContext.db()
       .select({
+        id: tags.id,
         name: tags.name,
         postCount: count(posts)
       })
       .from(tags)
       .leftJoin(postTags, eq(postTags.tagId, tags.id))
       .leftJoin(posts, eq(posts.id, postTags.postId))
-      .groupBy(tags.name)
+      .groupBy(tags.id, tags.name)
       .orderBy(tags.name);
   }
 

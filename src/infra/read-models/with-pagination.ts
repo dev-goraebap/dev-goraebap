@@ -5,7 +5,7 @@ export type PaginationOptions = {
 }
 
 export class PaginationModel<T> {
-  items: T[];
+  items: Partial<T>[];
   pagination: {
     total: number;
     totalPages: number;

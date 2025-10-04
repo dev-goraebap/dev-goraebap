@@ -18,7 +18,7 @@ export class PostReadModel implements SelectPost {
   readonly thumbnail?: ThumbnailModel;
   readonly commentCount?: number;
 
-  static from(data: SelectPost, thumbnail?: ThumbnailModel) {
+  static from(data: Partial<SelectPost>, thumbnail?: ThumbnailModel) {
     return {
       ...data,
       thumbnail
