@@ -22,32 +22,32 @@
         data-sortable-order-api-value="/admin/series/{{ series?.id }}/posts/orders?_csrf={{ csrfToken }}"
         data-sortable-redirect-url-value="/admin/series/{{ series?.id }}/posts"
       >
-        @each(seriesPost in seriesPosts)
+        @each(post in posts)
           <li
-            data-id="{{ seriesPost?.seriesPostId }}"
+            data-id="{{ post.seriesPostId }}"
             data-sortable-target="handle"
             class="flex justify-between items-center p-4 border-b border-base-300"
           >
             <div class="flex gap-4">
               <div class="w-[100px] h-[60px] overflow-hidden">
                 @!uikit.image({
-                  url: seriesPost?.thumbnail?.url,
-                  dominantColor: seriesPost?.thumbnail?.dominantColor
+                  url: post.thumbnail?.url,
+                  dominantColor: post.thumbnail?.dominantColor
                 })
               </div>
               <div class="flex flex-col gap-1">
                 <h2 class="text-xl">
-                  {{ seriesPost?.seriesPostId }}
-                  {{ seriesPost?.title }}
+                  {{ post.seriesPostId }}
+                  {{ post.title }}
                 </h2>
                 <span class="text-xs text-base-content/70">
-                  {{ seriesPost?.isPublishedYn === 'Y' ? '공개' : '비공개' }}
+                  {{ post.isPublishedYn === 'Y' ? '공개' : '비공개' }}
                 </span>
               </div>
             </div>
             <div>
               <a
-                href="/admin/series/{{ series?.id }}/posts/{{ seriesPost?.id }}"
+                href="/admin/series/{{ series?.id }}/posts/{{ post.id }}"
                 data-turbo-method="delete"
                 data-turbo-confirm="정말 제거하시겠어요?"
                 class="btn btn-sm"

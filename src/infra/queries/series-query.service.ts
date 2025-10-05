@@ -3,13 +3,13 @@ import { and, asc, count, desc, eq, getTableColumns, like, SQL, sql } from 'driz
 
 import { GetAdminSeriesDto } from 'src/infra/dto/get-admin-series.dto';
 import { R2PathHelper } from 'src/shared/cloudflare-r2';
-import { DrizzleContext, getThumbnailSubquery, SelectSeries, series, seriesPosts } from 'src/shared/drizzle';
+import { DrizzleContext, getThumbnailSubquery, series, seriesPosts } from 'src/shared/drizzle';
 import { PaginationModel, SeriesReadModel, ThumbnailModel } from '../read-models';
 
 @Injectable()
 export class SeriesQueryService {
 
-  async getAdminSeriesList(dto: GetAdminSeriesDto): Promise<PaginationModel<SeriesReadModel>> {
+  async getSeriesFromPagination(dto: GetAdminSeriesDto): Promise<PaginationModel<SeriesReadModel>> {
     // 동적 조건 처리
     const whereConditions: SQL[] = [];
     if (dto.search) {
@@ -74,16 +74,19 @@ export class SeriesQueryService {
     });
   }
 
-  async getSeriesItem(dto: { id?: number; slug?: string; }): Promise<SeriesReadModel> {
-    let whereCondition: SQL | undefined;
-    if (dto.id) {
-      whereCondition = eq(series.id, dto.id);
-    } else if (dto.slug) {
-      whereCondition = eq(series.slug, dto.slug);
-    } else {
-      throw new BadRequestException('아이디 또는 슬러그가 입력되지 않았습니다.');
-    }
+  async getSeriesById(id: number): Promise<SeriesReadModel> {
+    return this.getSeriesDetailQuery(eq(series.id, id));
+  }
 
+  async getSeriesBySlug(slug: string): Promise<SeriesReadModel> {
+    return this.getSeriesDetailQuery(eq(series.slug, slug));
+  }
+
+  // -------------------------------------------------
+  // 공통사용
+  // -------------------------------------------------
+
+  private async getSeriesDetailQuery(seriesCondition: SQL | undefined): Promise<SeriesReadModel> {
     // 썸네일 정보 서브쿼리
     const thumbnailSubquery = getThumbnailSubquery();
 
@@ -102,17 +105,13 @@ export class SeriesQueryService {
         eq(thumbnailSubquery.qb.recordType, 'series'),
         eq(thumbnailSubquery.qb.recordId, sql`CAST(${series.id} AS TEXT)`)
       ))
-      .where(whereCondition);
+      .where(seriesCondition);
     if (!seriesItem) {
       throw new BadRequestException('시리즈를 찾을 수 없습니다.');
     }
 
     return this.getSeriesReadModel(seriesItem, seriesItem.file);
   }
-
-  // -------------------------------------------------
-  // PRIVATE
-  // -------------------------------------------------
 
   private getSeriesReadModel(data: any, file: { key: string; metadata: string } | null): SeriesReadModel {
     if (file) {

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { and, asc, count, desc, eq, getTableColumns, like, lt, ne, or, SQL, sql } from 'drizzle-orm';
 import { R2PathHelper } from 'src/shared/cloudflare-r2';
 
@@ -165,12 +165,12 @@ export class PostQueryService {
 
   async getPostDetailById(id: number) {
     const whereCondition = eq(posts.id, id);
-    return this.getPostDetail(whereCondition);
+    return this.getDetailPostQuery(whereCondition);
   }
 
   async getPostDetailBySlug(slug: string) {
     const whereCondition = and(eq(posts.slug, slug));
-    return this.getPostDetail(whereCondition);
+    return this.getDetailPostQuery(whereCondition);
   }
 
   async getLatestPatchNotePost() {
@@ -245,23 +245,62 @@ export class PostQueryService {
     return rawPosts.map(rawPost => this.getPostReadModel(rawPost, rawPost.file));
   }
 
-  async getSeriesPosts(dto: { seriesId?: number; seriesSlug?: string; }) {
+  async getPostsBySeriesId(seriesId: number): Promise<PostReadModel[]> {
+    return this.getSeriesPostsQuery(eq(series.id, seriesId));
+  }
 
-    let whereCondition: SQL | undefined;
-    if (dto.seriesId) {
+  async getPostsBySeriesSlug(seriesSlug: string): Promise<PostReadModel[]> {
+    return this.getSeriesPostsQuery(eq(series.slug, seriesSlug));
+  }
+
+  async getPostsForSitemap() {
+    return await DrizzleContext.db()
+      .select()
+      .from(posts)
+      .where(eq(posts.isPublishedYn, 'Y'))
+      .orderBy(desc(posts.publishedAt));
+  }
+
+  async getPostsExcludedFromSeries(seriesId: number, titleSearch?: string) {
+    // 1. 해당 시리즈에 이미 포함된 포스트 ID 조회
+    const includedPostIds = DrizzleContext.db()
+      .select({ postId: seriesPosts.postId })
+      .from(seriesPosts)
+      .where(eq(seriesPosts.seriesId, seriesId));
+
+    // 2. 조건 설정
+    let whereCondition = and(
+      eq(posts.postType, 'post'),
+      sql`${posts.id} NOT IN ${includedPostIds}`
+    );
+
+    if (titleSearch) {
       whereCondition = and(
-        eq(seriesPosts.seriesId, dto.seriesId),
-        eq(posts.isPublishedYn, 'Y')
+        whereCondition,
+        like(posts.title, `%${titleSearch}%`)
       );
-    } else if (dto.seriesSlug) {
-      whereCondition = and(
-        eq(series.slug, dto.seriesSlug),
-        eq(posts.isPublishedYn, 'Y')
-      );
-    } else {
-      throw new BadRequestException('아이디 또는 슬러그가 입력되지 않았습니다.');
     }
 
+    // 3. 포스트 조회
+    const rawPosts = await DrizzleContext.db()
+      .select({
+        id: posts.id,
+        title: posts.title,
+        isPublishedYn: posts.isPublishedYn,
+      })
+      .from(posts)
+      .where(whereCondition)
+      .orderBy(desc(posts.publishedAt))
+      .limit(10);
+
+    return rawPosts;
+  }
+
+  // ---------------------------------------------------------------------------
+  // 공용기능
+  // ---------------------------------------------------------------------------
+
+  private async getSeriesPostsQuery(seriesCondition: SQL | undefined): Promise<PostReadModel[]> {
     const thumbnailSubquery = getThumbnailSubquery();
     const commentCountSubquery = getCommentCountSubquery();
     const postList = await DrizzleContext.db()
@@ -280,32 +319,13 @@ export class PostQueryService {
         eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`)
       ))
       .leftJoin(commentCountSubquery.qb, eq(commentCountSubquery.qb.postId, posts.id))
-      .where(whereCondition)
+      .where(seriesCondition)
       .orderBy(asc(seriesPosts.order), desc(seriesPosts.createdAt));
 
-    return postList.map(x => {
-      if (x.file) {
-        const url = R2PathHelper.getPublicUrl(x.file.key);
-        const thumbnailModel = ThumbnailModel.from(url, x.file.metadata);
-        return PostReadModel.from(x, thumbnailModel);
-      }
-      return PostReadModel.from(x);
-    });
+    return postList.map(x => this.getPostReadModel(x, x.file));
   }
 
-  async getPostsForSitemap() {
-    return await DrizzleContext.db()
-      .select()
-      .from(posts)
-      .where(eq(posts.isPublishedYn, 'Y'))
-      .orderBy(desc(posts.publishedAt));
-  }
-
-  // ---------------------------------------------------------------------------
-  // 공용기능
-  // ---------------------------------------------------------------------------
-
-  private async getPostDetail(addedWhereCondition: SQL | undefined) {
+  private async getDetailPostQuery(addedWhereCondition: SQL | undefined) {
     const thumbnailSubquery = getThumbnailSubquery();
     const commentCountSubquery = getCommentCountSubquery();
     const tagSubquery = getTagSubquery();

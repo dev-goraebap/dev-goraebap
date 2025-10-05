@@ -55,7 +55,7 @@ export class SeriesEntity implements SelectSeries {
   static fromRaw(data: SelectSeries): SeriesEntity {
     return new SeriesEntity(
       data.id,
-      data.userId!,
+      data.userId,
       data.name,
       data.slug,
       data.description,

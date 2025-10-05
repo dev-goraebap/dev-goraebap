@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { and, eq } from 'drizzle-orm';
+
 import { UpdatePublishDto } from 'src/app/_concern';
 import { AttachmentEntity } from 'src/domain/media/attachment.entity';
 import { SERIES_REPO, SeriesEntity, SeriesRepository } from 'src/domain/series';
