@@ -18,9 +18,9 @@ export class CommentEntity implements SelectComment {
     readonly requestId: string,
     readonly nickname: string,
     readonly comment: string,
-    readonly createdAt: string,
-    readonly postId: number | null,
-    readonly deletedAt: string | null,
+    readonly createdAt: Date,
+    readonly postId: number,
+    readonly deletedAt: Date | null,
     readonly avatarNo: number,
   ) { }
 
@@ -30,7 +30,7 @@ export class CommentEntity implements SelectComment {
       param.requestId,
       param.nickname,
       param.comment,
-      new Date().toISOString(),
+      new Date(),
       param.postId,
       null,
       param.avatarNo,
@@ -72,6 +72,7 @@ export class CommentEntity implements SelectComment {
           nickname: this.nickname,
           comment: this.comment,
           avatarNo: this.avatarNo,
+          deletedAt: this.deletedAt || null
         })
         .returning();
       return CommentEntity.fromRaw(raw);
@@ -96,7 +97,7 @@ export class CommentEntity implements SelectComment {
       this.comment,
       this.createdAt,
       this.postId,
-      new Date().toISOString(),
+      new Date(),
       this.avatarNo,
     );
   }
