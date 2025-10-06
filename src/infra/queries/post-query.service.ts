@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { and, asc, count, desc, eq, getTableColumns, like, lt, ne, or, SQL, sql } from 'drizzle-orm';
+import { and, asc, count, desc, eq, getTableColumns, gt, like, lt, ne, or, SQL, sql } from 'drizzle-orm';
 import { R2PathHelper } from 'src/shared/cloudflare-r2';
 
 import { DrizzleContext, getCommentCountSubquery, getTagSubquery, getThumbnailSubquery, posts, postTags, SelectPost, series, seriesPosts, tags } from 'src/shared/drizzle';
@@ -296,9 +296,69 @@ export class PostQueryService {
     return rawPosts;
   }
 
+  async getPrevPostInSeries(seriesSlug: string, currentPostSlug: string): Promise<PostReadModel | null> {
+    return this.getAdjacentPostInSeries(seriesSlug, currentPostSlug, 'prev');
+  }
+
+  async getNextPostInSeries(seriesSlug: string, currentPostSlug: string): Promise<PostReadModel | null> {
+    return this.getAdjacentPostInSeries(seriesSlug, currentPostSlug, 'next');
+  }
+
   // ---------------------------------------------------------------------------
   // 공용기능
   // ---------------------------------------------------------------------------
+
+  private async getAdjacentPostInSeries(
+    seriesSlug: string,
+    currentPostSlug: string,
+    direction: 'prev' | 'next'
+  ): Promise<PostReadModel | null> {
+    const thumbnailSubquery = getThumbnailSubquery();
+
+    // 현재 포스트의 order 조회
+    const [currentPost] = await DrizzleContext.db()
+      .select({ order: seriesPosts.order })
+      .from(seriesPosts)
+      .innerJoin(series, eq(series.id, seriesPosts.seriesId))
+      .innerJoin(posts, eq(posts.id, seriesPosts.postId))
+      .where(and(
+        eq(series.slug, seriesSlug),
+        eq(posts.slug, currentPostSlug)
+      ));
+
+    if (!currentPost) return null;
+
+    // direction에 따른 조건 및 정렬 설정
+    const orderCondition = direction === 'prev'
+      ? lt(seriesPosts.order, currentPost.order)
+      : gt(seriesPosts.order, currentPost.order);
+
+    const orderBy = direction === 'prev'
+      ? desc(seriesPosts.order)
+      : asc(seriesPosts.order);
+
+    // 인접 포스트 조회
+    const [rawPost] = await DrizzleContext.db()
+      .select({
+        ...getTableColumns(posts),
+        ...thumbnailSubquery.columns
+      })
+      .from(seriesPosts)
+      .innerJoin(series, eq(series.id, seriesPosts.seriesId))
+      .innerJoin(posts, eq(posts.id, seriesPosts.postId))
+      .leftJoin(thumbnailSubquery.qb, and(
+        eq(thumbnailSubquery.qb.recordType, 'post'),
+        eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`)
+      ))
+      .where(and(
+        eq(series.slug, seriesSlug),
+        orderCondition
+      ))
+      .orderBy(orderBy)
+      .limit(1);
+
+    return rawPost ? this.getPostReadModel(rawPost, rawPost.file) : null;
+  }
 
   private async getSeriesPostsQuery(seriesCondition: SQL | undefined): Promise<PostReadModel[]> {
     const thumbnailSubquery = getThumbnailSubquery();

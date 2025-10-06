@@ -3,13 +3,13 @@ import { and, asc, count, desc, eq, getTableColumns, like, SQL, sql } from 'driz
 
 import { GetAdminSeriesDto } from 'src/infra/dto/get-admin-series.dto';
 import { R2PathHelper } from 'src/shared/cloudflare-r2';
-import { DrizzleContext, getThumbnailSubquery, series, seriesPosts } from 'src/shared/drizzle';
+import { DrizzleContext, getSeriesPostCountSubquery, getThumbnailSubquery, series, seriesPosts } from 'src/shared/drizzle';
 import { PaginationModel, SeriesReadModel, ThumbnailModel } from '../read-models';
 
 @Injectable()
 export class SeriesQueryService {
 
-  async getSeriesFromPagination(dto: GetAdminSeriesDto): Promise<PaginationModel<SeriesReadModel>> {
+  async getSeriesListFromPagination(dto: GetAdminSeriesDto): Promise<PaginationModel<SeriesReadModel>> {
     // 동적 조건 처리
     const whereConditions: SQL[] = [];
     if (dto.search) {
@@ -72,6 +72,31 @@ export class SeriesQueryService {
       perPage: dto.perPage,
       total: countResult[0].count
     });
+  }
+
+  async getSeriesList(): Promise<SeriesReadModel[]> {
+    const thumbnailSubquery = getThumbnailSubquery();
+    const postCountSubquery = getSeriesPostCountSubquery();
+    const rawSeriesList = await DrizzleContext.db()
+      .select({
+        ...getTableColumns(series),
+        ...postCountSubquery.columns,
+        ...thumbnailSubquery.columns
+      })
+      .from(series)
+      .leftJoin(thumbnailSubquery.qb, and(
+        eq(thumbnailSubquery.qb.recordType, 'series'),
+        eq(thumbnailSubquery.qb.recordId, sql`CAST(${series.id} AS TEXT)`)
+      ))
+      .leftJoin(postCountSubquery.qb, eq(postCountSubquery.qb.seriesId, series.id))
+      .where(eq(series.isPublishedYn, 'Y'))
+      .orderBy(
+        sql`CASE ${series.status} WHEN 'COMPLETE' THEN 1 WHEN 'PROGRESS' THEN 2 WHEN 'PLAN' THEN 3 END`,
+        desc(postCountSubquery.columns.postCount),
+        desc(series.createdAt)
+      );
+
+    return rawSeriesList.map(x => this.getSeriesReadModel(x, x.file));
   }
 
   async getSeriesById(id: number): Promise<SeriesReadModel> {

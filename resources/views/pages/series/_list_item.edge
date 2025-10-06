@@ -22,6 +22,6 @@
     @!component('pages/series/_status', { seriesItem })
     
     {{-- 게시물 개수 --}}
-    <span>{{ seriesItem?.postCount }}개의 게시물</span>
+    <span>{{ seriesItem?.postCount || 0 }}개의 게시물</span>
   </div>
 </a>

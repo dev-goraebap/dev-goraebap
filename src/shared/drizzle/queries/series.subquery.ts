@@ -1,4 +1,4 @@
-import { count } from "drizzle-orm";
+import { count, sql } from "drizzle-orm";
 import { DrizzleContext } from "../drizzle.context";
 import { seriesPosts } from "../schema";
 
@@ -15,7 +15,7 @@ export function getSeriesPostCountSubquery() {
   return {
     qb,
     columns: {
-      postCount: qb.postCount
+      postCount: sql`COALESCE(${qb.postCount}, 0)`.as('postCount')
     },
   } as const;
 }

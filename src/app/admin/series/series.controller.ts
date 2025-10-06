@@ -36,7 +36,7 @@ export class AdminSeriesController {
   @Get()
   @UsePipes(new ZodValidationPipe(GetAdminSeriesSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetAdminSeriesDto) {
-    const result = await this.seriesQueryService.getSeriesFromPagination(dto);
+    const result = await this.seriesQueryService.getSeriesListFromPagination(dto);
     return req.view.render('pages/admin/series/index', { ...result });
   }
 

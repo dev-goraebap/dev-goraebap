@@ -14,7 +14,7 @@ export const series = pgTable('series', {
   id: serial().primaryKey(),
   name: varchar({ length: 255 }).notNull().unique(),
   description: varchar({ length: 1000 }),
-  status: varchar({ length: 20 }).default('PLAN').notNull(),
+  status: varchar({ length: 20 }).default('PLAN').notNull(), // PLAN, PROGRESS, COMPLETE
   createdAt: timestamp('created_at')
     .defaultNow()
     .notNull(),

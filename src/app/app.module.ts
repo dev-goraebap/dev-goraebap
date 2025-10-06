@@ -11,6 +11,7 @@ import { AdminTagModule } from "./admin/tags";
 import { FeedModule } from "./feed/feed.module";
 import { PatchNoteModule } from "./patch-notes";
 import { PostsModule } from "./posts";
+import { SeriesModule } from "./series";
 import { SessionModule } from "./session";
 import { SitemapModule } from "./sitemap";
 
@@ -25,6 +26,7 @@ import { SitemapModule } from "./sitemap";
     SessionModule,
     PostsModule,
     FeedModule,
+    SeriesModule,
     PatchNoteModule,
     SitemapModule,
   ],

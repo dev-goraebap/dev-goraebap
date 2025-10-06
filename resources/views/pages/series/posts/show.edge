@@ -1,4 +1,4 @@
-@let(seriesSlug = post?.seriesPosts[0]?.series?.slug)
+@let($seriesSlug = seriesSlug)
 
 @layout.app({
   title: 'devgoraebap | '+post?.title,
@@ -6,7 +6,7 @@
   ogImage: post.thumbnail?.url
 })
 
-  <a href="/series/{{ seriesSlug }}" class="text-sm mb-4 flex items-center gap-2 sm:text-base">
+  <a href="/series/{{ $seriesSlug }}" class="text-sm mb-4 flex items-center gap-2 sm:text-base">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
@@ -19,7 +19,7 @@
     </svg>
 
     시리즈로 돌아가기
-        </a>
+  </a>
 
   @if(post.thumbnail)
     <figure class="shrink-0">
@@ -85,7 +85,7 @@
       {{-- 이전 포스트 --}}
       @if(prevPost)
         <a
-          href="/series/{{ seriesSlug }}/{{ prevPost?.slug }}"
+          href="/series/{{ $seriesSlug }}/{{ prevPost?.slug }}"
           class="btn btn-ghost h-auto min-h-0 p-4 justify-start text-left flex-col items-start gap-2 hover:bg-base-200 transition-colors self-start"
         >
           <div class="flex items-center gap-2 text-sm text-base-content/70">
@@ -113,7 +113,7 @@
       {{-- 다음 포스트 --}}
       @if(nextPost)
         <a
-          href="/series/{{ seriesSlug }}/{{ nextPost?.slug }}"
+          href="/series/{{ $seriesSlug }}/{{ nextPost?.slug }}"
           class="btn btn-ghost h-auto min-h-0 p-4 justify-end text-right flex-col items-end gap-2 hover:bg-base-200 transition-colors self-start"
         >
           <div class="flex items-center gap-2 text-sm text-base-content/70">
@@ -163,7 +163,7 @@ __  _  _____________|  |    __| _/
           이전 포스트
         </h2>
         <div>
-          @!partials.posts.miniCard({ post: prevPost, collectionUrl: `/series/${ seriesSlug }` })
+          @!partials.posts.miniCard({ post: prevPost, collectionUrl: `/series/${ $seriesSlug }` })
         </div>
       </div>
     @endif
@@ -175,7 +175,7 @@ __  _  _____________|  |    __| _/
           다음 포스트
         </h2>
         <div>
-          @!partials.posts.miniCard({ post: nextPost, collectionUrl: `/series/${ seriesSlug }` })
+          @!partials.posts.miniCard({ post: nextPost, collectionUrl: `/series/${ $seriesSlug }` })
         </div>
       </div>
     @endif
