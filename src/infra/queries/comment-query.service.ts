@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { asc, count, desc, eq, getTableColumns, like, or } from 'drizzle-orm';
+import { and, asc, count, desc, eq, getTableColumns, isNull, like, or } from 'drizzle-orm';
 
 import { comments, DrizzleContext, posts } from 'src/shared/drizzle';
 import { GetAdminCommentsDto } from '../dto/get-admin-comments.dto';
@@ -10,12 +10,14 @@ export class CommentQueryService {
 
   async getAdminComments(dto: GetAdminCommentsDto) {
     // 검색 조건 설정
-    const whereCondition = dto.search
+    const searchCondition = dto.search
       ? or(
         like(comments.comment, `%${dto.search}%`),
         like(comments.nickname, `%${dto.search}%`)
       )
       : undefined;
+
+    const whereCondition = and(searchCondition, isNull(comments.deletedAt));
 
     // 정렬 설정
     const orderCondition = dto.orderBy === 'ASC'
@@ -67,7 +69,7 @@ export class CommentQueryService {
       .select(getTableColumns(comments))
       .from(comments)
       .leftJoin(posts, eq(posts.id, comments.postId))
-      .where(eq(posts.slug, postSlug))
+      .where(and(eq(posts.slug, postSlug), isNull(comments.deletedAt)))
       .orderBy(comments.createdAt);
   }
 }
