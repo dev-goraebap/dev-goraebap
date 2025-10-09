@@ -2,12 +2,7 @@ import { MiddlewareConsumer, Module, RequestMethod } from "@nestjs/common";
 import { APP_FILTER, APP_INTERCEPTOR } from "@nestjs/core";
 
 import { AppExceptionFilter, LoggingInterceptor, RequestIdMiddleware, WAFMiddleware } from "src/common";
-import { AdminBlockedIpModule } from "./admin/blocked-ips";
-import { AdminCommentModule } from "./admin/comments";
-import { AdminMediaModule } from "./admin/media";
-import { AdminPostModule } from "./admin/posts";
-import { AdminSeriesModule } from "./admin/series";
-import { AdminTagModule } from "./admin/tags";
+import { AdminModule } from "./admin/admin.module";
 import { FeedModule } from "./feed/feed.module";
 import { PatchNoteModule } from "./patch-notes";
 import { PostsModule } from "./posts";
@@ -17,12 +12,7 @@ import { SitemapModule } from "./sitemap";
 
 @Module({
   imports: [
-    AdminPostModule,
-    AdminSeriesModule,
-    AdminMediaModule,
-    AdminBlockedIpModule,
-    AdminCommentModule,
-    AdminTagModule,
+    AdminModule,
     SessionModule,
     PostsModule,
     FeedModule,
