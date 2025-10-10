@@ -29,6 +29,7 @@ export const nestMvcOptions: NestMvcOptions = {
     },
     globalsInjects: [ConfigService],
     globalsFactory: (configService: ConfigService) => ({
+      /** @deprecated 더이상 사용되지 않음 */
       cloudImageUrl: (url: string) => {
         // URL이 없을 경우 null 반환
         if (!url) return null;
