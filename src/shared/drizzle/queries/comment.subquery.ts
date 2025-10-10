@@ -1,4 +1,4 @@
-import { count } from "drizzle-orm";
+import { count, isNull } from "drizzle-orm";
 import { comments, DrizzleContext } from "src/shared/drizzle";
 
 export function getCommentCountSubquery() {
@@ -8,6 +8,7 @@ export function getCommentCountSubquery() {
       commentCount: count(comments.id).as('comment_count')
     })
     .from(comments)
+    .where(isNull(comments.deletedAt))
     .groupBy(comments.postId)
     .as('c');
 
