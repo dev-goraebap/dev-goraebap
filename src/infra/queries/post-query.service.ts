@@ -169,7 +169,7 @@ export class PostQueryService {
   }
 
   async getPostDetailBySlug(slug: string) {
-    const whereCondition = and(eq(posts.slug, slug));
+    const whereCondition = and(eq(posts.slug, slug), eq(posts.isPublishedYn, 'Y'));
     return this.getDetailPostQuery(whereCondition);
   }
 
@@ -379,7 +379,7 @@ export class PostQueryService {
         eq(thumbnailSubquery.qb.recordId, sql`CAST(${posts.id} AS TEXT)`)
       ))
       .leftJoin(commentCountSubquery.qb, eq(commentCountSubquery.qb.postId, posts.id))
-      .where(seriesCondition)
+      .where(and(seriesCondition, eq(posts.isPublishedYn, 'Y')))
       .orderBy(asc(seriesPosts.order), desc(seriesPosts.createdAt));
 
     return postList.map(x => this.getPostReadModel(x, x.file));

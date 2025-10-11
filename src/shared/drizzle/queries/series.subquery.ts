@@ -1,6 +1,6 @@
-import { count, sql } from "drizzle-orm";
+import { count, eq, sql } from "drizzle-orm";
 import { DrizzleContext } from "../drizzle.context";
-import { seriesPosts } from "../schema";
+import { posts, seriesPosts } from "../schema";
 
 export function getSeriesPostCountSubquery() {
   const qb = DrizzleContext.db()
@@ -9,6 +9,8 @@ export function getSeriesPostCountSubquery() {
       postCount: count().as('postCount')
     })
     .from(seriesPosts)
+    .innerJoin(posts, eq(posts.id, seriesPosts.postId))
+    .where(eq(posts.isPublishedYn, 'Y'))
     .groupBy(seriesPosts.seriesId)
     .as('sp');
 

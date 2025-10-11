@@ -3,7 +3,7 @@ import { and, asc, count, desc, eq, getTableColumns, like, SQL, sql } from 'driz
 
 import { GetAdminSeriesDto } from 'src/infra/dto/get-admin-series.dto';
 import { R2PathHelper } from 'src/shared/cloudflare-r2';
-import { DrizzleContext, getSeriesPostCountSubquery, getThumbnailSubquery, series, seriesPosts } from 'src/shared/drizzle';
+import { DrizzleContext, getSeriesPostCountSubquery, getThumbnailSubquery, series } from 'src/shared/drizzle';
 import { PaginationModel, SeriesReadModel, ThumbnailModel } from '../read-models';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class SeriesQueryService {
     const thumbnailSubquery = getThumbnailSubquery();
 
     // 시리즈별 게시물 개수 서브쿼리
-    const postCountSubquery = this.getSeriesPostCountSubquery();
+    const postCountSubquery = getSeriesPostCountSubquery();
 
     // 데이터 쿼리
     const dataQuery = DrizzleContext.db()
@@ -116,7 +116,7 @@ export class SeriesQueryService {
     const thumbnailSubquery = getThumbnailSubquery();
 
     // 시리즈별 게시물 개수 서브쿼리
-    const postCountSubQuery = this.getSeriesPostCountSubquery();
+    const postCountSubQuery = getSeriesPostCountSubquery();
 
     const [seriesItem] = await DrizzleContext.db()
       .select({
@@ -145,24 +145,5 @@ export class SeriesQueryService {
       return SeriesReadModel.from(data, thumbnailModel);
     }
     return SeriesReadModel.from(data);
-  }
-
-  // 시리즈별 게시물 개수 조회 서브쿼리
-  private getSeriesPostCountSubquery() {
-    const qb = DrizzleContext.db()
-      .select({
-        seriesId: seriesPosts.seriesId,
-        postCount: count().as('postCount')
-      })
-      .from(seriesPosts)
-      .groupBy(seriesPosts.seriesId)
-      .as('sp');
-
-    return {
-      qb,
-      columns: {
-        postCount: qb.postCount
-      },
-    } as const;
   }
 }

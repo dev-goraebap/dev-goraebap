@@ -22,7 +22,7 @@ export class SeriesController {
     const [seriesItem, posts] = await Promise.all([
       this.seriesQueryService.getSeriesBySlug(slug),
       this.postQueryService.getPostsBySeriesSlug(slug)
-    ])
+    ]);
     return req.view.render('pages/series/show', { seriesItem, posts });
   }
 }
