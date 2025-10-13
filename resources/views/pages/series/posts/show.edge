@@ -155,18 +155,6 @@ __  _  _____________|  |    __| _/
   \/\_/ \____/|__|  |____/\____ | 
                                \/ 
     </pre>
-
-    {{-- 이전 포스트 --}}
-    @if(prevPost)
-      <div class="flex flex-col gap-4">
-        <h2 class="text-lg font-bold">
-          이전 포스트
-        </h2>
-        <div>
-          @!partials.posts.miniCard({ post: prevPost, collectionUrl: `/series/${ $seriesSlug }` })
-        </div>
-      </div>
-    @endif
           
     {{-- 다음 포스트 --}}
     @if(nextPost)
@@ -176,6 +164,18 @@ __  _  _____________|  |    __| _/
         </h2>
         <div>
           @!partials.posts.miniCard({ post: nextPost, collectionUrl: `/series/${ $seriesSlug }` })
+        </div>
+      </div>
+    @endif
+
+    {{-- 이전 포스트 --}}
+    @if(prevPost)
+      <div class="flex flex-col gap-4">
+        <h2 class="text-lg font-bold">
+          이전 포스트
+        </h2>
+        <div>
+          @!partials.posts.miniCard({ post: prevPost, collectionUrl: `/series/${ $seriesSlug }` })
         </div>
       </div>
     @endif

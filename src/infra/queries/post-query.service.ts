@@ -330,12 +330,12 @@ export class PostQueryService {
 
     // direction에 따른 조건 및 정렬 설정
     const orderCondition = direction === 'prev'
-      ? lt(seriesPosts.order, currentPost.order)
-      : gt(seriesPosts.order, currentPost.order);
+      ? gt(seriesPosts.order, currentPost.order)
+      : lt(seriesPosts.order, currentPost.order);
 
     const orderBy = direction === 'prev'
-      ? desc(seriesPosts.order)
-      : asc(seriesPosts.order);
+      ? asc(seriesPosts.order)
+      : desc(seriesPosts.order);
 
     // 인접 포스트 조회
     const [rawPost] = await DrizzleContext.db()
