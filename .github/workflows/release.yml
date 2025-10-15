@@ -19,6 +19,8 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
+            set -e  # ← 에러 발생 시 즉시 중단!
+            
             echo "🚀 배포 시작..."
             echo "📌 배포 브랜치: ${{ github.ref_name }}"
             
@@ -44,24 +46,38 @@ jobs:
             ${{ secrets.ENV_PRODUCTION }}
             EOF
             
-            if [ -f .env.production.local ]; then
-              echo "✅ .env.production.local 생성 완료"
-            else
+            if [ ! -f .env.production.local ]; then
               echo "❌ .env.production.local 생성 실패"
               exit 1
             fi
+            echo "✅ .env.production.local 생성 완료"
             
             VERSION=$(echo "${{ github.ref_name }}" | sed 's/release\///')
             echo "📦 배포 버전: ${VERSION}"
             
             echo "🔨 Docker 이미지 빌드 중..."
             /snap/bin/docker build -t my-blog:${VERSION} .
+            if [ $? -ne 0 ]; then
+              echo "❌ Docker 빌드 실패!"
+              exit 1
+            fi
+            
             /snap/bin/docker tag my-blog:${VERSION} my-blog:latest
+            if [ $? -ne 0 ]; then
+              echo "❌ Docker 태그 실패!"
+              exit 1
+            fi
+            echo "✅ Docker 이미지 빌드 완료"
             
             echo "🔄 컨테이너 재시작 중..."
             export APP_VERSION=${VERSION}
             /snap/bin/docker compose down
             /snap/bin/docker compose up -d
+            if [ $? -ne 0 ]; then
+              echo "❌ 컨테이너 시작 실패!"
+              exit 1
+            fi
+            echo "✅ 컨테이너 시작 완료"
             
             echo "🧹 Docker 이미지 정리 중..."
             /snap/bin/docker image prune -af --filter "until=24h"
