@@ -19,14 +19,14 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SERVER_PORT }}
           script: |
+            set -e  # ← 에러 발생 시 즉시 중단!
+            
             echo "🚀 배포 시작..."
             echo "📌 배포 브랜치: ${{ github.ref_name }}"
             
-            # 1. PROJECTS 디렉토리 확인 및 생성
             mkdir -p PROJECTS
             cd PROJECTS
             
-            # 2. 저장소 없으면 clone, 있으면 pull
             if [ ! -d "my-blog" ]; then
               echo "📥 저장소 클론 중..."
               git clone https://github.com/${{ github.repository }} my-blog
@@ -41,43 +41,50 @@ jobs:
               git pull origin ${{ github.ref_name }}
             fi
             
-            # 3. .env.production.local 파일 생성
             echo "🔐 환경변수 파일 생성 중..."
             cat > .env.production.local << 'EOF'
             ${{ secrets.ENV_PRODUCTION }}
             EOF
             
-            # 파일 생성 확인
-            if [ -f .env.production.local ]; then
-              echo "✅ .env.production.local 생성 완료"
-            else
+            if [ ! -f .env.production.local ]; then
               echo "❌ .env.production.local 생성 실패"
               exit 1
             fi
+            echo "✅ .env.production.local 생성 완료"
             
-            # 4. 버전 확인
-            VERSION=$(node -p "require('./package.json').version")
+            VERSION=$(echo "${{ github.ref_name }}" | sed 's/release\///')
             echo "📦 배포 버전: ${VERSION}"
             
-            # 5. Docker 이미지 빌드
             echo "🔨 Docker 이미지 빌드 중..."
-            sudo docker build -t my-blog:${VERSION} .
-            sudo docker tag my-blog:${VERSION} my-blog:latest
+            /snap/bin/docker build -t my-blog:${VERSION} .
+            if [ $? -ne 0 ]; then
+              echo "❌ Docker 빌드 실패!"
+              exit 1
+            fi
             
-            # 6. 컨테이너 재시작
+            /snap/bin/docker tag my-blog:${VERSION} my-blog:latest
+            if [ $? -ne 0 ]; then
+              echo "❌ Docker 태그 실패!"
+              exit 1
+            fi
+            echo "✅ Docker 이미지 빌드 완료"
+            
             echo "🔄 컨테이너 재시작 중..."
             export APP_VERSION=${VERSION}
-            sudo docker compose down
-            sudo docker compose up -d
+            /snap/bin/docker compose down
+            /snap/bin/docker compose up -d
+            if [ $? -ne 0 ]; then
+              echo "❌ 컨테이너 시작 실패!"
+              exit 1
+            fi
+            echo "✅ 컨테이너 시작 완료"
             
-            # 7. 이미지 정리
             echo "🧹 Docker 이미지 정리 중..."
-            sudo docker image prune -af --filter "until=24h"
+            /snap/bin/docker image prune -af --filter "until=24h"
             
-            # 8. 실행 확인
             echo "✅ 배포 완료!"
             echo "📋 실행 중인 컨테이너:"
-            sudo docker ps | grep my-blog
+            /snap/bin/docker ps | grep my-blog
             
             echo ""
             echo "🎉 배포 성공!"

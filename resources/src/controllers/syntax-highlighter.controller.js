@@ -1,17 +1,20 @@
 import { Controller } from '@hotwired/stimulus';
+import Prism from 'prismjs';
+import 'prismjs/components/prism-markup';
+import 'prismjs/components/prism-css';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-json';
+import 'prismjs/components/prism-bash';
 
 export class SyntaxHighlighterController extends Controller {
   async connect() {
     try {
-      // Prism.js 다이나믹 임포트
-      const PrismModule = await import('prismjs');
-      this.prism = PrismModule.default || PrismModule;
+      this.prism = Prism;
 
       // 테마별 CSS 동적 로드
       await this.loadThemeCSS();
-
-      // 언어 로드
-      await this.loadCoreLanguages();
 
       // 하이라이팅 실행
       this.prism.highlightAllUnder(this.element);
@@ -22,41 +25,6 @@ export class SyntaxHighlighterController extends Controller {
       console.debug('Prism.js 하이라이팅 완료');
     } catch (error) {
       console.error('Prism.js 로드 실패:', error);
-    }
-  }
-
-  async loadCoreLanguages() {
-    try {
-      // 1. Markup (HTML)
-      await import('prismjs/components/prism-markup');
-      console.debug('✅ markup 로드됨');
-      
-      // 2. CSS
-      await import('prismjs/components/prism-css');
-      console.debug('✅ css 로드됨');
-      
-      // 3. C-like (JavaScript의 의존성)
-      await import('prismjs/components/prism-clike');
-      console.debug('✅ clike 로드됨');
-      
-      // 4. JavaScript (TypeScript의 의존성)
-      await import('prismjs/components/prism-javascript');
-      console.debug('✅ javascript 로드됨');
-      
-      // 5. TypeScript
-      await import('prismjs/components/prism-typescript');
-      console.debug('✅ typescript 로드됨');
-      
-      // 6. JSON
-      await import('prismjs/components/prism-json');
-      console.debug('✅ json 로드됨');
-      
-      // 7. Bash
-      await import('prismjs/components/prism-bash');
-      console.debug('✅ bash 로드됨');
-      
-    } catch (error) {
-      console.error('언어 로드 중 에러:', error);
     }
   }
 

@@ -1,8 +1,6 @@
-version: '3.8'
-
 services:
   my-blog:
-    image: devgoraebap/my-blog:${APP_VERSION:-latest}
+    image: my-blog:${APP_VERSION:-latest}
     container_name: my-blog
     ports:
       - "8004:3000"
