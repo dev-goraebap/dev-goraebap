@@ -8,6 +8,7 @@ services:
       - "8004:3000"
     volumes:
       - ./storage:/app/storage
+      # github secret 변수를 통해 생성되는 파일 마운트
       - ./.env.production.local:/app/.env.production.local
     environment:
       - NODE_ENV=production
