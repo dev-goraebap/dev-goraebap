@@ -34,9 +34,6 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/resources ./resources
 COPY --from=builder /app/.config ./.config
 
-# Copy environment file if it exists
-COPY .env.production.local* ./
-
 EXPOSE 3000
 
 CMD ["npm", "run", "start:prod"]

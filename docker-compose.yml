@@ -1,13 +1,14 @@
 version: '3.8'
 
 services:
-  nestjs-mvc-is-coming:
+  my-blog:
     image: devgoraebap/my-blog:${APP_VERSION:-latest}
     container_name: my-blog
     ports:
-      - "3000:3000"
+      - "8004:3000"
     volumes:
       - ./storage:/app/storage
+      - ./.env.production.local:/app/.env.production.local
     environment:
       - NODE_ENV=production
       - PORT=3000
