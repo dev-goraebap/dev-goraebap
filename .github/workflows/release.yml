@@ -47,7 +47,6 @@ jobs:
             ${{ secrets.ENV_PRODUCTION }}
             EOF
             
-            # 파일 생성 확인
             if [ -f .env.production.local ]; then
               echo "✅ .env.production.local 생성 완료"
             else
@@ -55,29 +54,30 @@ jobs:
               exit 1
             fi
             
-            # 4. 버전 확인
-            VERSION=$(node -p "require('./package.json').version")
+            # 4. 브랜치명에서 버전 추출
+            # release/v1.0.6 → v1.0.6
+            VERSION=$(echo "${{ github.ref_name }}" | sed 's/release\///')
             echo "📦 배포 버전: ${VERSION}"
             
             # 5. Docker 이미지 빌드
             echo "🔨 Docker 이미지 빌드 중..."
-            sudo docker build -t my-blog:${VERSION} .
-            sudo docker tag my-blog:${VERSION} my-blog:latest
+            docker build -t my-blog:${VERSION} .
+            docker tag my-blog:${VERSION} my-blog:latest
             
             # 6. 컨테이너 재시작
             echo "🔄 컨테이너 재시작 중..."
             export APP_VERSION=${VERSION}
-            sudo docker compose down
-            sudo docker compose up -d
+            docker compose down
+            docker compose up -d
             
             # 7. 이미지 정리
             echo "🧹 Docker 이미지 정리 중..."
-            sudo docker image prune -af --filter "until=24h"
+            docker image prune -af --filter "until=24h"
             
             # 8. 실행 확인
             echo "✅ 배포 완료!"
             echo "📋 실행 중인 컨테이너:"
-            sudo docker ps | grep my-blog
+            docker ps | grep my-blog
             
             echo ""
             echo "🎉 배포 성공!"
