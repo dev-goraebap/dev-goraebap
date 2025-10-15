@@ -22,11 +22,9 @@ jobs:
             echo "🚀 배포 시작..."
             echo "📌 배포 브랜치: ${{ github.ref_name }}"
             
-            # 1. PROJECTS 디렉토리 확인 및 생성
             mkdir -p PROJECTS
             cd PROJECTS
             
-            # 2. 저장소 없으면 clone, 있으면 pull
             if [ ! -d "my-blog" ]; then
               echo "📥 저장소 클론 중..."
               git clone https://github.com/${{ github.repository }} my-blog
@@ -41,7 +39,6 @@ jobs:
               git pull origin ${{ github.ref_name }}
             fi
             
-            # 3. .env.production.local 파일 생성
             echo "🔐 환경변수 파일 생성 중..."
             cat > .env.production.local << 'EOF'
             ${{ secrets.ENV_PRODUCTION }}
@@ -54,30 +51,24 @@ jobs:
               exit 1
             fi
             
-            # 4. 브랜치명에서 버전 추출
-            # release/v1.0.6 → v1.0.6
             VERSION=$(echo "${{ github.ref_name }}" | sed 's/release\///')
             echo "📦 배포 버전: ${VERSION}"
             
-            # 5. Docker 이미지 빌드
             echo "🔨 Docker 이미지 빌드 중..."
-            docker build -t my-blog:${VERSION} .
-            docker tag my-blog:${VERSION} my-blog:latest
+            /snap/bin/docker build -t my-blog:${VERSION} .
+            /snap/bin/docker tag my-blog:${VERSION} my-blog:latest
             
-            # 6. 컨테이너 재시작
             echo "🔄 컨테이너 재시작 중..."
             export APP_VERSION=${VERSION}
-            docker compose down
-            docker compose up -d
+            /snap/bin/docker compose down
+            /snap/bin/docker compose up -d
             
-            # 7. 이미지 정리
             echo "🧹 Docker 이미지 정리 중..."
-            docker image prune -af --filter "until=24h"
+            /snap/bin/docker image prune -af --filter "until=24h"
             
-            # 8. 실행 확인
             echo "✅ 배포 완료!"
             echo "📋 실행 중인 컨테이너:"
-            docker ps | grep my-blog
+            /snap/bin/docker ps | grep my-blog
             
             echo ""
             echo "🎉 배포 성공!"
