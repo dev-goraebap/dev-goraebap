@@ -4,6 +4,8 @@ export * from './attachments.schema';
 export * from './blobs.schema';
 export * from './blocked-ips.schema';
 export * from './comments.schema';
+export * from './curated-items.schema';
+export * from './curated-sources.schema';
 export * from './posts.schema';
 export * from './post-tags.schema';
 export * from './series.schema';
