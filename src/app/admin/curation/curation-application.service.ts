@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import RSSParser from 'rss-parser';
+import * as RSSParser from 'rss-parser';
 
 import { CurationItemEntity, CurationSourceEntity } from 'src/domain/curation';
 import { LoggerService } from 'src/shared/logger';

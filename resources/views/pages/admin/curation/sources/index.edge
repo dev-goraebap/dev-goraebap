@@ -1,0 +1,44 @@
+@layout.admin({ title: '데브고래밥 스튜디오 | 큐레이션 관리' })
+
+  @layout.admin.tableBoard({
+    title: 'RSS 큐레이션',
+    currentUrl: '/admin/curation/sources',
+    tabList: [
+      { name: 'RSS 소스', url: '/admin/curation/sources' },
+      { name: '큐레이션 항목', url: '/admin/curation/items' },
+    ],
+    pagination: { total: sources.length, page: 1, totalPages: 1 },
+  })
+    @slot('filterForm')
+      {{-- 통계 표시 --}}
+      <div class="flex gap-4 ml-auto text-xs">
+        <span>전체 소스: <strong>{{ stats.totalSources }}</strong></span>
+        <span>활성 소스: <strong class="text-success">{{ stats.activeSources }}</strong></span>
+        <span>총 항목: <strong class="text-info">{{ stats.totalItems }}</strong></span>
+      </div>
+
+      {{-- 전체 취합 버튼 --}}
+      <form action="/admin/curation/fetch-all" method="POST" class="inline">
+        <input type="hidden" name="_csrf" value="{{ csrfToken }}" />
+        <button type="submit" class="btn btn-sm btn-primary" data-turbo-submits-with="취합 중...">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
+          전체 취합
+        </button>
+      </form>
+
+      {{-- 소스 등록 버튼 --}}
+      <button class="btn btn-sm btn-accent" data-action="modal#onOpen" data-content-url="/admin/curation/sources/new">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        소스 등록
+      </button>
+    @end
+
+    @slot('content')
+      @!component('pages/admin/curation/sources/_list', { sources })
+    @end
+  @end
+@end
