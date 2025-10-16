@@ -1,8 +1,7 @@
 import { Global, Module, OnModuleInit } from "@nestjs/common";
 import { ScheduleModule } from "@nestjs/schedule";
 
-import { CurationSchedulerService, MediaCleanupService } from "./schedulers";
-import { AdminInitializerService, PostViewService } from "./services";
+import { AdminInitializerService, MediaCleanupService, PostViewService } from "./services";
 
 @Global()
 @Module({
@@ -11,7 +10,6 @@ import { AdminInitializerService, PostViewService } from "./services";
   ],
   providers: [
     MediaCleanupService,
-    CurationSchedulerService,
     AdminInitializerService,
     PostViewService
   ],

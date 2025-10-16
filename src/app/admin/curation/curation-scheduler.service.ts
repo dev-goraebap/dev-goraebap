@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { CurationApplicationService } from 'src/app/admin/curation/curation-application.service';
+
 import { LoggerService } from 'src/shared/logger';
+import { CurationApplicationService } from './curation-application.service';
 
 @Injectable()
 export class CurationSchedulerService {
