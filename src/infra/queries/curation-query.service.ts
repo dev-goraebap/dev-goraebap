@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { and, count, desc, eq, sql } from 'drizzle-orm';
+import { count, desc, eq } from 'drizzle-orm';
 
 import { curatedItems, curatedSources, DrizzleContext } from 'src/shared/drizzle';
 
@@ -8,7 +8,6 @@ export type CurationSourceWithCount = {
   name: string;
   url: string;
   isActiveYn: 'Y' | 'N';
-  fetchIntervalMinutes: number;
   itemCount: number;
   createdAt: Date;
   updatedAt: Date;
@@ -38,7 +37,6 @@ export class CurationQueryService {
         name: curatedSources.name,
         url: curatedSources.url,
         isActiveYn: curatedSources.isActiveYn,
-        fetchIntervalMinutes: curatedSources.fetchIntervalMinutes,
         createdAt: curatedSources.createdAt,
         updatedAt: curatedSources.updatedAt,
       })

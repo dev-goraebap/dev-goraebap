@@ -14,7 +14,6 @@
           <th>소스명</th>
           <th>URL</th>
           <th>항목 수</th>
-          <th>취합 주기</th>
           <th>상태</th>
           <th>등록일</th>
           <th>관리</th>
@@ -34,9 +33,6 @@
             </td>
             <td>
               <span class="badge badge-info badge-sm">{{ source.itemCount }}</span>
-            </td>
-            <td>
-              {{ source.fetchIntervalMinutes }}분
             </td>
             <td>
               @if(source.isActiveYn === 'Y')

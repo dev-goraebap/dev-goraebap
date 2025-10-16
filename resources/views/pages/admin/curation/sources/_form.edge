@@ -12,7 +12,7 @@
     <legend class="fieldset-legend">소스명 *</legend>
     <input
       type="text"
-      name="source[name]"
+      name="name"
       value="{{ source?.name || '' }}"
       class="input w-full"
       placeholder="예: Google Developer Blog"
@@ -26,7 +26,7 @@
     <legend class="fieldset-legend">RSS URL *</legend>
     <input
       type="url"
-      name="source[url]"
+      name="url"
       value="{{ source?.url || '' }}"
       class="input w-full"
       placeholder="https://developers.googleblog.com/feeds/posts/default"
@@ -35,24 +35,10 @@
     <span class="label">RSS 피드 URL을 입력하세요.</span>
   </fieldset>
 
-  {{-- 취합 주기 --}}
-  <fieldset class="fieldset">
-    <legend class="fieldset-legend">취합 주기 (분)</legend>
-    <input
-      type="number"
-      name="source[fetchIntervalMinutes]"
-      value="{{ source?.fetchIntervalMinutes || 60 }}"
-      class="input w-full"
-      min="10"
-      step="10"
-    />
-    <span class="label">자동 취합 주기를 분 단위로 설정하세요. (최소 10분)</span>
-  </fieldset>
-
   {{-- 활성화 상태 --}}
   <fieldset class="fieldset">
     <legend class="fieldset-legend">활성화 상태</legend>
-    <select class="select w-full" name="source[isActiveYn]">
+    <select class="select w-full" name="isActiveYn">
       <option value="Y" {{ (source?.isActiveYn === 'Y' || !source) && 'selected' }}>활성</option>
       <option value="N" {{ source?.isActiveYn === 'N' && 'selected' }}>비활성</option>
     </select>

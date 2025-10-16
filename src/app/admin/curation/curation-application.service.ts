@@ -23,7 +23,6 @@ export class CurationApplicationService {
     const source = CurationSourceEntity.create({
       name: dto.name,
       url: dto.url,
-      fetchIntervalMinutes: dto.fetchIntervalMinutes,
       isActiveYn: dto.isActiveYn,
     });
 
@@ -39,7 +38,6 @@ export class CurationApplicationService {
     const updatedSource = existingSource.update({
       name: dto.name,
       url: dto.url,
-      fetchIntervalMinutes: dto.fetchIntervalMinutes,
       isActiveYn: dto.isActiveYn,
     });
 

@@ -15,7 +15,6 @@ export const curatedSources = pgTable('curated_sources', {
   name: varchar({ length: 100 }).notNull(),
   url: text().notNull(),
   isActiveYn: activeYnEnum('is_active_yn').default('Y').notNull(),
-  fetchIntervalMinutes: integer('fetch_interval_minutes').default(60).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });

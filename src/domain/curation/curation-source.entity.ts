@@ -7,14 +7,12 @@ export type CurationSourceID = number;
 export type CreateCurationSourceParam = {
   readonly name: string;
   readonly url: string;
-  readonly fetchIntervalMinutes: number;
   readonly isActiveYn: YN;
 }
 
 export type UpdateCurationSourceParam = {
   readonly name?: string;
   readonly url?: string;
-  readonly fetchIntervalMinutes?: number;
   readonly isActiveYn?: YN;
 }
 
@@ -24,7 +22,6 @@ export class CurationSourceEntity implements SelectCuratedSource {
     readonly name: string,
     readonly url: string,
     readonly isActiveYn: 'Y' | 'N',
-    readonly fetchIntervalMinutes: number,
     readonly createdAt: Date,
     readonly updatedAt: Date,
   ) { }
@@ -35,7 +32,6 @@ export class CurationSourceEntity implements SelectCuratedSource {
       param.name,
       param.url,
       param.isActiveYn,
-      param.fetchIntervalMinutes,
       new Date(),
       new Date(),
     );
@@ -47,7 +43,6 @@ export class CurationSourceEntity implements SelectCuratedSource {
       data.name,
       data.url,
       data.isActiveYn,
-      data.fetchIntervalMinutes,
       data.createdAt,
       data.updatedAt,
     );
@@ -87,7 +82,6 @@ export class CurationSourceEntity implements SelectCuratedSource {
       param.name ?? this.name,
       param.url ?? this.url,
       param.isActiveYn ?? this.isActiveYn,
-      param.fetchIntervalMinutes ?? this.fetchIntervalMinutes,
       this.createdAt,
       new Date(),
     );
@@ -99,7 +93,6 @@ export class CurationSourceEntity implements SelectCuratedSource {
       this.name,
       this.url,
       this.isActiveYn === 'Y' ? 'N' : 'Y',
-      this.fetchIntervalMinutes,
       this.createdAt,
       new Date(),
     );
@@ -114,7 +107,6 @@ export class CurationSourceEntity implements SelectCuratedSource {
           name: this.name,
           url: this.url,
           isActiveYn: this.isActiveYn,
-          fetchIntervalMinutes: this.fetchIntervalMinutes,
         })
         .returning();
       return CurationSourceEntity.fromRaw(raw);
@@ -126,7 +118,6 @@ export class CurationSourceEntity implements SelectCuratedSource {
           name: this.name,
           url: this.url,
           isActiveYn: this.isActiveYn,
-          fetchIntervalMinutes: this.fetchIntervalMinutes,
           updatedAt: this.updatedAt,
         })
         .where(eq(curatedSources.id, this.id))

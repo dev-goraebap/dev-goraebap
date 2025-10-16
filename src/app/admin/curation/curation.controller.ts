@@ -54,7 +54,7 @@ export class AdminCurationController {
   async createSource(
     @Req() req: NestMvcReq,
     @Res() res: Response,
-    @Body('source') dto: CreateSourceDto,
+    @Body() dto: CreateSourceDto,
   ) {
     await this.curationApplicationService.createSource(dto);
     req.flash.success('RSS 소스를 성공적으로 추가했습니다.');
@@ -76,7 +76,7 @@ export class AdminCurationController {
     @Req() req: NestMvcReq,
     @Res() res: Response,
     @Param('id', ParseIntPipe) id: number,
-    @Body('source') dto: UpdateSourceDto,
+    @Body() dto: UpdateSourceDto,
   ) {
     await this.curationApplicationService.updateSource(id, dto);
     req.flash.success('RSS 소스를 성공적으로 수정했습니다.');
