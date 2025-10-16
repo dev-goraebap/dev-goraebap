@@ -1,4 +1,5 @@
-import { and, desc, eq, lt, sql } from "drizzle-orm";
+import { desc, eq, lt, sql } from "drizzle-orm";
+
 import { curatedItems, DrizzleContext, SelectCuratedItem } from "src/shared/drizzle";
 import { CurationSourceID } from "./curation-source.entity";
 
