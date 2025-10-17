@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 
 import { LoggerService } from 'src/shared/logger';
-import { CurationApplicationService } from './curation-application.service';
+import { CuratedSourcesCommandService } from './curated-sources-command.service';
 
 @Injectable()
 export class CurationSchedulerService {
   constructor(
-    private readonly curationApplicationService: CurationApplicationService,
+    private readonly curatedSourcesCommand: CuratedSourcesCommandService,
     private readonly logger: LoggerService,
   ) {}
 
@@ -19,7 +19,7 @@ export class CurationSchedulerService {
     this.logger.info('[Curation Scheduler] Starting daily RSS feed collection...');
 
     try {
-      const result = await this.curationApplicationService.fetchAllActiveSources();
+      const result = await this.curatedSourcesCommand.fetchAllActiveSources();
 
       this.logger.info(
         `[Curation Scheduler] Completed! Total new items: ${result.total}. ` +

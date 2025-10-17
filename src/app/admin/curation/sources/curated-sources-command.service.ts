@@ -6,7 +6,7 @@ import { LoggerService } from 'src/shared/logger';
 import { CreateSourceDto, UpdateSourceDto } from './dto/create-or-update-source.dto';
 
 @Injectable()
-export class CurationApplicationService {
+export class CuratedSourcesCommandService {
   private readonly rssParser: RSSParser;
 
   constructor(
@@ -138,29 +138,5 @@ export class CurationApplicationService {
     }
 
     return { total, sources: results };
-  }
-
-  // ---------------------------------------------------------------------------
-  // 항목 관리
-  // ---------------------------------------------------------------------------
-
-  async deleteItem(itemId: number): Promise<void> {
-    const item = await CurationItemEntity.findById(itemId);
-    if (!item) {
-      throw new BadRequestException('항목을 찾을 수 없습니다.');
-    }
-
-    await CurationItemEntity.deleteById(itemId);
-  }
-
-  /**
-   * N일 이전의 오래된 항목 삭제
-   * @param days 일수
-   * @returns 삭제된 개수
-   */
-  async deleteOldItems(days: number): Promise<number> {
-    const deletedCount = await CurationItemEntity.deleteOldItems(days);
-    this.logger.info(`[Curation] Deleted ${deletedCount} items older than ${days} days`);
-    return deletedCount;
   }
 }

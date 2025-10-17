@@ -1,13 +1,9 @@
 import { Global, Module, OnModuleInit } from "@nestjs/common";
-import { ScheduleModule } from "@nestjs/schedule";
 
 import { AdminInitializerService, MediaCleanupService, PostViewService } from "./services";
 
 @Global()
 @Module({
-  imports: [
-    ScheduleModule.forRoot(),
-  ],
   providers: [
     MediaCleanupService,
     AdminInitializerService,
