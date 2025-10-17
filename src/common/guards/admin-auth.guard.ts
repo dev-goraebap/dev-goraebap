@@ -7,19 +7,17 @@ export class AdminAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const req = context.switchToHttp().getRequest();
-    // const session = req.session;
+    const session = req.session;
 
-    // if (!session?.isAuthenticated) {
-    //   return false;
-    // }
+    if (!session?.isAuthenticated) {
+      return false;
+    }
 
-    // const user = await UserEntity.findByEmail(session?.userEmail);
-    // if (!user) {
-    //   this.logger.warn('사용자를 찾을 수 없습니다.');
-    //   return false;
-    // }
-
-    const user = UserEntity.getTestAdminUser();
+    const user = await UserEntity.findByEmail(session?.userEmail);
+    if (!user) {
+      this.logger.warn('사용자를 찾을 수 없습니다.');
+      return false;
+    }
 
     req['currentUser'] = user;
     return true;

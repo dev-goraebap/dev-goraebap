@@ -1,13 +1,14 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Req, Res, UsePipes } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Req, Res, UseGuards, UsePipes } from "@nestjs/common";
 import { Response } from "express";
 import { NestMvcReq } from "nestjs-mvc-tools";
 
-import { ZodValidationPipe } from "src/common";
+import { AdminAuthGuard, ZodValidationPipe } from "src/common";
 import { GetAdminCuratedItemsDto, GetAdminCuratedItemsSchema } from "src/infra/dto";
 import { CuratedItemQueryService, CuratedSourceQueryService } from "src/infra/queries";
 import { CuratedItemsCommandService } from "./curated-items-command.service";
 
 @Controller({ path: 'admin/curation/items' })
+@UseGuards(AdminAuthGuard)
 export class AdminCuratedItemsController {
 
   constructor(
