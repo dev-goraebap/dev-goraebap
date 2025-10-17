@@ -1,0 +1,1 @@
+ALTER TABLE "curated_sources" DROP COLUMN "fetch_interval_minutes";

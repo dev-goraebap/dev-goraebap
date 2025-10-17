@@ -18,7 +18,7 @@ export class AdminAuthGuard implements CanActivate {
       this.logger.warn('사용자를 찾을 수 없습니다.');
       return false;
     }
-    
+
     req['currentUser'] = user;
     return true;
   }

@@ -13,7 +13,6 @@ export class PostQueryService {
   async getPostsWithCursor(dto: GetFeedPostsDto): Promise<CursorPaginationModel<PostReadModel>> {
     const { cursor, orderType, perPage, tag, postType } = dto;
 
-    // 커서 조건 설정
     let whereConditions = and(
       eq(posts.postType, postType),
       eq(posts.isPublishedYn, 'Y')
@@ -33,6 +32,7 @@ export class PostQueryService {
       );
     }
 
+    // 커서 조건 설정
     if (cursor) {
       if (orderType === 'traffic') {
         whereConditions = and(

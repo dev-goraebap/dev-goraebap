@@ -8,6 +8,20 @@
       "when": 1756886630226,
       "tag": "0000_oval_surge",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1760608370016,
+      "tag": "0001_nappy_rogue",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760614409078,
+      "tag": "0002_mean_goliath",
+      "breakpoints": true
     }
   ]
 }
