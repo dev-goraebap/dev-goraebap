@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { AppModule } from './app/app.module';
 import { FeaturesModule } from './features/features.module';
@@ -12,6 +13,7 @@ import { LoggerModule } from './shared/logger';
 @Module({
   imports: [
     // 앱 지원 모듈
+    ScheduleModule.forRoot(),
     DrizzleModule,
     LoggerModule,
     GoogleVisionAiModule,
