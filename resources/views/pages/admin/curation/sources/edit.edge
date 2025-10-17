@@ -1,5 +1,7 @@
-@component('pages/admin/curation/sources/_form', {
-  source: source ?? null,
-  editMode: true
-})
-@end
+<turbo-frame id="modalContentFrame">
+  @component('pages/admin/curation/sources/_form', {
+    source: source ?? null,
+    editMode: true
+  })
+  @end
+</turbo-frame>

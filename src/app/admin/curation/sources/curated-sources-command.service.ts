@@ -20,12 +20,16 @@ export class CuratedSourcesCommandService {
   // ---------------------------------------------------------------------------
 
   async createSource(dto: CreateSourceDto): Promise<CurationSourceEntity> {
+    const existingSource = await CurationSourceEntity.findByUrl(dto.url);
+    if (existingSource) {
+      throw new BadRequestException('등록된 url 입니다.');
+    }
+
     const source = CurationSourceEntity.create({
       name: dto.name,
       url: dto.url,
       isActiveYn: dto.isActiveYn,
     });
-
     return await source.save();
   }
 
@@ -33,6 +37,14 @@ export class CuratedSourcesCommandService {
     const existingSource = await CurationSourceEntity.findById(id);
     if (!existingSource) {
       throw new BadRequestException('소스를 찾을 수 없습니다.');
+    }
+
+    // URL이 변경되는 경우, 다른 소스와 중복되는지 확인
+    if (dto.url !== existingSource.url) {
+      const duplicateSource = await CurationSourceEntity.findByUrl(dto.url);
+      if (duplicateSource) {
+        throw new BadRequestException('등록된 url 입니다.');
+      }
     }
 
     const updatedSource = existingSource.update({

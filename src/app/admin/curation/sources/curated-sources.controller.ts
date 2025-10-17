@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -50,14 +51,17 @@ export class AdminCuratedSourcesController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(CreateSourceSchema))
-  async create(
-    @Req() req: NestMvcReq,
-    @Res() res: Response,
-    @Body() dto: CreateSourceDto,
-  ) {
-    await this.curatedSourcesCommand.createSource(dto);
-    req.flash.success('RSS 소스를 성공적으로 추가했습니다.');
-    return res.redirect('/admin/curation/sources');
+  async create(@Req() req: NestMvcReq, @Body() dto: CreateSourceDto) {
+    try {
+      await this.curatedSourcesCommand.createSource(dto);
+      req.flash.success('RSS 소스를 성공적으로 추가했습니다.');
+      return req.view.render('pages/admin/curation/sources/_redirect');
+    } catch (err) {
+      if (err instanceof BadRequestException) {
+        req.flash.error(err.message);
+      }
+      return req.view.render('pages/admin/curation/sources/_redirect');
+    }
   }
 
   @Get(':id/edit')
@@ -71,15 +75,17 @@ export class AdminCuratedSourcesController {
 
   @Put(':id')
   @UsePipes(new ZodValidationPipe(UpdateSourceSchema))
-  async update(
-    @Req() req: NestMvcReq,
-    @Res() res: Response,
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateSourceDto,
-  ) {
-    await this.curatedSourcesCommand.updateSource(id, dto);
-    req.flash.success('RSS 소스를 성공적으로 수정했습니다.');
-    return res.redirect(303, '/admin/curation/sources');
+  async update(@Req() req: NestMvcReq, @Param('id', ParseIntPipe) id: number, @Body() dto: UpdateSourceDto) {
+    try {
+      await this.curatedSourcesCommand.updateSource(id, dto);
+      req.flash.success('RSS 소스를 성공적으로 수정했습니다.');
+      return req.view.render('pages/admin/curation/sources/_redirect');
+    } catch (err) {
+      if (err instanceof BadRequestException) {
+        req.flash.error(err.message);
+      }
+      return req.view.render('pages/admin/curation/sources/_redirect');
+    }
   }
 
   @Put(':id/toggle')

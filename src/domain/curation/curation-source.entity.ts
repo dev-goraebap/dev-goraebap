@@ -18,6 +18,7 @@ export type UpdateCurationSourceParam = {
 }
 
 export class CurationSourceEntity implements SelectCuratedSource {
+
   private constructor(
     readonly id: CurationSourceID,
     readonly name: string,
@@ -56,6 +57,13 @@ export class CurationSourceEntity implements SelectCuratedSource {
   static async findById(id: CurationSourceID): Promise<CurationSourceEntity | null> {
     const result = await DrizzleContext.db().query.curatedSources.findFirst({
       where: eq(curatedSources.id, id)
+    });
+    return result ? CurationSourceEntity.fromRaw(result) : null;
+  }
+
+  static async findByUrl(url: string) {
+    const result = await DrizzleContext.db().query.curatedSources.findFirst({
+      where: eq(curatedSources.url, url)
     });
     return result ? CurationSourceEntity.fromRaw(result) : null;
   }
