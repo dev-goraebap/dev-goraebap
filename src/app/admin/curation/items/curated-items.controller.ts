@@ -20,7 +20,7 @@ export class AdminCuratedItemsController {
   @UsePipes(new ZodValidationPipe(GetAdminCuratedItemsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetAdminCuratedItemsDto) {
     const [result, sources] = await Promise.all([
-      this.curatedItemQueryService.getItems(dto),
+      this.curatedItemQueryService.getItemsWithPagination(dto),
       this.curatedSourceQueryService.getAllSources()
     ]);
 

@@ -96,7 +96,10 @@ export class CuratedSourcesCommandService {
       const feed = await this.rssParser.parseURL(source.url);
       let newCount = 0;
 
-      for (const item of feed.items) {
+      // 최근 10개만 처리
+      const itemsToProcess = feed.items.slice(0, 10);
+
+      for (const item of itemsToProcess) {
         // guid 또는 link로 중복 체크
         const guid = item.guid || item.link || '';
         if (!guid) continue;
