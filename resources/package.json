@@ -13,7 +13,7 @@
     "@editorjs/list": "^2.0.8",
     "@editorjs/paragraph": "^2.11.7",
     "@hotwired/stimulus": "^3.2.2",
-    "@hotwired/turbo": "^8.0.13",
+    "@hotwired/turbo": "^8.0.18",
     "@tailwindcss/vite": "^4.1.10",
     "alpinejs": "^3.14.9",
     "editorjs-html": "^4.0.5",
