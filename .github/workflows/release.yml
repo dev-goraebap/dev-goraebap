@@ -45,12 +45,24 @@ jobs:
             cat > .env.production.local << 'EOF'
             ${{ secrets.ENV_PRODUCTION }}
             EOF
-            
+
             if [ ! -f .env.production.local ]; then
               echo "❌ .env.production.local 생성 실패"
               exit 1
             fi
             echo "✅ .env.production.local 생성 완료"
+
+            echo "🔐 Google Vision 인증 파일 생성 중..."
+            mkdir -p .config
+            cat > .config/google-vision.json << 'EOF'
+            ${{ secrets.GOOGLE_VISION_JSON }}
+            EOF
+
+            if [ ! -f .config/google-vision.json ]; then
+              echo "❌ .config/google-vision.json 생성 실패"
+              exit 1
+            fi
+            echo "✅ .config/google-vision.json 생성 완료"
             
             VERSION=$(echo "${{ github.ref_name }}" | sed 's/release\///')
             echo "📦 배포 버전: ${VERSION}"
