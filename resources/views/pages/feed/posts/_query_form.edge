@@ -22,7 +22,7 @@
       class="hidden"
       value="traffic"
       data-action="feed-query#onSubmit"
-      {{ (!query('orderType') || query('orderType') === 'traffic')  && 'checked' }}
+      {{ query('orderType') === 'traffic'  && 'checked' }}
     />
   </label>
   <label class="btn has-[:checked]:btn-primary">
@@ -43,7 +43,7 @@
       class="hidden"
       value="latest"
       data-action="feed-query#onSubmit"
-      {{ query('orderType') === 'latest' && 'checked' }}
+      {{ (!query('orderType') || query('orderType') === 'latest') && 'checked' }}
     />
   </label>
 </form>

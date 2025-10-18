@@ -6,7 +6,7 @@ const CursorSchema = z.object({
 });
 
 export const GetFeedPostsSchema = z.object({
-  orderType: z.enum(['traffic', 'latest']).default('traffic'),
+  orderType: z.enum(['traffic', 'latest']).default('latest'),
   cursor: z.string().optional().transform((val) => {
     if (!val) return undefined;
     try {
