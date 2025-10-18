@@ -56,15 +56,16 @@ export class FeedQueryController extends Controller {
 
     const button = event.currentTarget;
     const value = button.dataset?.value;
+    const paramName = button.dataset?.paramName || 'tag'; // 기본값 'tag'
 
-    const tagInput = this.queryFormTarget.elements['tag'];
-    // 기존에 선택된 태그를 한번 더 누르는 경우 태그 초기화
-    // 다른 태그 선택 시 태그 변경
+    const input = this.queryFormTarget.elements[paramName];
+    // 기존에 선택된 항목을 한번 더 누르는 경우 초기화
+    // 다른 항목 선택 시 변경
 
-    if (tagInput.value === value) {
-      tagInput.value = '';
+    if (input.value === value) {
+      input.value = '';
     } else {
-      tagInput.value = value;
+      input.value = value;
     }
 
     this.queryFormTarget.requestSubmit();

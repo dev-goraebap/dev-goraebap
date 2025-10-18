@@ -6,12 +6,16 @@
       RSS 큐레이션
     </h2>
     <p class="text-sm">
-      매일 업데이트되는 개발 트렌드를 전해드려요
+      매일 업데이트되는 개발 트렌드를 전해드려요.
     </p>
   </div>
 
   <div class="my-6 mx-auto w-1/3 border-t border-base-300 border-dashed sm:hidden">
   </div>
+
+  <form action="/curation" data-feed-query-target="queryForm">
+    <input type="hidden" name="sourceId" value="{{ query('sourceId') }}" />
+  </form>
 
   {{-- 하단 게시물 리스트 영역 --}}
   <div id="patchNotesFrame" class="sm:mt-4">
@@ -28,19 +32,49 @@
   </div>
 
   @slot('subContent')
-    <pre class="text-xs font-bold">
-.__           .__  .__            
-|  |__   ____ |  | |  |   ____    
-|  |  \_/ __ \|  | |  |  /  _ \   
-|   Y  \  ___/|  |_|  |_(  <_> )  
-|___|  /\___  >____/____/\____/   
-     \/     \/                    
-                    .__       .___
-__  _  _____________|  |    __| _/
-\ \/ \/ /  _ \_  __ \  |   / __ | 
- \     (  <_> )  | \/  |__/ /_/ | 
-  \/\_/ \____/|__|  |____/\____ | 
-                               \/ 
-    </pre>
+    <div class="space-y-4">
+
+      <pre class="text-xs font-bold">
+    __         ____    
+   / /_  ___  / / /___ 
+  / __ \/ _ \/ / / __ \
+ / / / /  __/ / / /_/ /
+/_/ /_/\___/_/_/\____/ 
+   / __ \/ ___/ ___/   
+  / /_/ /\__ \\__ \    
+ / _, _/___/ /__/ /    
+/_/ |_|/____/____/ 
+      </pre>
+
+      {{-- 태그 클라우드 --}}
+      <div class="flex flex-col gap-4">
+        <h2 class="text-lg font-bold flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
+            />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+          </svg>
+
+          <span>카테고리</span>
+        </h2>
+        @if(sources?.length > 0)
+          @!component('pages/curation/sources/_list', { sources })
+        @else
+          <div class="bg-base-200 text-center rounded-xl p-4 text-xs">
+            Not found sources
+          </div>
+        @endif
+      </div>
+    </div>
   @end
 @end

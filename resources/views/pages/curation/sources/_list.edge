@@ -1,0 +1,12 @@
+<div id="sourceListTurboStreamTarget" class="flex flex-wrap gap-2">
+  @each(source in sources)
+    <button
+      class="badge cursor-pointer text-xs {{ query('sourceId') == source?.id ? 'badge-primary': 'badge-ghost' }}"
+      data-action="feed-query#onFilterTag"
+      data-value="{{ source?.id }}"
+      data-param-name="sourceId"
+    >
+      {{ source?.name }}
+    </button>
+  @end
+</div>
