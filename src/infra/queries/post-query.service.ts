@@ -163,17 +163,17 @@ export class PostQueryService {
     });
   }
 
-  async getPostDetailById(id: number) {
+  async getPostDetailById(id: number): Promise<PostReadModel> {
     const whereCondition = eq(posts.id, id);
     return this.getDetailPostQuery(whereCondition);
   }
 
-  async getPostDetailBySlug(slug: string) {
+  async getPostDetailBySlug(slug: string): Promise<PostReadModel> {
     const whereCondition = and(eq(posts.slug, slug), eq(posts.isPublishedYn, 'Y'));
     return this.getDetailPostQuery(whereCondition);
   }
 
-  async getLatestPatchNotePost() {
+  async getLatestPatchNotePost(): Promise<PostReadModel | null> {
     const thumbnailSubquery = getThumbnailSubquery();
     const [rawPost] = await DrizzleContext.db()
       .select({
@@ -199,7 +199,7 @@ export class PostQueryService {
     return this.getPostReadModel(rawPost, rawPost.file);
   }
 
-  async getSuggestedPosts(currentPostSlug: string, limit: number = 3) {
+  async getSuggestedPosts(currentPostSlug: string, limit: number = 3): Promise<PostReadModel[]> {
     const thumbnailSubquery = getThumbnailSubquery();
     const rawPosts = await DrizzleContext.db()
       .select({
@@ -222,7 +222,7 @@ export class PostQueryService {
     return rawPosts.map(rawPost => this.getPostReadModel(rawPost, rawPost.file));
   }
 
-  async getOtherPatchNotes(currentPostSlug: string, limit: number = 5) {
+  async getOtherPatchNotes(currentPostSlug: string, limit: number = 5): Promise<PostReadModel[]> {
     const thumbnailSubquery = getThumbnailSubquery();
     const rawPosts = await DrizzleContext.db()
       .select({
@@ -253,7 +253,7 @@ export class PostQueryService {
     return this.getSeriesPostsQuery(eq(series.slug, seriesSlug));
   }
 
-  async getPostsForSitemap() {
+  async getPostsForSitemap(): Promise<PostReadModel[]> {
     return await DrizzleContext.db()
       .select()
       .from(posts)
@@ -303,10 +303,6 @@ export class PostQueryService {
   async getNextPostInSeries(seriesSlug: string, currentPostSlug: string): Promise<PostReadModel | null> {
     return this.getAdjacentPostInSeries(seriesSlug, currentPostSlug, 'next');
   }
-
-  // ---------------------------------------------------------------------------
-  // 공용기능
-  // ---------------------------------------------------------------------------
 
   private async getAdjacentPostInSeries(
     seriesSlug: string,

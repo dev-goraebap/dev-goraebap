@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { and, asc, count, desc, eq, getTableColumns, isNull, like, or } from 'drizzle-orm';
 
-import { comments, DrizzleContext, posts } from 'src/shared/drizzle';
+import { comments, DrizzleContext, posts, SelectComment } from 'src/shared/drizzle';
 import { GetAdminCommentsDto } from '../dto/get-admin-comments.dto';
 import { PaginationModel } from '../read-models';
 
 @Injectable()
 export class CommentQueryService {
 
-  async getAdminComments(dto: GetAdminCommentsDto) {
+  async getAdminCommentsWithPagination(dto: GetAdminCommentsDto): Promise<PaginationModel<SelectComment>> {
     // 검색 조건 설정
     const searchCondition = dto.search
       ? or(
@@ -51,20 +51,20 @@ export class CommentQueryService {
       .where(whereCondition);
 
     // 병렬 실행
-    const [commentResults, totalResults] = await Promise.all([
+    const [raws, totalRaws] = await Promise.all([
       commentsQuery,
       countQuery
     ]);
-    const total = totalResults[0].count;
+    const total = totalRaws[0].count;
 
-    return PaginationModel.with(commentResults, {
+    return PaginationModel.with(raws, {
       page: dto.page,
       perPage: dto.perPage,
       total
     });
   }
 
-  async getPostComments(postSlug: string) {
+  async getPostComments(postSlug: string): Promise<SelectComment[]> {
     return await DrizzleContext.db()
       .select(getTableColumns(comments))
       .from(comments)

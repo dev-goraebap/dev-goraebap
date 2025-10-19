@@ -107,10 +107,6 @@ export class SeriesQueryService {
     return this.getSeriesDetailQuery(eq(series.slug, slug));
   }
 
-  // -------------------------------------------------
-  // 공통사용
-  // -------------------------------------------------
-
   private async getSeriesDetailQuery(seriesCondition: SQL | undefined): Promise<SeriesReadModel> {
     // 썸네일 정보 서브쿼리
     const thumbnailSubquery = getThumbnailSubquery();

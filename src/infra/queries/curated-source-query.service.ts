@@ -2,23 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { count, desc, eq } from 'drizzle-orm';
 
 import { curatedItems, curatedSources, DrizzleContext, SelectCuratedSource } from 'src/shared/drizzle';
-
-export type CurationSourceWithCount = {
-  id: number;
-  name: string;
-  url: string;
-  isActiveYn: 'Y' | 'N';
-  itemCount: number;
-  createdAt: Date;
-  updatedAt: Date;
-};
+import { CuratedSourceWithCount } from '../read-models';
 
 @Injectable()
 export class CuratedSourceQueryService {
   /**
    * 모든 소스 조회 (항목 개수 포함)
    */
-  async getAllSourcesWithCount(): Promise<CurationSourceWithCount[]> {
+  async getAllSourcesWithCount(): Promise<CuratedSourceWithCount[]> {
     const sources = await DrizzleContext.db()
       .select({
         id: curatedSources.id,
@@ -32,7 +23,7 @@ export class CuratedSourceQueryService {
       .orderBy(desc(curatedSources.createdAt));
 
     // 각 소스별 항목 개수 조회
-    const sourcesWithCount: CurationSourceWithCount[] = [];
+    const sourcesWithCount: CuratedSourceWithCount[] = [];
     for (const source of sources) {
       const [countResult] = await DrizzleContext.db()
         .select({ count: count() })

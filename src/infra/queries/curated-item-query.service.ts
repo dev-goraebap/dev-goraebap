@@ -11,7 +11,6 @@ export class CuratedItemQueryService {
    * 항목 목록 조회 (페이징)
    */
   async getItemsWithPagination(dto: GetAdminCuratedItemsDto): Promise<PaginationModel<Partial<SelectCuratedItem>>> {
-    console.log(dto);
     const page = dto.page;
     const perPage = dto.perPage;
     const offset = (page - 1) * perPage;

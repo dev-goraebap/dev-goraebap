@@ -1,18 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { asc, count, desc, like, or, sql } from 'drizzle-orm';
 
-import { blockedIps, DrizzleContext } from 'src/shared/drizzle';
+import { blockedIps, DrizzleContext, SelectBlockedIp } from 'src/shared/drizzle';
 import { GetBlockedIpsDto } from '../dto';
+import { PaginationModel } from '../read-models';
 
 @Injectable()
 export class BlockedIpQueryService {
-  constructor() { }
 
-  // ---------------------------------------------------------------------------
-  // 관리자 조회
-  // ---------------------------------------------------------------------------
-
-  async getAdminBlockedIpList(dto: GetBlockedIpsDto) {
+  async getAdminBlockedIpsWithPagination(dto: GetBlockedIpsDto): Promise<PaginationModel<SelectBlockedIp>> {
     // 검색 조건 설정
     const whereCondition = dto.search
       ? or(
@@ -45,21 +41,16 @@ export class BlockedIpQueryService {
       .where(whereCondition);
 
     // 병렬 실행
-    const [blockedIpResults, totalResults] = await Promise.all([
+    const [raws, totalRaws] = await Promise.all([
       blockedIpQuery,
       countQuery
     ]);
+    const total = totalRaws[0].count;
 
-    const total = totalResults[0].count;
-
-    return {
-      blockedIpList: blockedIpResults,
-      pagination: {
-        page: dto.page,
-        perPage: dto.perPage,
-        total,
-        totalPages: Math.ceil(total / dto.perPage),
-      },
-    };
+    return PaginationModel.with(raws, {
+      page: dto.page,
+      perPage: dto.perPage,
+      total: total
+    });
   }
 }

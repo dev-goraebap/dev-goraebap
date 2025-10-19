@@ -1,17 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { asc, count, desc, eq, like } from 'drizzle-orm';
 
-import { DrizzleContext, posts, postTags, tags } from 'src/shared/drizzle';
+import { DrizzleContext, posts, postTags, SelectTag, tags } from 'src/shared/drizzle';
 import { GetAdminTagsDto } from '../dto/get-admin-tags.dto';
+import { PaginationModel } from '../read-models';
 
 @Injectable()
 export class TagQueryService {
 
-  // ---------------------------------------------------------------------------
-  // 일반 조회
-  // ---------------------------------------------------------------------------
-
-  async getFeedTags() {
+  async getFeedTags(): Promise<{
+    id: number;
+    name: string;
+    postCount: number;
+  }[]> {
     return await DrizzleContext.db()
       .select({
         id: tags.id,
@@ -25,11 +26,7 @@ export class TagQueryService {
       .orderBy(tags.name);
   }
 
-  // ---------------------------------------------------------------------------
-  // 관리자 조회
-  // ---------------------------------------------------------------------------
-
-  async getAdminTags(dto: GetAdminTagsDto) {
+  async getAdminTagsWithPagination(dto: GetAdminTagsDto): Promise<PaginationModel<SelectTag>> {
     // 검색 조건 설정
     const whereCondition = dto.search
       ? like(tags.name, `%${dto.search}%`)
@@ -68,25 +65,20 @@ export class TagQueryService {
       .where(whereCondition);
 
     // 병렬 실행
-    const [tagResults, totalResults] = await Promise.all([
+    const [raws, totalRaws] = await Promise.all([
       tagsQuery,
       countQuery
     ]);
+    const total = totalRaws[0].count;
 
-    const total = totalResults[0].count;
-
-    return {
-      tags: tagResults,
-      pagination: {
-        page: dto.page,
-        perPage: dto.perPage,
-        total,
-        totalPages: Math.ceil(total / dto.perPage),
-      },
-    };
+    return PaginationModel.with(raws, {
+      page: dto.page,
+      perPage: dto.perPage,
+      total
+    })
   }
 
-  async getAdminTag(id: number) {
+  async getAdminTag(id: number): Promise<SelectTag> {
     const tag = await DrizzleContext.db()
       .query.tags.findFirst({
         where: eq(tags.id, id)
