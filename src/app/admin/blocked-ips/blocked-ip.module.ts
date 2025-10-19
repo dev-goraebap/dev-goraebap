@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
 
-import { BlockedIpApplicationService } from "./blocked-ip-application.service";
+import { BlockedIpCommandService } from "./blocked-ip-command.service";
 import { AdminBlockedIpController } from "./blocked-ip.controller";
 
 @Module({
   imports: [],
   controllers: [AdminBlockedIpController],
-  providers: [BlockedIpApplicationService]
+  providers: [BlockedIpCommandService]
 })
 export class AdminBlockedIpModule { }

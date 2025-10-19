@@ -2,8 +2,8 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import { POST_REPO, PostRepository } from "src/domain/post";
 
 @Injectable()
-export class PostViewService {
-  private readonly logger = new Logger(PostViewService.name);
+export class PostViewCommandService {
+  private readonly logger = new Logger(PostViewCommandService.name);
 
   constructor(
     @Inject(POST_REPO)

@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Req } from "@nestjs/common";
 import { NestMvcReq } from "nestjs-mvc-tools";
 
-import { PostViewService } from "src/features/services";
+import { PostViewCommandService } from "src/features/services";
 import { CommentQueryService, PostQueryService } from "src/infra/queries";
 
 @Controller({ path: 'series/:seriesSlug' })
@@ -10,7 +10,7 @@ export class SeriesPostController {
   constructor(
     private readonly postQueryService: PostQueryService,
     private readonly commentQueryService: CommentQueryService,
-    private readonly postViewService: PostViewService
+    private readonly postViewCommandService: PostViewCommandService
   ) { }
 
   @Get(':postSlug')
@@ -24,7 +24,7 @@ export class SeriesPostController {
       this.postQueryService.getPrevPostInSeries(seriesSlug, postSlug),
       this.postQueryService.getNextPostInSeries(seriesSlug, postSlug),
       this.commentQueryService.getPostComments(postSlug),
-      this.postViewService.increment(postSlug)
+      this.postViewCommandService.increment(postSlug)
     ]);
 
     return req.view.render('pages/series/posts/show', {

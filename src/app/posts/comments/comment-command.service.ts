@@ -7,7 +7,7 @@ import { LoggerService } from 'src/shared/logger';
 import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Injectable()
-export class CommentApplicationService {
+export class CommentCommandService {
 
   constructor(
     private readonly logger: LoggerService

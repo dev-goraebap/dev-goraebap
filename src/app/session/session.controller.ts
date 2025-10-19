@@ -15,17 +15,17 @@ import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { AdminAuthGuard, ZodValidationPipe } from 'src/common';
 import { LoginDto, loginSchema } from './dto/login.dto';
-import { SessionApplicationService } from './session-application.service';
+import { SessionService } from './session.service';
 
 @Controller('session')
 export class SessionController {
   constructor(
-    private readonly sessionApplicationService: SessionApplicationService
+    private readonly sessionService: SessionService
   ) { }
 
   @Get('login')
   async loginForm(@Req() req: NestMvcReq, @Res() res: Response) {
-    if (this.sessionApplicationService.isAuthenticated(req.session)) {
+    if (this.sessionService.isAuthenticated(req.session)) {
       return res.redirect('/admin');
     }
     const template = await req.view.render('pages/session/login');
@@ -35,7 +35,7 @@ export class SessionController {
   @Post('login')
   @UsePipes(new ZodValidationPipe(loginSchema))
   async login(@Body() body: LoginDto, @Req() req: NestMvcReq) {
-    await this.sessionApplicationService.login(body.email);
+    await this.sessionService.login(body.email);
 
     return req.view.render('pages/session/auth-success', {
       message: '매직링크가 이메일로 전송되었습니다. 이메일을 확인해주세요.',
@@ -52,12 +52,12 @@ export class SessionController {
       throw new ForbiddenException('유효하지 않은 접근입니다.');
     }
 
-    const payload = this.sessionApplicationService.verifyToken(token);
+    const payload = this.sessionService.verifyToken(token);
     if (!payload) {
       throw new ForbiddenException('링크가 만료되었거나 유효하지 않습니다.');
     }
 
-    const sessionData = this.sessionApplicationService.createSession(payload.email);
+    const sessionData = this.sessionService.createSession(payload.email);
     req.session['isAuthenticated'] = sessionData.isAuthenticated;
     req.session['userEmail'] = sessionData.userEmail;
 

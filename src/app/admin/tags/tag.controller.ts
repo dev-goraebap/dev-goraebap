@@ -22,14 +22,14 @@ import { GetAdminTagsDto, GetAdminTagsSchema } from 'src/infra/dto';
 import { TagQueryService } from 'src/infra/queries';
 import { SelectUser } from 'src/shared/drizzle';
 import { CreateOrUpdateTagDto, CreateOrUpdateTagSchema } from './dto/create-or-update-tag.dto';
-import { TagApplicationService } from './tag-application.service';
+import { TagCommandService } from './tag-command.service';
 
 @Controller({ path: '/admin/tags' })
 @UseGuards(AdminAuthGuard)
 export class AdminTagController {
   constructor(
     private readonly tagQueryService: TagQueryService,
-    private readonly tagCommandService: TagApplicationService
+    private readonly tagCommandService: TagCommandService
   ) { }
 
   @Get()

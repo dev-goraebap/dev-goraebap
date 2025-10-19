@@ -1,11 +1,11 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, Res, UseGuards, UsePipes } from '@nestjs/common';
+import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { Response } from 'express';
 import { AdminAuthGuard, ZodValidationPipe } from 'src/common';
 import { PostQueryService, SeriesQueryService } from 'src/infra/queries';
 import { CreateSeriesPostDto, CreateSeriesPostSchema } from './dto/create-series-post.dto';
-import { SeriesPostApplicationService } from './series-post-application.service';
+import { SeriesPostCommandService } from './series-post-command.service';
 
 @Controller({ path: 'admin/series/:seriesId/posts' })
 @UseGuards(AdminAuthGuard)
@@ -13,7 +13,7 @@ export class AdminSeriesPostsController {
   constructor(
     private readonly seriesQueryService: SeriesQueryService,
     private readonly postQueryService: PostQueryService,
-    private readonly seriesPostAppService: SeriesPostApplicationService,
+    private readonly seriesPostCommandService: SeriesPostCommandService,
   ) { }
 
   @Get()
@@ -37,7 +37,7 @@ export class AdminSeriesPostsController {
   @Post()
   @UsePipes(new ZodValidationPipe(CreateSeriesPostSchema))
   async create(@Param('seriesId') seriesId: number, @Req() req: NestMvcReq, @Body() dto: CreateSeriesPostDto) {
-    await this.seriesPostAppService.create(seriesId, dto.postId);
+    await this.seriesPostCommandService.create(seriesId, dto.postId);
     return req.view.render('pages/admin/series/posts/_success', {
       seriesId,
     });
@@ -45,7 +45,7 @@ export class AdminSeriesPostsController {
 
   @Put('orders')
   async updateOrders(@Req() req: NestMvcReq) {
-    await this.seriesPostAppService.updateOrders(req.body?.items);
+    await this.seriesPostCommandService.updateOrders(req.body?.items);
     req.flash.success('순서 변경 성공!');
   }
 
@@ -53,10 +53,9 @@ export class AdminSeriesPostsController {
   async destroy(
     @Param('seriesId') seriesId: number,
     @Param('postId') postId: number,
-    @Req() req: NestMvcReq,
     @Res() res: Response,
   ) {
-    await this.seriesPostAppService.destroy(seriesId, postId);
+    await this.seriesPostCommandService.destroy(seriesId, postId);
     return res.redirect(303, `/admin/series/${seriesId}/posts`);
   }
 }

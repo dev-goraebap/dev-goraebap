@@ -6,7 +6,7 @@ import { LoggerService } from "src/shared/logger";
 import { CreateOrUpdateTagDto } from "./dto/create-or-update-tag.dto";
 
 @Injectable()
-export class TagApplicationService {
+export class TagCommandService {
 
   constructor(
     private readonly logger: LoggerService

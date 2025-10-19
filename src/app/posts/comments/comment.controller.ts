@@ -4,14 +4,14 @@ import { NestMvcReq } from 'nestjs-mvc-tools';
 
 import { RequestId, ZodValidationPipe } from 'src/common';
 import { CommentQueryService } from 'src/infra/queries';
-import { CommentApplicationService } from './comment-application.service';
+import { CommentCommandService } from './comment-command.service';
 import { CreateCommentDto, CreateCommentSchema } from './dto/create-comment.dto';
 
 @Controller({ path: ':postSlug/comments' })
 export class PostCommentController {
   constructor(
     private readonly commentQueryService: CommentQueryService,
-    private readonly commentApplicationService: CommentApplicationService
+    private readonly commentCommandService: CommentCommandService
   ) { }
 
   @Get()
@@ -35,7 +35,7 @@ export class PostCommentController {
     @Body('comment') dto: CreateCommentDto,
   ) {
     req.flash.success('댓글 달아주셔서 감사합니다 🤩');
-    await this.commentApplicationService.create(requestId, postSlug, dto);
+    await this.commentCommandService.create(requestId, postSlug, dto);
     res.redirect(`/${postSlug}/comments`);
   }
 }

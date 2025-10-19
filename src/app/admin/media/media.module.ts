@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
 
-import { MediaApplicationService } from "./media-application.service";
 import { AdminMediaApiController } from "./media.controller";
+import { MediaService } from "./media.service";
 
 @Module({
   imports: [],
   controllers: [AdminMediaApiController],
-  providers: [MediaApplicationService]
+  providers: [MediaService]
 })
 export class AdminMediaModule {}

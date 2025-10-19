@@ -5,7 +5,7 @@ import { SelectBlockedIp } from 'src/shared/drizzle';
 import { CreateBlockedIpDto } from './dto/create-blocked-ip.dto';
 
 @Injectable()
-export class BlockedIpApplicationService {
+export class BlockedIpCommandService {
   async createBlockedIp(dto: CreateBlockedIpDto): Promise<SelectBlockedIp> {
     try {
       return await BlockedIpEntity.create({

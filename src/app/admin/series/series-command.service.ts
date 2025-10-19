@@ -1,22 +1,18 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 import { UpdatePublishDto } from 'src/app/_concern';
 import { AttachmentEntity } from 'src/domain/media/attachment.entity';
 import { SERIES_REPO, SeriesEntity, SeriesRepository } from 'src/domain/series';
-import { DrizzleContext, posts, SelectSeriesPost, seriesPosts, UserId } from 'src/shared/drizzle';
+import { DrizzleContext, seriesPosts, UserId } from 'src/shared/drizzle';
 import { CreateSeriesDto, UpdateSeriesDto } from './dto/create-or-update-series.dto';
 
 @Injectable()
-export class SeriesApplicationService {
+export class SeriesCommandService {
   constructor(
     @Inject(SERIES_REPO)
     private readonly seriesRepository: SeriesRepository,
   ) { }
-
-  // -------------------------------------------------
-  // 시리즈 관리
-  // -------------------------------------------------
 
   async createSeries(userId: UserId, dto: CreateSeriesDto) {
     return await DrizzleContext.transaction(async () => {
@@ -129,67 +125,6 @@ export class SeriesApplicationService {
 
       // 3. 시리즈 삭제
       await this.seriesRepository.delete(seriesId);
-    });
-  }
-
-  // -------------------------------------------------
-  // 시리즈-포스트 관리
-  // -------------------------------------------------
-
-  async addPostToSeries(seriesId: number, postId: number) {
-    // 1. 시리즈 존재 확인
-    const seriesItem = await this.seriesRepository.findById(seriesId);
-    if (!seriesItem) {
-      throw new BadRequestException('시리즈를 찾을 수 없습니다.');
-    }
-
-    // 2. 포스트 존재 확인
-    const post = await DrizzleContext.db().query.posts.findFirst({
-      where: eq(posts.id, postId)
-    });
-    if (!post) {
-      throw new BadRequestException('게시물을 찾을 수 없습니다.');
-    }
-
-    // 3. 중복 관계 확인
-    const hasExistingRelation = await this.findPostRelation(seriesId, postId);
-    if (hasExistingRelation) {
-      throw new BadRequestException('이미 시리즈에 포함된 게시물입니다.');
-    }
-
-    // 4. 관계 생성
-    await DrizzleContext.db()
-      .insert(seriesPosts)
-      .values({
-        postId: post.id,
-        seriesId: seriesItem.id,
-        order: 999
-      });
-  }
-
-  async removePostFromSeries(seriesId: number, postId: number) {
-    // 1. 관계 존재 확인
-    const hasRelation = await this.findPostRelation(seriesId, postId);
-    if (!hasRelation) {
-      throw new BadRequestException('시리즈의 게시물을 찾을 수 없습니다.');
-    }
-
-    // 2. 관계 제거
-    await DrizzleContext.db()
-      .delete(seriesPosts)
-      .where(eq(seriesPosts.id, hasRelation.id))
-  }
-
-  // -------------------------------------------------
-  // PRIVATE
-  // -------------------------------------------------
-
-  private async findPostRelation(seriesId: number, postId: number): Promise<SelectSeriesPost | undefined> {
-    return await DrizzleContext.db().query.seriesPosts.findFirst({
-      where: and(
-        eq(seriesPosts.seriesId, seriesId),
-        eq(seriesPosts.postId, postId)
-      )
     });
   }
 }

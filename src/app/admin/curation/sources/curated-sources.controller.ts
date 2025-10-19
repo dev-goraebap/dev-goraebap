@@ -25,18 +25,14 @@ import { CreateSourceDto, CreateSourceSchema, UpdateSourceDto, UpdateSourceSchem
 @UseGuards(AdminAuthGuard)
 export class AdminCuratedSourcesController {
   constructor(
+    private readonly curationQueryService: CuratedSourceQueryService,
     private readonly curatedSourcesCommand: CuratedSourcesCommandService,
-    private readonly curationQuery: CuratedSourceQueryService,
   ) { }
-
-  // ---------------------------------------------------------------------------
-  // 소스 관리
-  // ---------------------------------------------------------------------------
 
   @Get()
   async index(@Req() req: NestMvcReq) {
-    const sources = await this.curationQuery.getAllSourcesWithCount();
-    const stats = await this.curationQuery.getStats();
+    const sources = await this.curationQueryService.getAllSourcesWithCount();
+    const stats = await this.curationQueryService.getStats();
 
     return req.view.render('pages/admin/curation/sources/index', {
       sources,
@@ -69,7 +65,7 @@ export class AdminCuratedSourcesController {
     @Req() req: NestMvcReq,
     @Param('id', ParseIntPipe) id: number,
   ) {
-    const source = await this.curationQuery.getSourceById(id);
+    const source = await this.curationQueryService.getSourceById(id);
     return req.view.render('pages/admin/curation/sources/edit', { source });
   }
 
@@ -109,10 +105,6 @@ export class AdminCuratedSourcesController {
     req.flash.success('RSS 소스를 성공적으로 삭제했습니다.');
     return res.redirect(303, '/admin/curation/sources');
   }
-
-  // ---------------------------------------------------------------------------
-  // RSS 취합
-  // ---------------------------------------------------------------------------
 
   @Post(':id/fetch')
   async fetchFromSource(

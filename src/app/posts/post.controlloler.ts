@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Req } from "@nestjs/common";
 import { NestMvcReq } from "nestjs-mvc-tools";
 
-import { PostViewService } from "src/features/services";
+import { PostViewCommandService } from "src/features/services";
 import { CommentQueryService, PostQueryService } from "src/infra/queries";
 
 @Controller({ path: 'posts' })
@@ -10,7 +10,7 @@ export class PostController {
   constructor(
     private readonly postQueryService: PostQueryService,
     private readonly commentQueryService: CommentQueryService,
-    private readonly postViewService: PostViewService
+    private readonly postViewCommandService: PostViewCommandService
   ) { }
 
   @Get(':slug')
@@ -22,7 +22,7 @@ export class PostController {
       this.postQueryService.getPostDetailBySlug(slug),
       this.commentQueryService.getPostComments(slug),
       this.postQueryService.getSuggestedPosts(slug),
-      this.postViewService.increment(slug)
+      this.postViewCommandService.increment(slug)
     ]);
 
     return req.view.render('pages/posts/show', { post, comments, suggestedPosts });

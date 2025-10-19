@@ -2,6 +2,7 @@ import { Controller, Get, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+
 import { PostQueryService } from 'src/infra/queries';
 
 @Controller()

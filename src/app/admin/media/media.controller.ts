@@ -11,13 +11,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { AdminAuthGuard, CurrentUser } from 'src/common';
 import { MediaUploadResponseDto } from 'src/domain/media';
 import { SelectUser } from 'src/shared/drizzle';
-import { MediaApplicationService } from './media-application.service';
+import { MediaService } from './media.service';
 
 @Controller('/api/v1/admin/media')
 @UseGuards(AdminAuthGuard)
 export class AdminMediaApiController {
   constructor(
-    private readonly mediaApplicationService: MediaApplicationService,
+    private readonly mediaService: MediaService,
   ) {}
 
   @Post()
@@ -30,6 +30,6 @@ export class AdminMediaApiController {
       throw new BadRequestException('파일이 업로드되지 않았습니다.');
     }
 
-    return this.mediaApplicationService.uploadFile(user.id, file);
+    return this.mediaService.uploadFile(user.id, file);
   }
 }

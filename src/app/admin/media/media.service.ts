@@ -7,7 +7,7 @@ import { GoogleImageService } from 'src/shared/google-vision-ai';
 import { LoggerService } from 'src/shared/logger';
 
 @Injectable()
-export class MediaApplicationService {
+export class MediaService {
 
   constructor(
     private readonly cloudflareR2Service: CloudflareR2Service,

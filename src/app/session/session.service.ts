@@ -10,7 +10,7 @@ export interface SessionData {
 }
 
 @Injectable()
-export class SessionApplicationService {
+export class SessionService {
   constructor(
     private readonly tokenService: TokenService,
     private readonly emailService: EmailService,

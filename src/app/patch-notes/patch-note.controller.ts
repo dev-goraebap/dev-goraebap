@@ -2,8 +2,8 @@ import { Controller, Get, Param, Query, Req, Res, UsePipes } from '@nestjs/commo
 import { Response } from 'express';
 import { NestMvcReq } from 'nestjs-mvc-tools';
 
-import { PostViewService } from 'src/features/services';
 import { IsTurboStream, ZodValidationPipe } from 'src/common';
+import { PostViewCommandService } from 'src/features/services';
 import { GetFeedPostsDto, GetFeedPostsSchema } from 'src/infra/dto';
 import { CommentQueryService, PostQueryService } from 'src/infra/queries';
 
@@ -12,7 +12,7 @@ export class PatchNoteController {
   constructor(
     private readonly postQueryService: PostQueryService,
     private readonly commentQueryService: CommentQueryService,
-    private readonly postViewService: PostViewService
+    private readonly postViewCommandService: PostViewCommandService
   ) { }
 
   @Get()
@@ -55,7 +55,7 @@ export class PatchNoteController {
       this.postQueryService.getPostDetailBySlug(slug),
       this.commentQueryService.getPostComments(slug),
       this.postQueryService.getOtherPatchNotes(slug),
-      this.postViewService.increment(slug)
+      this.postViewCommandService.increment(slug)
     ]);
 
     return req.view.render('pages/patch-notes/show', { post, comments, otherPosts });

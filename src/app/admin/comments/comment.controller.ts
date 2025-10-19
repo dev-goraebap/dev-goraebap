@@ -5,14 +5,14 @@ import { NestMvcReq } from 'nestjs-mvc-tools';
 import { AdminAuthGuard, ZodValidationPipe } from 'src/common';
 import { GetAdminCommentsDto, GetAdminCommentsSchema } from 'src/infra/dto';
 import { CommentQueryService } from 'src/infra/queries';
-import { CommentApplicationService } from './comment-application.service';
+import { CommentCommandService } from './comment-command.service';
 
 @Controller({ path: 'admin/comments' })
 @UseGuards(AdminAuthGuard)
 export class AdminCommentController {
   constructor(
     private readonly commentQueryService: CommentQueryService,
-    private readonly commentCommandService: CommentApplicationService
+    private readonly commentCommandService: CommentCommandService
   ) { }
 
   @Get()

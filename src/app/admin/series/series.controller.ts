@@ -23,14 +23,14 @@ import { GetAdminSeriesDto, GetAdminSeriesSchema } from 'src/infra/dto';
 import { SeriesQueryService } from 'src/infra/queries';
 import { SelectUser } from 'src/shared/drizzle';
 import { CreateSeriesDto, CreateSeriesSchema, UpdateSeriesDto, UpdateSeriesSchema } from './dto/create-or-update-series.dto';
-import { SeriesApplicationService } from './series-application.service';
+import { SeriesCommandService } from './series-command.service';
 
 @Controller({ path: '/admin/series' })
 @UseGuards(AdminAuthGuard)
 export class AdminSeriesController {
   constructor(
     private readonly seriesQueryService: SeriesQueryService,
-    private readonly seriesAppService: SeriesApplicationService
+    private readonly seriesCommandService: SeriesCommandService
   ) { }
 
   @Get()
@@ -51,7 +51,7 @@ export class AdminSeriesController {
   @Post()
   @UsePipes(new ZodValidationPipe(CreateSeriesSchema))
   async create(@Req() req: NestMvcReq, @Body('series') dto: CreateSeriesDto, @CurrentUser() user: SelectUser) {
-    await this.seriesAppService.createSeries(user.id, dto);
+    await this.seriesCommandService.createSeries(user.id, dto);
     req.flash.success('시리즈를 성공적으로 등록하였습니다.');
     return req.view.render('pages/admin/series/_success');
   }
@@ -67,7 +67,7 @@ export class AdminSeriesController {
   @Put(':id')
   @UsePipes(new ZodValidationPipe(UpdateSeriesSchema))
   async update(@Param('id') id: number, @Req() req: NestMvcReq, @Body('series') dto: UpdateSeriesDto) {
-    await this.seriesAppService.updateSeries(id, dto);
+    await this.seriesCommandService.updateSeries(id, dto);
     req.flash.success('시리즈를 성공적으로 변경하였습니다.');
     return req.view.render('pages/admin/series/_success');
   }
@@ -80,14 +80,14 @@ export class AdminSeriesController {
     @Body() dto: UpdatePublishDto,
     @Res() res: Response,
   ) {
-    await this.seriesAppService.updatePublish(id, dto);
+    await this.seriesCommandService.updatePublish(id, dto);
     req.flash.success('시리즈 변경 완료');
     return res.redirect(303, '/admin/series');
   }
 
   @Delete(':id')
   async destroy(@Param('id') id: number, @Req() req: NestMvcReq, @Res() res: Response) {
-    await this.seriesAppService.destroySeries(id);
+    await this.seriesCommandService.destroySeries(id);
     req.flash.success('시리즈를 성공적으로 삭제하였습니다.');
     return res.redirect(303, '/admin/series');
   }

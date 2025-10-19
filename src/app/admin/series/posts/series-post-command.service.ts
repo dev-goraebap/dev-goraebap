@@ -4,7 +4,7 @@ import { POST_REPO, PostRepository } from "src/domain/post";
 import { SERIES_REPO, SeriesRepository } from "src/domain/series";
 import { SERIES_POST_REPO, SeriesPostEntity, SeriesPostRepository } from "src/domain/series-post";
 
-export class SeriesPostApplicationService {
+export class SeriesPostCommandService {
 
   constructor(
     @Inject(SERIES_REPO)

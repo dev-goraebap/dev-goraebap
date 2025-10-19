@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 
 import { AdminSeriesPostModule } from "./posts";
-import { SeriesApplicationService } from "./series-application.service";
+import { SeriesCommandService } from "./series-command.service";
 import { AdminSeriesController } from "./series.controller";
 
 @Module({
@@ -10,7 +10,7 @@ import { AdminSeriesController } from "./series.controller";
   ],
   controllers: [AdminSeriesController],
   providers: [
-    SeriesApplicationService,
+    SeriesCommandService,
   ]
 })
 export class AdminSeriesModule { }

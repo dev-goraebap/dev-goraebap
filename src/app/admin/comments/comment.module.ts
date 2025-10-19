@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
 
-import { CommentApplicationService } from "./comment-application.service";
+import { CommentCommandService } from "./comment-command.service";
 import { AdminCommentController } from "./comment.controller";
 
 @Module({
   imports: [],
   controllers: [AdminCommentController],
-  providers: [CommentApplicationService]
+  providers: [CommentCommandService]
 })
 export class AdminCommentModule {}

@@ -4,8 +4,8 @@ import { JwtModule } from "@nestjs/jwt";
 
 import { EmailService } from "./services/email.service";
 import { TokenService } from "./services/token.service";
-import { SessionApplicationService } from "./session-application.service";
 import { SessionController } from "./session.controller";
+import { SessionService } from "./session.service";
 
 @Module({
   imports: [
@@ -20,7 +20,6 @@ import { SessionController } from "./session.controller";
     })
   ],
   controllers: [SessionController],
-  providers: [EmailService, TokenService, SessionApplicationService],
-  exports: []
+  providers: [SessionService, EmailService, TokenService]
 })
 export class SessionModule { }

@@ -1,16 +1,16 @@
 import { Global, Module, OnModuleInit } from "@nestjs/common";
 
-import { AdminInitializerService, MediaCleanupService, PostViewService } from "./services";
+import { AdminInitializerService, MediaCleanupService, PostViewCommandService } from "./services";
 
 @Global()
 @Module({
   providers: [
     MediaCleanupService,
     AdminInitializerService,
-    PostViewService
+    PostViewCommandService
   ],
   exports: [
-    PostViewService
+    PostViewCommandService
   ]
 })
 export class FeaturesModule implements OnModuleInit {

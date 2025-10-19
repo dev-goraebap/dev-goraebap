@@ -22,14 +22,14 @@ import { GetAdminPostsDto, GetAdminPostsSchema } from 'src/infra/dto';
 import { PostQueryService } from 'src/infra/queries';
 import { SelectUser } from 'src/shared/drizzle';
 import { CreatePostDto, CreatePostSchema, UpdatePostDto, UpdatePostSchema } from './dto/create-or-update-post.dto';
-import { PostApplicationService } from './post-application.service';
+import { PostCommandService } from './post.service';
 
 @Controller({ path: '/admin/posts' })
 @UseGuards(AdminAuthGuard)
 export class AdminPostController {
   constructor(
     private readonly postQueryService: PostQueryService,
-    private readonly postApplicationService: PostApplicationService
+    private readonly postCommandService: PostCommandService
   ) { }
 
   @Get()
@@ -61,7 +61,7 @@ export class AdminPostController {
     @Body('post') dto: CreatePostDto,
     @CurrentUser() user: SelectUser,
   ) {
-    await this.postApplicationService.createPost(user.id, dto);
+    await this.postCommandService.createPost(user.id, dto);
     req.flash.success('게시물 저장 완료');
     return res.redirect('/admin/posts');
   }
@@ -80,7 +80,7 @@ export class AdminPostController {
     @Body('post') dto: UpdatePostDto,
     @Res() res: Response,
   ) {
-    await this.postApplicationService.updatePost(id, dto);
+    await this.postCommandService.updatePost(id, dto);
     req.flash.success('게시물 변경 완료');
     return res.redirect(303, '/admin/posts');
   }
@@ -93,14 +93,14 @@ export class AdminPostController {
     @Body() dto: UpdatePublishDto,
     @Res() res: Response,
   ) {
-    await this.postApplicationService.updatePublish(id, dto);
+    await this.postCommandService.updatePublish(id, dto);
     req.flash.success('게시물 변경 완료');
     return res.redirect(303, '/admin/posts');
   }
 
   @Delete(':id')
   async destroy(@Param('id') id: number, @Req() req: NestMvcReq, @Res() res: Response) {
-    await this.postApplicationService.destroyPost(id);
+    await this.postCommandService.destroyPost(id);
     req.flash.success('게시물을 성공적으로 삭제하였습니다.');
     return res.redirect(303, '/admin/posts');
   }

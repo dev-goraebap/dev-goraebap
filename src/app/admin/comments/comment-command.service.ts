@@ -4,7 +4,7 @@ import { CommentEntity } from 'src/domain/comment';
 import { LoggerService } from 'src/shared/logger';
 
 @Injectable()
-export class CommentApplicationService {
+export class CommentCommandService {
 
   constructor(
     private readonly logger: LoggerService

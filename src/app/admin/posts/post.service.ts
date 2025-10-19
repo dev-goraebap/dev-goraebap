@@ -10,17 +10,13 @@ import { LoggerService } from 'src/shared/logger';
 import { CreatePostDto, UpdatePostDto } from './dto/create-or-update-post.dto';
 
 @Injectable()
-export class PostApplicationService {
+export class PostCommandService {
 
   constructor(
     private readonly logger: LoggerService,
     @Inject(POST_REPO)
     private readonly postRepository: PostRepository
   ) { }
-
-  // ---------------------------------------------------------------------------
-  // 관리자 기능
-  // ---------------------------------------------------------------------------
 
   async createPost(userId: UserId, dto: CreatePostDto) {
     return await DrizzleContext.transaction(async () => {
@@ -152,10 +148,6 @@ export class PostApplicationService {
     // 2. 게시물 삭제
     await this.postRepository.delete(postId);
   }
-
-  // ---------------------------------------------------------------------------
-  // PRIVATE
-  // ---------------------------------------------------------------------------
 
   private async validateSlugUniqueness(slug: string, excludePostId?: number): Promise<void> {
     const exists = await this.postRepository.checkSlugExists(slug, excludePostId);
