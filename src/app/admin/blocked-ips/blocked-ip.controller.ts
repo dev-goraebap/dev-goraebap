@@ -32,7 +32,7 @@ export class AdminBlockedIpController {
   @Get()
   @UsePipes(new ZodValidationPipe(GetBlockedIpsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetBlockedIpsDto) {
-    const ipBlockedData = await this.blockedIpQueryService.getAdminBlockedIpList(dto);
+    const ipBlockedData = await this.blockedIpQueryService.getAdminBlockedIpsWithPagination(dto);
     return req.view.render('pages/admin/blocked-ips/index', { ...ipBlockedData });
   }
 

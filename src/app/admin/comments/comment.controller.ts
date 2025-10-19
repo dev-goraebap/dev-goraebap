@@ -18,7 +18,7 @@ export class AdminCommentController {
   @Get()
   @UsePipes(new ZodValidationPipe(GetAdminCommentsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetAdminCommentsDto) {
-    const commentData = await this.commentQueryService.getAdminComments(dto);
+    const commentData = await this.commentQueryService.getAdminCommentsWithPagination(dto);
     return req.view.render('pages/admin/comments/index', { ...commentData });
   }
 

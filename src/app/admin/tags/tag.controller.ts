@@ -35,7 +35,7 @@ export class AdminTagController {
   @Get()
   @UsePipes(new ZodValidationPipe(GetAdminTagsSchema))
   async index(@Req() req: NestMvcReq, @Query() dto: GetAdminTagsDto) {
-    const tagData = await this.tagQueryService.getAdminTags(dto);
+    const tagData = await this.tagQueryService.getAdminTagsWithPagination(dto);
     return req.view.render('pages/admin/tags/index', { ...tagData });
   }
 
