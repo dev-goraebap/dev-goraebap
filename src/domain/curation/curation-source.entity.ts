@@ -18,36 +18,33 @@ export type UpdateCurationSourceParam = {
 }
 
 export class CurationSourceEntity implements SelectCuratedSource {
-
-  private constructor(
-    readonly id: CurationSourceID,
-    readonly name: string,
-    readonly url: string,
-    readonly isActiveYn: 'Y' | 'N',
-    readonly createdAt: Date,
-    readonly updatedAt: Date,
-  ) { }
+  readonly id!: CurationSourceID;
+  readonly name!: string;
+  readonly url!: string;
+  readonly isActiveYn!: 'Y' | 'N';
+  readonly createdAt!: Date;
+  readonly updatedAt!: Date;
 
   static create(param: CreateCurationSourceParam): CurationSourceEntity {
-    return new CurationSourceEntity(
-      0, // id: 0 means new entity
-      param.name,
-      param.url,
-      param.isActiveYn,
-      new Date(),
-      new Date(),
-    );
+    return Object.assign(new CurationSourceEntity(), {
+      id: 0, // id: 0 means new entity
+      name: param.name,
+      url: param.url,
+      isActiveYn: param.isActiveYn,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } satisfies Partial<CurationSourceEntity>);
   }
 
   static fromRaw(data: SelectCuratedSource): CurationSourceEntity {
-    return new CurationSourceEntity(
-      data.id,
-      data.name,
-      data.url,
-      data.isActiveYn,
-      data.createdAt,
-      data.updatedAt,
-    );
+    return Object.assign(new CurationSourceEntity(), {
+      id: data.id,
+      name: data.name,
+      url: data.url,
+      isActiveYn: data.isActiveYn,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    } satisfies Partial<CurationSourceEntity>);
   }
 
   isNew(): boolean {
@@ -86,25 +83,25 @@ export class CurationSourceEntity implements SelectCuratedSource {
   }
 
   update(param: UpdateCurationSourceParam): CurationSourceEntity {
-    return new CurationSourceEntity(
-      this.id,
-      param.name ?? this.name,
-      param.url ?? this.url,
-      param.isActiveYn ?? this.isActiveYn,
-      this.createdAt,
-      new Date(),
-    );
+    return Object.assign(new CurationSourceEntity(), {
+      id: this.id,
+      name: param.name ?? this.name,
+      url: param.url ?? this.url,
+      isActiveYn: param.isActiveYn ?? this.isActiveYn,
+      createdAt: this.createdAt,
+      updatedAt: new Date(),
+    } satisfies Partial<CurationSourceEntity>);
   }
 
   toggle(): CurationSourceEntity {
-    return new CurationSourceEntity(
-      this.id,
-      this.name,
-      this.url,
-      this.isActiveYn === 'Y' ? 'N' : 'Y',
-      this.createdAt,
-      new Date(),
-    );
+    return Object.assign(new CurationSourceEntity(), {
+      id: this.id,
+      name: this.name,
+      url: this.url,
+      isActiveYn: this.isActiveYn === 'Y' ? 'N' : 'Y',
+      createdAt: this.createdAt,
+      updatedAt: new Date(),
+    } satisfies Partial<CurationSourceEntity>);
   }
 
   async save(): Promise<CurationSourceEntity> {

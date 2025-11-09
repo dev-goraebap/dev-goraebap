@@ -3,16 +3,14 @@ import { TagID } from "src/domain/tag";
 import { DrizzleContext, postTags, SelectPostTag } from "src/shared/drizzle";
 
 export class PostTagEntity implements SelectPostTag {
-  private constructor(
-    readonly postId: number,
-    readonly tagId: number
-  ) { }
+  readonly postId!: number;
+  readonly tagId!: number;
 
-  static fromRaw(data: SelectPostTag) {
-    return new PostTagEntity(
-      data.postId,
-      data.tagId
-    );
+  static fromRaw(data: SelectPostTag): PostTagEntity {
+    return Object.assign(new PostTagEntity(), {
+      postId: data.postId,
+      tagId: data.tagId,
+    } satisfies Partial<PostTagEntity>);
   }
 
   /**

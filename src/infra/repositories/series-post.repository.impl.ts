@@ -34,14 +34,21 @@ export class SeriesPostRepositoryImpl implements SeriesPostRepository {
       // INSERT
       const [raw] = await DrizzleContext.db()
         .insert(seriesPosts)
-        .values(seriesPost.toInsertData())
+        .values({
+          seriesId: seriesPost.seriesId,
+          postId: seriesPost.postId,
+          order: seriesPost.order,
+        })
         .returning();
       return SeriesPostEntity.fromRaw(raw);
     } else {
       // UPDATE
       const [raw] = await DrizzleContext.db()
         .update(seriesPosts)
-        .set(seriesPost.toUpdateData())
+        .set({
+          order: seriesPost.order,
+          updatedAt: seriesPost.updatedAt,
+        })
         .where(eq(seriesPosts.id, seriesPost.id))
         .returning();
       return SeriesPostEntity.fromRaw(raw);
@@ -53,7 +60,10 @@ export class SeriesPostRepositoryImpl implements SeriesPostRepository {
       for (const entity of seriesPostEntities) {
         await DrizzleContext.db()
           .update(seriesPosts)
-          .set(entity.toUpdateData())
+          .set({
+            order: entity.order,
+            updatedAt: entity.updatedAt,
+          })
           .where(eq(seriesPosts.id, entity.id));
       }
     });

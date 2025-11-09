@@ -34,14 +34,30 @@ export class SeriesRepositoryImpl implements SeriesRepository {
       // INSERT
       const [raw] = await DrizzleContext.db()
         .insert(series)
-        .values(seriesEntity.toInsertData())
+        .values({
+          userId: seriesEntity.userId,
+          name: seriesEntity.name,
+          slug: seriesEntity.slug,
+          description: seriesEntity.description,
+          status: seriesEntity.status,
+          isPublishedYn: seriesEntity.isPublishedYn,
+          publishedAt: seriesEntity.publishedAt,
+        })
         .returning();
       return SeriesEntity.fromRaw(raw);
     } else {
       // UPDATE
       const [raw] = await DrizzleContext.db()
         .update(series)
-        .set(seriesEntity.toUpdateData())
+        .set({
+          name: seriesEntity.name,
+          slug: seriesEntity.slug,
+          description: seriesEntity.description,
+          status: seriesEntity.status,
+          isPublishedYn: seriesEntity.isPublishedYn,
+          publishedAt: seriesEntity.publishedAt,
+          updatedAt: seriesEntity.updatedAt,
+        })
         .where(eq(series.id, seriesEntity.id))
         .returning();
       return SeriesEntity.fromRaw(raw);

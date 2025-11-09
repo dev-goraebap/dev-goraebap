@@ -34,14 +34,33 @@ export class PostRepositoryImpl implements PostRepository {
       // INSERT
       const [raw] = await DrizzleContext.db()
         .insert(posts)
-        .values(post.toInsertData())
+        .values({
+          userId: post.userId,
+          slug: post.slug,
+          title: post.title,
+          summary: post.summary,
+          content: post.content,
+          postType: post.postType,
+          isPublishedYn: post.isPublishedYn,
+          publishedAt: post.publishedAt,
+        })
         .returning();
       return PostEntity.fromRaw(raw);
     } else {
       // UPDATE
       const [raw] = await DrizzleContext.db()
         .update(posts)
-        .set(post.toUpdateData())
+        .set({
+          slug: post.slug,
+          title: post.title,
+          summary: post.summary,
+          content: post.content,
+          postType: post.postType,
+          viewCount: post.viewCount,
+          isPublishedYn: post.isPublishedYn,
+          publishedAt: post.publishedAt,
+          updatedAt: post.updatedAt,
+        })
         .where(eq(posts.id, post.id))
         .returning();
       return PostEntity.fromRaw(raw);

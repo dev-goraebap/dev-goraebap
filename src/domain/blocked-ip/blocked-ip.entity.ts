@@ -3,28 +3,26 @@ import { and, eq, lt } from "drizzle-orm";
 import { blockedIps, DrizzleContext, InsertBlockedIp, SelectBlockedIp } from "src/shared/drizzle";
 
 export class BlockedIpEntity implements SelectBlockedIp {
-  private constructor(
-    readonly id: number,
-    readonly ipAddress: string,
-    readonly reason: string | null,
-    readonly blockedBy: string,
-    readonly expiresAt: string | null,
-    readonly createdAt: Date,
-    readonly updatedAt: Date,
-    readonly isActiveYn: string,
-  ) { }
+  readonly id!: number;
+  readonly ipAddress!: string;
+  readonly reason!: string | null;
+  readonly blockedBy!: string;
+  readonly expiresAt!: string | null;
+  readonly createdAt!: Date;
+  readonly updatedAt!: Date;
+  readonly isActiveYn!: string;
 
   static fromRaw(data: SelectBlockedIp): BlockedIpEntity {
-    return new BlockedIpEntity(
-      data.id,
-      data.ipAddress,
-      data.reason,
-      data.blockedBy,
-      data.expiresAt,
-      data.createdAt,
-      data.updatedAt,
-      data.isActiveYn,
-    );
+    return Object.assign(new BlockedIpEntity(), {
+      id: data.id,
+      ipAddress: data.ipAddress,
+      reason: data.reason,
+      blockedBy: data.blockedBy,
+      expiresAt: data.expiresAt,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+      isActiveYn: data.isActiveYn,
+    } satisfies Partial<BlockedIpEntity>);
   }
 
   /**

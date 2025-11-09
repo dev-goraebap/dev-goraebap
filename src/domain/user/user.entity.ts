@@ -5,22 +5,20 @@ import { DrizzleContext, InsertUser, SelectUser, users } from "src/shared/drizzl
 export type UserID = number;
 
 export class UserEntity implements SelectUser {
-  private constructor(
-    readonly id: UserID,
-    readonly email: string,
-    readonly nickname: string,
-    readonly createdAt: Date,
-    readonly updatedAt: Date,
-  ) { }
+  readonly id!: UserID;
+  readonly email!: string;
+  readonly nickname!: string;
+  readonly createdAt!: Date;
+  readonly updatedAt!: Date;
 
   static fromRaw(data: SelectUser): UserEntity {
-    return new UserEntity(
-      data.id,
-      data.email,
-      data.nickname,
-      data.createdAt,
-      data.updatedAt
-    );
+    return Object.assign(new UserEntity(), {
+      id: data.id,
+      email: data.email,
+      nickname: data.nickname,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    } satisfies Partial<UserEntity>);
   }
 
   static async findByEmail(email: string): Promise<UserEntity | null> {

@@ -1,16 +1,17 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from '@nestjs/common';
 
-import { TagEntity } from "src/domain/tag/tag.entity";
-import { SelectTag, UserId } from "src/shared/drizzle";
-import { LoggerService } from "src/shared/logger";
-import { CreateOrUpdateTagDto } from "./dto/create-or-update-tag.dto";
+import { TagEntity } from 'src/domain/tag/tag.entity';
+import { SelectTag, UserId } from 'src/shared/drizzle';
+import { LoggerService } from 'src/shared/logger';
+import { CreateOrUpdateTagDto } from './dto/create-or-update-tag.dto';
 
 @Injectable()
 export class TagCommandService {
 
   constructor(
-    private readonly logger: LoggerService
-  ) { }
+    private readonly logger: LoggerService,
+  ) {
+  }
 
   async createTag(userId: UserId, dto: CreateOrUpdateTagDto): Promise<SelectTag> {
     const existsTag = await TagEntity.findByName(dto.name);
@@ -22,7 +23,7 @@ export class TagCommandService {
       const tag = TagEntity.create({
         userId,
         name: dto.name,
-        description: dto.description ?? ''
+        description: dto.description ?? '',
       });
       return await tag.save();
     } catch (err) {
@@ -38,14 +39,10 @@ export class TagCommandService {
     }
 
     try {
-      const updatedTag = new TagEntity(
-        tag.id,
-        tag.userId,
-        dto.name,
-        dto.description ?? tag.description,
-        tag.createdAt,
-        new Date(),
-      );
+      const updatedTag = tag.update({
+        name: dto.name,
+        description: dto.description,
+      });
       return await updatedTag.save();
     } catch (err) {
       this.logger.error(err);

@@ -16,44 +16,42 @@ export type CreateCurationItemParam = {
 }
 
 export class CurationItemEntity implements SelectCuratedItem {
-  private constructor(
-    readonly id: CurationItemID,
-    readonly title: string,
-    readonly link: string,
-    readonly guid: string,
-    readonly snippet: string | null,
-    readonly pubDate: Date,
-    readonly source: string,
-    readonly sourceId: CurationSourceID | null,
-    readonly createdAt: Date,
-  ) { }
+  readonly id!: CurationItemID;
+  readonly title!: string;
+  readonly link!: string;
+  readonly guid!: string;
+  readonly snippet!: string | null;
+  readonly pubDate!: Date;
+  readonly source!: string;
+  readonly sourceId!: CurationSourceID | null;
+  readonly createdAt!: Date;
 
   static create(param: CreateCurationItemParam): CurationItemEntity {
-    return new CurationItemEntity(
-      0, // id: 0 means new entity
-      param.title,
-      param.link,
-      param.guid,
-      param.snippet,
-      param.pubDate,
-      param.source,
-      param.sourceId,
-      new Date(),
-    );
+    return Object.assign(new CurationItemEntity(), {
+      id: 0, // id: 0 means new entity
+      title: param.title,
+      link: param.link,
+      guid: param.guid,
+      snippet: param.snippet,
+      pubDate: param.pubDate,
+      source: param.source,
+      sourceId: param.sourceId,
+      createdAt: new Date(),
+    } satisfies Partial<CurationItemEntity>);
   }
 
   static fromRaw(data: SelectCuratedItem): CurationItemEntity {
-    return new CurationItemEntity(
-      data.id,
-      data.title,
-      data.link,
-      data.guid,
-      data.snippet,
-      data.pubDate,
-      data.source,
-      data.sourceId,
-      data.createdAt,
-    );
+    return Object.assign(new CurationItemEntity(), {
+      id: data.id,
+      title: data.title,
+      link: data.link,
+      guid: data.guid,
+      snippet: data.snippet,
+      pubDate: data.pubDate,
+      source: data.source,
+      sourceId: data.sourceId,
+      createdAt: data.createdAt,
+    } satisfies Partial<CurationItemEntity>);
   }
 
   isNew(): boolean {

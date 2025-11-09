@@ -5,32 +5,30 @@ import { attachments, blobs, DrizzleContext, InsertBlob, SelectBlob } from "src/
 import { MediaUploadResponseDto } from "./dto/media-upload-response.dto";
 
 export class BlobEntity implements SelectBlob {
-  private constructor(
-    readonly id: number,
-    readonly key: string,
-    readonly filename: string,
-    readonly contentType: string,
-    readonly serviceName: string,
-    readonly byteSize: number,
-    readonly checksum: string,
-    readonly createdBy: string,
-    readonly createdAt: Date,
-    readonly metadata: string,
-  ) { }
+  readonly id!: number;
+  readonly key!: string;
+  readonly filename!: string;
+  readonly contentType!: string;
+  readonly serviceName!: string;
+  readonly byteSize!: number;
+  readonly checksum!: string;
+  readonly createdBy!: string;
+  readonly createdAt!: Date;
+  readonly metadata!: string;
 
   static fromRaw(data: SelectBlob): BlobEntity {
-    return new BlobEntity(
-      data.id,
-      data.key,
-      data.filename,
-      data.contentType,
-      data.serviceName,
-      data.byteSize,
-      data.checksum,
-      data.createdBy,
-      data.createdAt,
-      data.metadata,
-    );
+    return Object.assign(new BlobEntity(), {
+      id: data.id,
+      key: data.key,
+      filename: data.filename,
+      contentType: data.contentType,
+      serviceName: data.serviceName,
+      byteSize: data.byteSize,
+      checksum: data.checksum,
+      createdBy: data.createdBy,
+      createdAt: data.createdAt,
+      metadata: data.metadata,
+    } satisfies Partial<BlobEntity>);
   }
 
   static async findById(id: number): Promise<BlobEntity | null> {

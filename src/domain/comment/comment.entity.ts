@@ -13,41 +13,39 @@ export type CreateCommentParam = {
 }
 
 export class CommentEntity implements SelectComment {
-  constructor(
-    readonly id: CommentID,
-    readonly requestId: string,
-    readonly nickname: string,
-    readonly comment: string,
-    readonly createdAt: Date,
-    readonly postId: number,
-    readonly deletedAt: Date | null,
-    readonly avatarNo: number,
-  ) { }
+  readonly id!: CommentID;
+  readonly requestId!: string;
+  readonly nickname!: string;
+  readonly comment!: string;
+  readonly createdAt!: Date;
+  readonly postId!: number;
+  readonly deletedAt!: Date | null;
+  readonly avatarNo!: number;
 
   static create(param: CreateCommentParam): CommentEntity {
-    return new CommentEntity(
-      0, // id: 0 means new entity
-      param.requestId,
-      param.nickname,
-      param.comment,
-      new Date(),
-      param.postId,
-      null,
-      param.avatarNo,
-    );
+    return Object.assign(new CommentEntity(), {
+      id: 0, // id: 0 means new entity
+      requestId: param.requestId,
+      nickname: param.nickname,
+      comment: param.comment,
+      createdAt: new Date(),
+      postId: param.postId,
+      deletedAt: null,
+      avatarNo: param.avatarNo,
+    } satisfies Partial<CommentEntity>);
   }
 
   static fromRaw(data: SelectComment): CommentEntity {
-    return new CommentEntity(
-      data.id,
-      data.requestId,
-      data.nickname,
-      data.comment,
-      data.createdAt,
-      data.postId,
-      data.deletedAt,
-      data.avatarNo,
-    );
+    return Object.assign(new CommentEntity(), {
+      id: data.id,
+      requestId: data.requestId,
+      nickname: data.nickname,
+      comment: data.comment,
+      createdAt: data.createdAt,
+      postId: data.postId,
+      deletedAt: data.deletedAt,
+      avatarNo: data.avatarNo,
+    } satisfies Partial<CommentEntity>);
   }
 
   isNew(): boolean {
@@ -90,16 +88,16 @@ export class CommentEntity implements SelectComment {
   }
 
   ban(): CommentEntity {
-    return new CommentEntity(
-      this.id,
-      this.requestId,
-      this.nickname,
-      this.comment,
-      this.createdAt,
-      this.postId,
-      new Date(),
-      this.avatarNo,
-    );
+    return Object.assign(new CommentEntity(), {
+      id: this.id,
+      requestId: this.requestId,
+      nickname: this.nickname,
+      comment: this.comment,
+      createdAt: this.createdAt,
+      postId: this.postId,
+      deletedAt: new Date(),
+      avatarNo: this.avatarNo,
+    } satisfies Partial<CommentEntity>);
   }
 
   /**

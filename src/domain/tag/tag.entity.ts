@@ -17,39 +17,48 @@ export type UpdateTagParam = {
 }
 
 export class TagEntity implements SelectTag {
-  constructor(
-    readonly id: TagID,
-    readonly userId: UserID,
-    readonly name: string,
-    readonly description: string,
-    readonly createdAt: Date,
-    readonly updatedAt: Date,
-  ) { }
+  readonly id!: TagID;
+  readonly userId!: UserID;
+  readonly name!: string;
+  readonly description!: string;
+  readonly createdAt!: Date;
+  readonly updatedAt!: Date;
 
   static create(param: CreateTagParam): TagEntity {
-    return new TagEntity(
-      0, // id: 0 means new entity
-      param.userId,
-      param.name,
-      param.description,
-      new Date(),
-      new Date(),
-    );
+    return Object.assign(new TagEntity(), {
+      id: 0, // id: 0 means new entity
+      userId: param.userId,
+      name: param.name,
+      description: param.description,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    } satisfies Partial<TagEntity>);
   }
 
   static fromRaw(data: SelectTag): TagEntity {
-    return new TagEntity(
-      data.id,
-      data.userId,
-      data.name,
-      data.description,
-      data.createdAt,
-      data.updatedAt
-    );
+    return Object.assign(new TagEntity(), {
+      id: data.id,
+      userId: data.userId,
+      name: data.name,
+      description: data.description,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    } satisfies Partial<TagEntity>);
   }
 
   isNew(): boolean {
     return this.id === 0;
+  }
+
+  update(params: UpdateTagParam): TagEntity {
+    return Object.assign(new TagEntity(), {
+      id: this.id,
+      userId: this.userId,
+      name: params.name ?? this.name,
+      description: params.description ?? this.description,
+      createdAt: this.createdAt,
+      updatedAt: new Date(),
+    } satisfies Partial<TagEntity>);
   }
 
   static async findById(id: TagID): Promise<TagEntity | null> {

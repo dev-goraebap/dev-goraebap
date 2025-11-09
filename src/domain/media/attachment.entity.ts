@@ -6,24 +6,22 @@ import { extractImageUrls } from 'src/shared/utils';
 import { BlobEntity } from './blob.entity';
 
 export class AttachmentEntity implements SelectAttachment {
-  private constructor(
-    readonly id: number,
-    readonly name: string,
-    readonly recordType: string,
-    readonly recordId: string,
-    readonly blobId: number,
-    readonly createdAt: Date,
-  ) { }
+  readonly id!: number;
+  readonly name!: string;
+  readonly recordType!: string;
+  readonly recordId!: string;
+  readonly blobId!: number;
+  readonly createdAt!: Date;
 
   static fromRaw(data: SelectAttachment): AttachmentEntity {
-    return new AttachmentEntity(
-      data.id,
-      data.name,
-      data.recordType,
-      data.recordId,
-      data.blobId,
-      data.createdAt,
-    );
+    return Object.assign(new AttachmentEntity(), {
+      id: data.id,
+      name: data.name,
+      recordType: data.recordType,
+      recordId: data.recordId,
+      blobId: data.blobId,
+      createdAt: data.createdAt,
+    } satisfies Partial<AttachmentEntity>);
   }
 
   static async createThumbnail(
